@@ -1,0 +1,59 @@
+;; states
+(define-data user "Данные пользователя"
+  ((login    :login)
+   (password :password)
+   (email    :email)
+   (state    :state)))
+
+
+(define-automat user-reg "Автомат регистрации пользователя"
+  (:unregistred :registred)
+  ((:unregistred :registred :registration "Регистрация")
+   (:registred :unregistred :delete-account "Удаление профиля")))
+
+(define-action registration (PUT login password email)
+  (request-protect
+   (let ((data (make-user :login (getf :login) :password (getf :password) :email (getf :email))))
+     (if data
+         (return "201 Created" (token data))
+         (return "302 Found")))))
+
+(define-action delete-account (DELETE login password)
+  (request-protect
+   (let ((data (destroy-user :login (getf :login) :password (getf :password))))
+     (if data
+         (return "202 Accepted")
+         (return "401 Unauthorized")))))
+
+
+(define-automat user-auth "Автомат авторизации пользователя"
+  (:logged-in :logged-out :link-sended :logged-for-change-password)
+  ((:logged-in   :logged-out   :exit                 "Обнулить сессию")
+   (:logged-out  :logged-in    :auth                 "Залогиниться")
+   (:logged-out  :link-sended  :send-forgotten-link  "Забыл пароль - пошлем линк")
+   (:link-sended :logged-for-change-password :need-change-password "Перешел по ссылке для смены пароля")
+   (:need-change-password :logged-out :change-pass   "Поменять пароль")))
+
+(define-action exit (GET token)
+  (request-protect
+   (let ((data (get-user token)))
+     (setf (getf data :state) :logged-out)
+     (destroy-session))))
+
+(define-action auth (POST login password)
+  (request-protect
+   (let ((data (get-user login password)))
+     (setf (getf data :state) :logged-in)
+     (setf (getf session :token) (token data)))))
+
+
+ (delete-account ...)
+ (authorization
+  (:request POST <login> <password>)
+  (:responce
+   '((200 "Ok" <some-data>)
+     (404 "Not Found")       ;; login not found
+     (403 "Forbidden"))))    ;; password wrong
+ (exit ...)
+ (send-forgotten-link)
+ (need-change-password)
