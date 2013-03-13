@@ -1,4 +1,3 @@
-;; states
 (define-data user "Данные пользователя"
   ((login    :login)
    (password :password)
@@ -43,29 +42,29 @@
 (define-action auth (POST login password)
   (request-protect
    (let ((data (get-user login password)))
-    (setf (getf data :state) :logged-in)
-    (setf (getf session :token) (token data)))))
+     (setf (getf data :state) :logged-in)
+     (setf (getf session :token) (token data)))))
 
 (define-action send-forgotten-link (GET email)
   (request-protect
-    (let ((data (get-user email)))
-    ;; TODO: compile and store link ??
-    (send-email (getf data :email) link)
-    (setf (getf data :state) :link-sended))))
+   (let ((data (get-user email)))
+     ;; TODO: compile and store link ??
+     (send-email (getf data :email) link)
+     (setf (getf data :state) :link-sended))))
 
 (define-action need-change-password (GET token)
   (request-protect
-    (let ((data (get-user token)))
-      (setf (getf data :state) :logged-for-change-password))))
+   (let ((data (get-user token)))
+     (setf (getf data :state) :logged-for-change-password))))
 
 (define-action change-pass (POST token oldpassword newpassword)
-(request-protect
-  (let ((data (get-user token)))
-    (if (getf data :password)==oldpassword
-    ((setf (getf data :password) newpassword)
-    (setf (getf session :token) (token data))
-    (setf (getf data :state) :logged-for-change-password))
-    (return "401 Unauthorized")))))
+  (request-protect
+   (let ((data (get-user token)))
+     (if (getf data :password)==oldpassword
+         ((setf (getf data :password) newpassword)
+          (setf (getf session :token) (token data))
+          (setf (getf data :state) :logged-for-change-password))
+         (return "401 Unauthorized")))))
 
 (define-action setf ())
 (define-action getf ())
@@ -76,6 +75,6 @@
 
 (define-action get-user ())
 
-   ((200 "Ok" <some-data>)
-     (404 "Not Found")       ;; login not found
-     (403 "Forbidden"))))    ;; password wrong
+((200 "Ok" <some-data>)
+ (404 "Not Found")       ;; login not found
+ (403 "Forbidden"))))    ;; password wrong
