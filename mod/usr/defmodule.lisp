@@ -1,17 +1,13 @@
 
-;; (print
-;;  (macroexpand-1
-;;   '
-  (define-automat user "Автомат пользователя"
-    ((email        :email)
-     (password     :password)
-     (new-password :password))
-    (:logged :unlogged :link-sended)
-    ((:logged       :unlogged     :leave)       ;; Обнулить сессию
-     (:unlogged     :logged       :enter)       ;; Залогиниться
-     (:unlogged     :link-sended  :send-login)  ;; Забыл пароль - пошлем линк
-     (:link-sended  :logged       :enter)))     ;; Залогиниться
-;; ))
+(define-automat user "Автомат пользователя"
+  ((email        :email)
+   (password     :password)
+   (new-password :password))
+  (:logged :unlogged :link-sended)
+  ((:logged       :unlogged     :leave)       ;; Обнулить сессию
+   (:unlogged     :logged       :enter)       ;; Залогиниться
+   (:unlogged     :link-sended  :send-login)  ;; Забыл пароль - пошлем линк
+   (:link-sended  :logged       :enter)))     ;; Залогиниться
 
 
 (defun generate-password ()
