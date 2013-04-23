@@ -12,6 +12,8 @@
   :serial       t
   :components   (
                  (:file "defmodule")
+                 (:file "lib/entity")
+                 (:file "mod/usr/usr")
                  ;; (:static-file "templates.htm")
                  ;; (:file "orgmode")
                  ;; (:file "comment")
