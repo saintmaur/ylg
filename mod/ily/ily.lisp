@@ -24,11 +24,12 @@
 
 ;; Model
 
-(defun make-look ()
-  "cоздание look-а owner-ом")
-
-(defun edit-look ()
-  "редактирование look-а owner-ом")
+(define-action edit-look (flds)
+  "редактирование look-а owner-ом"
+  ;; Проверка прав
+  ;; Проверка корректности данных
+  ;; Замена полей look-а
+  )
 
 (defun delete-look ()
   "удаление look-а owner-ом")
