@@ -1,57 +1,56 @@
 * sch-task
   Syntax:
 
-  sch-task #'func => result
+  sch-task #'func delay => result
 
 ** Args'n'values
 *** args
-    #'func -- ссылка на выполняемую по таймеру функцию, принимающую аргументом идентификатор сущности
-
+    #'func -- ссылка на выполняемую по таймеру функцию
+    delay  -- время в секундах, обозначивающее задержку
 *** result
-    В случае успешного создания таймера возвращается его уникальное имя.
+    В случае успешного создания таймера возвращается созданный объект типа TIMER
     В противном - ложь.
-    В случае ошибки сигнализируется.
+    В случае ошибки (?) сигнализируется.
 
 ** Examples
-    (sch-task #'(del-look 25689) => T
+    (sch-task #'del-look 25689) => T
+
 * mod-task
   Syntax:
 
-  mod-task name ts #'func => result
+  mod-task timer-obj ts => result
 
 ** Desc
    Функция модифицирует существующее задание
 
 ** Args'n'values
 *** args
-    name   -- имя таймера
-    ts     -- new timestamp (> current timestamp)
-    #'func -- ссылка на выполняемую по таймеру функцию, принимающую аргументом идентификатор сущности
-
+    timer-obj -- соответствующий объект TIMER
+    ts        -- new timestamp (> current timestamp)
 **** TODO
      что делать, если ts < текущего TS?
      * выполнить тут же
      * выкинуть ошибку
 
 *** result
-    В случае успешного изменения таймера возвращается истина.
+    В случае успешного изменения таймера возвращается новый объект типа TIMER.
     В противном - ложь.
     В случае ошибки (в т.ч. задание не найдено) сигнализируется.
 
 ** Examples
-    (mod-task timer1 #'(del-look 2256) 3575625059) => T
+    (mod-task timer-obj 3575625059) => T
 
 * del-task
   Syntax:
 
-  del-task name => result
+  del-task timer-obj => result
 
 ** Desc
    Функция удаляет существующее задание
 
 ** Args'n'values
 *** args
-    name   -- имя таймера
+    timer-obj   -- соответствующий объект таймера
 
 *** result
     В случае успешного удаления таймера возвращается истина.
@@ -59,8 +58,7 @@
     В случае ошибки (в т.ч. задание не найдено) сигнализируется.
 
 ** Examples
-    (del-task look2556) => T
-
+    (del-task timer-obj) => T
 
 * err-permission
 ** Description
