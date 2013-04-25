@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+   <title></title>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="./css/style.css"/>
+    <script type="text/javascript" src="./js/jquery.js"></script>
+    <script type="text/javascript" src="./js/ajaxupload.js"></script>
+    <script type="text/javascript" src="./js/jquery.fancybox.pack.js"></script>
+    <script type="text/javascript">
+      $(function(){
+	  $('a.call-upload-form').ajaxUpload
+	  (
+              {
+		  url:'/admin/uploadimg',
+		  secureuri:false,
+		  name:'custom_img',
+		  onSubmit:function() {
+		      alert()
+		  },
+		  onComplete: function (data, status)
+		  {
+
+		      //var obj = jQuery.parseJSON(data);
+		  }
+              }
+	  )
+/*	  $('.call-upload-form').click(function(){
+	      $('#iframe-cont').find('iframe').contents().find('#ready-img').click();
+	  });*/
+	  $('#iframe-cont').find('iframe').contents().find('#ready-img').change(function(){
+	      console.log('test');
+	      $('#iframe-cont').find('iframe').contents().find('#ready-upload-form').submit();
+	  });
+      });
+    </script>
+  </head>
+  <body>
+    <div id="wrap">
+      <div id="head-wrap">
+	<div id="head">
+	  <div id="logo">YLG Logo</div>
+	</div>
+      </div>
+      <div id="content-wrap">
+	<div id="left-sidebar">
+	  <div id="left-sidebar-menu">
+	    <ul>
+	      <li>menupoint</li>
+	      <li>menupoint</li>
+	      <li>как я вам?
+		<ul>
+		  <li><a href="#" class="call-upload-form">загрузить фотографию</a></li>
+		  <li>submenupoint</li>
+		  <li>submenupoint</li>
+		  <li>submenupoint</li>
+		</ul>
+	      </li>
+	      <li>menupoint</li>
+	      <li>menupoint</li>
+	      <li>menupoint</li>
+	    </ul>
+	  </div>
+	</div>
+	<div id="content">
+	  <div class="floated-items">
+	    <div class="floated-item">
+	      <div class="item-img">
+		<a href="#"><img src="" width="200" height="250"/></a>
+	      </div>
+	      <div class="item-data">
+		some data
+	      </div>
+	    </div>
+	    <div class="floated-item">
+	      <div class="item-img">
+		<a href="#"><img src="" width="200" height="250"/></a>
+	      </div>
+	      <div class="item-data">
+		some data
+	      </div>
+	    </div>
+	    <div class="floated-item">
+	      <div class="item-img">
+		<a href="#"><img src="" width="200" height="250"/></a>
+	      </div>
+	      <div class="item-data">
+		some data
+	      </div>
+	    </div>
+	    <div class="floated-item">
+	      <div class="item-img">
+		<img src="" width="200" height="250"/>
+	      </div>
+	      <a href="#" class="edit-look-link-cont">редактировать</a>
+	      <div class="item-data">
+		some data
+	      </div>
+	    </div>
+	    <div class="floated-item">
+	      <div class="item-img">
+		<img src="" width="200" height="250"/>
+	      </div>
+	      <a href="#" class="edit-look-link-cont">редактировать</a>
+	      <div class="item-data">
+		some data
+	      </div>
+	    </div>
+	    <div class="floated-item">
+	      <div class="item-img">
+		<img src="" width="200" height="250"/>
+	      </div>
+	      <a href="#" class="edit-look-link-cont">редактировать</a>
+	      <div class="item-data">
+		some data
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	<div style="clear:both"></div>
+	<div id="iframe-cont">
+	    <iframe src="iframe-form-upload.html">
+     Ваш браузер не поддерживает плавающие фреймы!
+</iframe>
+	  </div>
+	<div id="edit-look-form-cont">
+	  <form action="#">
+	    <input type="hidden" name="look-image" value="" />
+	  <div id="edit-look-form-wrap">
+	    <div id="edit-look-form-photo-wrap">
+	      <div id="edit-look-form-photo">
+		<img src="" width="470" />
+	      </div>
+	      <div id="edit-look-form-filters">
+		<div class="edit-look-form-filter"><img src="" /></div>
+		<div class="edit-look-form-filter"><img src="" /></div>
+		<div class="edit-look-form-filter"><img src="" /></div>
+		<div class="edit-look-form-filter"><img src="" /></div>
+		<div class="edit-look-form-filter"><img src="" /></div>
+		<div class="edit-look-form-filter"><img src="" /></div>
+	      </div>
+	    </div>
+	    <div id="edit-look-form-clothes">
+
+	      <h2>ВЫБЕРИТЕ НУЖНОЕ</h2>
+	      <h3>Куда пойдем?</h3>
+	      <select name="look-whereto">
+		<option value="1">на работу</option>
+		<option value="1">домой</option>
+		<option value="1">на работу</option>
+		<option value="1">домой</option>
+		<option value="1">домой</option>
+		<option value="1">на работу</option>
+		<option value="1">на работу</option>
+		<option value="1">на работу</option>
+		<option value="1">домой</option>
+		<option value="1">на работу</option>
+		<option value="1">на работу</option>
+		<option value="1">на работу</option>
+		<option value="1">на работу</option>
+		<option value="1">на работу</option>
+	      </select>
+	      <div id="clo-select">
+		<a href="#"><span class="greyed">+</span>&nbsp;отметить предмет гардероба</a>
+	      </div>
+	      <ul>
+		<li>
+		  Кофта
+		  <ul>
+		    <li><span class="clo-list-capt">бренд:</span>&nbsp;<a href="#">ZARA</a></li>
+		    <li><span class="clo-list-capt">магазин:</span>&nbsp;<a href="#">ZARA</a></li>
+		  </ul>
+		</li>
+	      </ul>
+	    </div>
+	      <div style="clear:both"></div>
+	      <input type="file" id="custom_img" name="custom_img" />
+	    </div>
+	  </div>
+	  </form>
+	</div>
+      </div>
+    </div>
+  </body>
+</html>
