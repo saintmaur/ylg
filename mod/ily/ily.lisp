@@ -80,14 +80,12 @@
 
 ;; Tests
 
-(now)
-
 ;; Создаем look
 (make-look :timestamp (get-universal-time)
            :target '("club")
-           (goods     :goods)
-           (votes     :votes)
-           (comments  :comments))
+           :goods  '("shoes" "hat")
+           :votes  'votes
+           :comments 'comments)
 
 ;; Редактируем look
 ;; Публикуем look
