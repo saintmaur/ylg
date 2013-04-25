@@ -1,0 +1,159 @@
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+    margin:0 auto
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font-family: Verdana,Arial,sans-serif
+    vertical-align: baseline;
+}
+body {
+    line-height: 1.5;
+    font-size:100%;
+}
+ol,
+ul,li {
+	list-style: none;
+}
+blockquote,
+q {
+	quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+caption,
+th,
+td {
+	font-weight: normal;
+	text-align: left;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	clear: both;
+}
+html {
+	overflow-y: scroll;
+	font-size: 13px;
+	-webkit-text-size-adjust: 100%;
+	-ms-text-size-adjust: 100%;
+}
+a:focus {
+    outline: none;
+}
+
+#wrap {
+    min-height:100%;
+    widht:100%;
+    font-family: Verdana,Arial,sans-serif
+
+}
+#head-wrap {
+    widht:100%;
+    height:40px;
+    background-color:#eee;
+    padding:10px 0 5px 0px;
+    margin-bottom: 40px;
+}
+#head{
+    width:1000px;
+    margin:0 auto;
+}
+#logo {
+    border:1px dashed #aaa;
+    padding:5px 10px;
+    width:100px;
+}
+
+#content-wrap{
+    width:1000px;
+    margin:0 auto;
+}
+
+#left-sidebar{
+    float:left;
+    height:500px;
+    border:1px dashed #aaa;
+    width:200px;
+    margin-right:50px
+}
+
+#content {
+    float:left;
+    width:730px;
+}
+
+.floated-item{
+    float:left;
+    border:1px dashed #bbb;
+    width:200px;
+    height:250px;
+    margin:0 20px 50px;
+}
+
+.item-img{
+    height:inherit;
+    width:inherit;
+}
+
+.item-img img{
+    max-width:100%;
+}
+
+.item-data{
+    padding: 5px 0;
+    background-color:#eee;
+    text-align:center
+}
+
+.look-data {
+    width:100%;
+}
+
+.look-photo {
+    float:left;
+    width:400px;
+    height:450px;
+    border:1px dashed #aaa;
+}
+.look-photo-cont {
+    width:400px;
+    height:450px;
+}
+.look-photo-cont img{
+    max-width:100%;
+}
+
+.photo-desc {
+    padding: 5px 0;
+    height:20px;
+    background-color:#eee;
+    text-align:center;
+    margin-top:-30px
+}
+
+.look-clothes {
+    float:right;
+    width:200px;
+    height:450px;
+    border:1px dashed #aaa;
+}
+
+.look-rating-cont{
+    margin:20px 0;
+    border:1px dashed #aaa;
+    height:20px;
+    padding: 10px 0;
+    text-align:center;
+}
