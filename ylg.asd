@@ -11,6 +11,8 @@
                  #:postmodern)
   :serial       t
   :components   ((:file "defmodule")
+                 (:file "render")
+                 (:file "routes")
                  (:module "lib"
                           :serial t
                           :pathname "lib"
@@ -23,4 +25,5 @@
                  (:module "ily"
                           :serial t
                           :pathname "mod/ily"
-                          :components ((:file "ily")))))
+                          :components ((:file "ily")))
+                 (:file "init")))
