@@ -1,27 +1,25 @@
-;(restas:define-module #:crn
-;    (:use #:closer-mop #:cl #:iter #:alexandria #:anaphora #:postmodern)
-;  (:shadowing-import-from :closer-mop
-;                          :defclass
-;                          :defmethod
-;                          :standard-class
-;                          :ensure-generic-function
-;                          :defgeneric
-;                          :standard-generic-function
-;                          :class-name))
+(restas:define-module #:crn
+    (:use #:closer-mop #:cl #:iter #:alexandria #:anaphora #:postmodern)
+  (:shadowing-import-from :closer-mop
+                          :defclass
+                          :defmethod
+                          :standard-class
+                          :ensure-generic-function
+                          :defgeneric
+                          :standard-generic-function
+                          :class-name))
 
-;(in-package #:crn)
+(in-package #:crn)
 
-;(define-automat task "Автомат отложенного задания"
-;  ((timestamp :name)
-;   (target    :ts))
-;  (:active :paused)
-;  ((:active :paused :pause-task)
-;   (:paused :active :restore-task)))
+(define-automat task "Автомат отложенного задания"
+  ((timestamp :name)
+   (target    :ts))
+  (:active :paused)
+  ((:active :paused :pause-task)
+   (:paused :active :restore-task)))
 
 
 ;; Model
-
-(defmacro sch-task-prep())
 
 (defun tst ()
   (format t "test")

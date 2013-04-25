@@ -13,6 +13,11 @@ body {
 ol,
 ul,li {
 	list-style: none;
+	margin:0;
+	padding:0
+}
+ul{
+    margin:5px 0 0 15px;
 }
 blockquote,
 q {
@@ -89,8 +94,15 @@ a:focus {
     margin-right:50px
 }
 
+#left-sidebar-menu ul{
+
+}
+#left-sidebar-menu li ul{
+/*    margin:5px 0 0 0px;*/
+}
+
 #content {
-    float:left;
+    float:right;
     width:730px;
 }
 
@@ -156,4 +168,57 @@ a:focus {
     height:20px;
     padding: 10px 0;
     text-align:center;
+}
+
+.edit-look-link-cont{
+    text-align:center;
+    position:absolute;
+    z-index:2000;
+    display:block;
+    width:200px;
+    height:150px;
+    color:#999;
+    font-weight:bold;
+    font-size:18px;
+    margin-top:-250px;
+    padding-top:100px;
+    text-decoration:none;
+}
+.edit-look-link-cont:hover{
+    background-color:#eee
+}
+
+#iframe-cont{
+    display:none
+}
+
+#edit-look-form-cont{
+    display:none;
+/*    z-index:5000;*/
+    width:800px;
+    background-color:#fff
+}
+
+#edit-look-form-photo-wrap{
+    /*float:left;*/
+}
+#edit-look-form-clothes{
+    /*float:right;*/
+}
+#edit-look-form-photo{
+    background-color:#eee;
+    min-height:445px;
+    width:470px;
+    margin-bottom:20px;
+}
+
+#enter-form{
+    width:500px;
+    margin:0 auto;
+    padding-top:50px;
+    border:1px solid dashed;
+}
+.form-line{
+    text-align:center;
+    padding:10px 0
 }
