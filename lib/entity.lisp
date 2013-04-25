@@ -1,3 +1,25 @@
+(restas:define-module #:lib
+    (:use #:closer-mop #:cl #:iter #:alexandria #:anaphora #:postmodern)
+  (:shadowing-import-from :closer-mop
+                          :defclass
+                          :defmethod
+                          :standard-class
+                          :ensure-generic-function
+                          :defgeneric
+                          :standard-generic-function
+                          :class-name)
+  (:export :bprint
+           :err
+           :do-hash
+           :do-hash-collect
+           :append-link
+           :replace-all
+           :define-entity
+           :define-action
+           :define-automat))
+
+(in-package #:lib)
+
 ;; macro-utils
 
 (defmacro bprint (var)
@@ -131,7 +153,7 @@
                        `(defmethod trans ((obj ,name)
                                           (from-state (eql ,from-state)) (to-state (eql ,to-state))
                                           (event (eql ,event)))
-                          (prog1 (,(intern (symbol-name event)))
+                          (prog1 (,(intern (symbol-name event) *package*))
                             (setf (state obj) ,to-state)))))
               (defmethod takt ((obj ,name) new-state event)
                 (trans obj (state obj) new-state event))))))

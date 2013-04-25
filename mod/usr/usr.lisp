@@ -1,5 +1,5 @@
 (restas:define-module #:usr
-    (:use #:closer-mop #:cl #:iter #:alexandria #:anaphora #:postmodern)
+    (:use #:closer-mop #:cl #:iter #:alexandria #:anaphora #:postmodern #:lib)
   (:shadowing-import-from :closer-mop
                           :defclass
                           :defmethod
@@ -7,16 +7,19 @@
                           :ensure-generic-function
                           :defgeneric
                           :standard-generic-function
-                          :class-name))
+                          :class-name)
+  (:export :current-user))
 
 (in-package #:usr)
+
+(defparameter *current-user* nil)
 
 (define-automat user "Автомат пользователя"
   ((email        :email)
    (password     :password)
    (new-password :password))
   (:logged :unlogged :link-sended)
-  ((:logged       :unlogged     :leave)       ;; Обнулить сессию
+  ((:logged       :unlogged     :exit)       ;; Обнулить сессию
    (:unlogged     :logged       :enter)       ;; Залогиниться
    (:unlogged     :link-sended  :send-login)  ;; Забыл пароль - пошлем линк
    (:link-sended  :logged       :enter)))     ;; Залогиниться
@@ -60,7 +63,8 @@
       (setf *current-user* data)
       t)))
 
-(define-action leave ()
+(define-action exit ()
+  (setf *current-user* nil)
   t)
 
 
@@ -100,10 +104,10 @@
                        (all-accounts))))
 
 ;; Выход из системы пользователя_3 — успешно
-(assert (equal t (takt (get-account "user_3@example.tld") :unlogged :leave)))
+(assert (equal t (lib::takt (get-account "user_3@example.tld") :unlogged :exit)))
 
 ;; Выход из системы пользователя_4 — успешно
-(assert (equal t (takt (get-account "user_4@example.tld") :unlogged :leave)))
+(assert (equal t (lib::takt (get-account "user_4@example.tld") :unlogged :exit)))
 
 ;; TODO:
 ;; Отсылка пароля пользователю_4 — успешно
