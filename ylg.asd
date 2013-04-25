@@ -10,18 +10,17 @@
                  #:cl-json
                  #:postmodern)
   :serial       t
-  :components   (
-                 (:file "defmodule")
-                 (:file "lib/entity")
-                 (:file "mod/usr/usr")
-                 ;; (:static-file "templates.htm")
-                 ;; (:file "orgmode")
-                 ;; (:file "comment")
-                 ;; (:file "sape")
-                 ;; (:file "render")
-                 ;; (:file "routes")
-                 ;; (:file "init")
-                 ;; (:static-file "daemon.conf")
-                 ;; (:static-file "daemon.lisp")
-                 ;; (:static-file "daemon.sh")
+  :components   ((:file "defmodule")
+                 (:module "lib"
+                          :serial t
+                          :pathname "lib"
+                          :components ((:file "entity")))
+                 (:module "usr"
+                          :serial t
+                          :pathname "mod/usr"
+                          :components ((:file "usr")))
+                 (:module "ily"
+                          :serial t
+                          :pathname "mod/ily"
+                          :components ((:file "ily")))
                  ))

@@ -1,5 +1,5 @@
 (restas:define-module #:ily
-    (:use #:closer-mop #:cl #:iter #:alexandria #:anaphora #:postmodern)
+    (:use #:closer-mop #:cl #:iter #:alexandria #:anaphora #:postmodern #:lib)
   (:shadowing-import-from :closer-mop
                           :defclass
                           :defmethod
@@ -24,11 +24,12 @@
 
 ;; Model
 
-(defun make-look ()
-  "cоздание look-а owner-ом")
-
-(defun edit-look ()
-  "редактирование look-а owner-ом")
+(define-action edit-look (flds)
+  "редактирование look-а owner-ом"
+  ;; Проверка прав
+  ;; Проверка корректности данных
+  ;; Замена полей look-а
+  )
 
 (defun delete-look ()
   "удаление look-а owner-ом")
@@ -52,16 +53,20 @@
 
 
 (defun show-create ()
-  "ook")
+  "ook"
+  t)
 
 (defun show-edit ()
-  "ook")
+  "ook"
+  t)
 
 (defun show-look ()
-  "просмотр look-а")
+  "просмотр look-а"
+  t)
 
-(defun show-look ()
-  "review — просмотр миниатюры look-а")
+(defun show-look-preview ()
+  "review — просмотр миниатюры look-а"
+  t)
 
 (defun action-publish ()
   "ook")
@@ -75,4 +80,4 @@
 
 ;; Tests
 
-;; ...
+;; Создаем look
