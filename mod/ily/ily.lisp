@@ -80,4 +80,16 @@
 
 ;; Tests
 
+(now)
+
 ;; Создаем look
+(make-look :timestamp (get-universal-time)
+           :target '("club")
+           (goods     :goods)
+           (votes     :votes)
+           (comments  :comments))
+
+;; Редактируем look
+;; Публикуем look
+;; Показываем список look-ов
+;; Показываем конкретный look
