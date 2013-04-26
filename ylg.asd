@@ -28,6 +28,5 @@
                           :pathname "mod/ily"
                           :components ((:file "ily")
                                        (:static-file "tpl.htm")
-                                       (:file "routes")
-                                       ))
+                                       (:file "routes")))
                  (:file "init")))
