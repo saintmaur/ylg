@@ -41,9 +41,7 @@
         return this.each(function() {
             //create form
             var button = $(this);
-	    console.log(button)
             button.css('position','relative');
-	    button.css('cursor','pointer').click(function(){alert()});
             button.setData = function(data) {
                 settings.data = data;
 	    }
@@ -60,7 +58,6 @@
             input.css('height','100%');
             input.css('text-align','right');
             input.css('opacity','0');
-//	    input.css('display','none');
             input.css('z-index','999999');
 
             input.change(function(e){
