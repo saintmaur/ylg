@@ -1,5 +1,5 @@
 (restas:define-module #:crn
-    (:use #:closer-mop #:cl #:iter #:alexandria #:anaphora #:postmodern)
+    (:use #:closer-mop #:cl #:iter #:alexandria #:anaphora #:postmodern #:lib)
   (:shadowing-import-from :closer-mop
                           :defclass
                           :defmethod
@@ -44,12 +44,12 @@
 (defun err-notfound ()
   (format t "Timer is nor found"))
 
+
 ;; Tests
-
-
 
 (defun report-timer-test(name result)
   (format t "Result of ~s is ~s~%" name result))
+
 (defmacro prep-test-timers ()
   `((defvar *timers* nil)
     (dotimes (i 10)
