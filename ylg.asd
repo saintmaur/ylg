@@ -10,7 +10,10 @@
                  #:cl-json
                  #:postmodern)
   :serial       t
-  :components   ((:file "defmodule")
+  :components   ((:file "ylg")
+                 (:static-file "tpl/tpl.htm")
+                 (:file "render")
+                 (:file "routes")
                  (:module "lib"
                           :serial t
                           :pathname "lib"
@@ -23,4 +26,7 @@
                  (:module "ily"
                           :serial t
                           :pathname "mod/ily"
-                          :components ((:file "ily")))))
+                          :components ((:file "ily")
+                                       (:static-file "tpl.htm")
+                                       (:file "routes")))
+                 (:file "init")))
