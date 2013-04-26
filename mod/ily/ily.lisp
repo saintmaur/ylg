@@ -11,6 +11,8 @@
 
 (in-package #:ily)
 
+(closure-template:compile-template :common-lisp-backend (ylg:path "mod/ily/tpl.htm"))
+
 (define-automat look "Автомат look-а"
   ((timestamp :timestamp)
    (target    :target)
