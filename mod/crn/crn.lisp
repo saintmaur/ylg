@@ -11,14 +11,6 @@
 
 (in-package #:crn)
 
-(define-automat task "Автомат отложенного задания"
-  ((timestamp :name)
-   (target    :ts))
-  (:active :paused)
-  ((:active :paused :pause-task)
-   (:paused :active :restore-task)))
-
-
 ;; Model
 
 (defun tst ()
@@ -50,11 +42,7 @@
 (defun report-timer-test(name result)
   (format t "Result of ~s is ~s~%" name result))
 
-(defmacro prep-test-timers ()
-  `((defvar *timers* nil)
+(defun prep-test-timers()
+  (defvar *timers* nil)
     (dotimes (i 10)
-      (push (sch-task #'tst (* i 100)) *timers*))
-    (dolist (i 5)
-      (sch-task #'tst (* i 100)))
-
-    ))
+      (push (sch-task #'tst (* i 100)) *timers*)))
