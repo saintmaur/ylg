@@ -13,6 +13,7 @@
 
 (closure-template:compile-template :common-lisp-backend (ylg:path "mod/ily/tpl.htm"))
 
+;; (print (macroexpand-1 '
 (define-automat look "Автомат look-а"
   ((timestamp :timestamp)
    (target    :target)
@@ -22,6 +23,7 @@
   (:draft :public :archived)
   ((:draft   :public    :publish-look)
    (:public  :archived  :archive-look)))
+
 
 
 ;; View/Controller
@@ -83,9 +85,9 @@
   "публикация look-a owner-ом"
   (print 'pub))
 
-(lib::takt (get-look 1) :public :publish-look)
+(takt (get-look 1) :public :publish-look)
 
-(assert (equal :public (lib::state (get-look 1))))
+(assert (equal :public (state (get-look 1))))
 
 ;; Голосование
 ;; TODO
@@ -94,9 +96,9 @@
 (defun archive-look ()
   (print 'arch))
 
-(lib::takt (get-look 1) :archived :archive-look)
+(takt (get-look 1) :archived :archive-look)
 
-(assert (equal :archived (lib::state (get-look 1))))
+(assert (equal :archived (state (get-look 1))))
 
 ;; ;; Удаление look-а
 ;; (del-look 1)
