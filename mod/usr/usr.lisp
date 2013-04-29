@@ -68,7 +68,7 @@
   t)
 
 
-;; Tests
+;; ;; Tests
 
 ;; Регистрация пользователя_1 — успешно
 (assert (equal 'user (type-of (registration "user_1@example.tld"))))
@@ -104,10 +104,10 @@
                        (all-accounts))))
 
 ;; Выход из системы пользователя_3 — успешно
-(assert (equal t (lib::takt (get-account "user_3@example.tld") :unlogged :exit)))
+(assert (equal t (takt (get-account "user_3@example.tld") :unlogged :exit)))
 
 ;; Выход из системы пользователя_4 — успешно
-(assert (equal t (lib::takt (get-account "user_4@example.tld") :unlogged :exit)))
+(assert (equal t (takt (get-account "user_4@example.tld") :unlogged :exit)))
 
 ;; TODO:
 ;; Отсылка пароля пользователю_4 — успешно
