@@ -141,19 +141,21 @@
 
 
 (defmacro define-automat (name desc &rest tail)
+  (let ((package (symbol-package name)))
   `(progn
      (define-entity ,name ,desc
-       ,(list* '(state :state) (car tail)))
+       ,(list* `(,(intern "STATE" package) :state) (car tail)))
      ,(let ((all-states (cadr tail)))
            `(progn
               ,@(loop :for (from-state to-state event) :in (caddr tail) :collect
                    (if (or (null (find from-state all-states))
                            (null (find to-state all-states)))
                        (err (format nil "unknown state: ~A -> ~A" from-state to-state))
-                       `(defmethod trans ((obj ,name)
-                                          (from-state (eql ,from-state)) (to-state (eql ,to-state))
-                                          (event (eql ,event)))
+                       `(defmethod ,(intern "TRANS" package) ((obj ,name)
+                                                              (from-state (eql ,from-state))
+                                                              (to-state (eql ,to-state))
+                                                              (event (eql ,event)))
                           (prog1 (,(intern (symbol-name event) *package*))
-                            (setf (state obj) ,to-state)))))
-              (defmethod takt ((obj ,name) new-state event)
-                (trans obj (state obj) new-state event))))))
+                            (setf (,(intern "STATE" package) obj) ,to-state)))))
+              (defmethod ,(intern "TAKT" package) ((obj ,name) new-state event)
+                (,(intern "TRANS" package) obj (,(intern "STATE" package) obj) new-state event)))))))
