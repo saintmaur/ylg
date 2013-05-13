@@ -83,6 +83,10 @@ a:focus {
     width:100px;
 }
 
+#enter-link-cont{
+    float:right;
+}
+
 #content-wrap{
     width:1000px;
     margin:0 auto;

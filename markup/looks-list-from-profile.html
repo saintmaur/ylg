@@ -55,6 +55,10 @@ function getLook(id){
 	    $('img#look-photo').attr('src',data['photo']);
 	    $('select[name="look-whereto"] option[value="'+data['whereto']+'"]').attr("selected", "selected");
 	    $('input[name="id"]').val(data['id']);
+	    $('#clo-items-list').html("");
+	    for(i in data['items']){
+		$('#clo-items-list').append(replaceStrTmpl('<li id="item-=>id<="><span class="category">=>category<=</span><ul><li class="brand"><span class="clo-list-capt">бренд:</span>&nbsp;<a href="#">=>brand<=</a></li><li class="shop"><span class="clo-list-capt">магазин:</span>&nbsp;<a href="#">=>shop<=</a></li></ul><div class="eddel-block"><a href="#" class="edit" onclick="getCloLineForm(=>id<=)">ред.</a><br/><a href="#" onclick="delCloItem(=>id<=)" class="del">del.</a></div></li>',data['items'][i]))
+	    }
 	    $.fancybox({
 		href:"#edit-look-form-cont"
 	    });
@@ -68,7 +72,7 @@ function publishLook(id){
 	dataType:"json",
 	method:"post",
 	error:function(obj){
-	    //alert(obj.responseText);
+	    alert(obj.responseText);
 	},
 	success:function(data){
 	    $.fancybox.close();
@@ -83,7 +87,7 @@ function saveLook(id){
 	dataType:"json",
 	method:"post",
 	error:function(obj){
-	    //alert(obj.responseText);
+	    alert(obj.responseText);
 	},
 	success:function(data){
 	    $.fancybox.close();
@@ -97,7 +101,7 @@ function delCloItem(id){
 	dataType:"json",
 	method:"post",
 	error:function(obj){
-	    //alert(obj.responseText);
+	    alert(obj.responseText);
 	},
 	success:function(data){
 	    $('#item-'+id).remove();
@@ -147,6 +151,7 @@ $(function(){
 	    onComplete: function (data, status)
 	    {
 		//var obj = jQuery.parseJSON(data);
+		$("#edit-look-form-cont").find('img').attr('src',data['photo']);
 		$.fancybox({
 		    href:"#edit-look-form-cont"
 		});
@@ -333,7 +338,7 @@ $(function(){
 			      <li class="shop"><span class="clo-list-capt">магазин:</span>&nbsp;<a href="#">ZARA</a></li>
 			    </ul>
 			    <div class="eddel-block"><a href="#" class="edit" onclick="getCloLineForm(2)">ред.</a><br/><a href="#" onclick="getCloLineForm(2)" class="del">del.</a></div>
-			  </li>
+    </li>
 			  <li id="item-3">
 			    <span class="category">Кофта</span>
 			    <ul>
