@@ -26,16 +26,26 @@
 (restas:define-route main ("/")
   (tpl:root (list :left (tpl:left)
                   :right (tpl:right)
-                  :enterform (tpl:enterform))))
+                  :enterform (tpl:enterform)
+                  :auth (if (null usr:*current-user*)
+                            (tpl:authnotlogged)
+                            "..."))))
 
+(restas:define-route ajax-register ("/ajax-register" :method :post)
+  (let ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal)))
+    (let ((user (usr:registration (gethash "login" data))))
+      (if (null user)
+          "account exists"
+          (usr:password user)))))
 
 
 (restas:define-route ajax-enter ("/ajax-enter" :method :post)
   (let ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal)))
-    (if (and (equal "test" (gethash "login" data))
-             (equal "test" (gethash "pass"  data)))
-        "ok"
-        "err")))
+    (let ((login    (gethash "login" data))
+          (password (gethash "pass" data)))
+      (if (usr:enter login password)
+          "ok"
+          "err"))))
 
 
 ;; plan file pages

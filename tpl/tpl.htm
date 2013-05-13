@@ -18,7 +18,7 @@
       <div id="wrap">{\n}
         <div id="head-wrap">{\n}
 	      <div id="head">{\n}
-	        <div id="enter-link-cont"><a href="#" id="enter">войти</a></div>{\n}
+	        <div id="enter-link-cont">{$auth | noAutoescape}</div>{\n}
 	        <div id="logo">YLG Logo</div>{\n}
 	      </div>{\n}
         </div>{\n}
@@ -31,6 +31,12 @@
       {$enterform | noAutoescape} {\n}
     </body>{\n}
   </html>{\n}
+{/template}
+
+
+{template authnotlogged}
+  <a href="#" id="enter">войти</a> |
+  <a href="#" id="register">регистрация</a>
 {/template}
 
 
@@ -155,13 +161,25 @@
     <div id="enter-form"> {\n}
 	  <form action="" method="post"> {\n}
 	    <div class="form-line"> {\n}
-	      <input id="login" name="login" type="text" /> {\n}
+	      <input id="enter-login" name="login" type="text" /> {\n}
 	    </div> {\n}
 	    <div class="form-line"> {\n}
-	      <input id="pass" name="pass" type="password" /> {\n}
+	      <input id="enter-pass" name="pass" type="password" /> {\n}
 	    </div> {\n}
 	    <div class="form-line"> {\n}
-	      <input name="submit" type="button" id="submit" value="log in" /> {\n}
+	      <input name="enter-submit" type="button" id="enter-submit" value="log in" /> {\n}
+	    </div> {\n}
+	  </form> {\n}
+    </div> {\n}
+  </div> {\n}
+  <div style="display:none"> {\n}
+    <div id="register-form"> {\n}
+	  <form action="" method="post"> {\n}
+	    <div class="form-line"> {\n}
+	      <input id="register-login" name="login" type="text" /> {\n}
+	    </div> {\n}
+	    <div class="form-line"> {\n}
+	      <input name="register-submit" type="button" id="register-submit" value="register" /> {\n}
 	    </div> {\n}
 	  </form> {\n}
     </div> {\n}
