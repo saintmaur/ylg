@@ -29,7 +29,7 @@
                   :enterform (tpl:enterform)
                   :auth (if (null usr:*current-user*)
                             (tpl:authnotlogged)
-                            "..."))))
+                            (tpl:authlogged (list :username (usr:email usr:*current-user*)))))))
 
 (restas:define-route ajax-register ("/ajax-register" :method :post)
   (let ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal)))

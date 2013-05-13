@@ -8,7 +8,7 @@
                           :defgeneric
                           :standard-generic-function
                           :class-name)
-  (:export :*current-user* :registration :enter :password))
+  (:export :*current-user* :registration :enter :email :password))
 
 (in-package #:usr)
 
