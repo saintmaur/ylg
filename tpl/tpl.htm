@@ -1,37 +1,35 @@
-// -*- mode: closure-template-html; fill-column: 140 -*-
+// -*- mode: closure-template-html; fill-column: 160 -*-
 
 {namespace tpl}
 
 {template root}
-
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-   <title></title>
-    <meta http-equiv="content-type" content="text/html;charset=utf-8"
-    />
-    <link rel="stylesheet" type="text/css" href="/css/style.css"/>
-    <script type="text/javascript" src="/js/jquery.js"></script>
-    <script type="text/javascript">
-
-    </script>
-  </head>
-  <body>
-    <div id="wrap">
-      <div id="head-wrap">
-        <div id="head">
-            <div id="logo">YLG Logo</div>
+  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+      <title></title>
+      <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+      <link rel="stylesheet" type="text/css" href="/css/style.css"/>
+      <script type="text/javascript" src="/js/jquery.js"></script>
+      <script type="text/javascript">
+      </script>
+    </head>
+    <body>
+      <div id="wrap">
+        <div id="head-wrap">
+          <div id="head">
+            <div id="logo">
+              YLG Logo |
+              <a href="#">sign in</a>
             </div>
+          </div>
+        </div>
+        <div id="content-wrap">
+          {$left  | noAutoescape}
+          {$right | noAutoescape}
+          <div style="clear:both"></div>
+        </div>
       </div>
-      <div id="content-wrap">
-        {$left  | noAutoescape}
-        {$right | noAutoescape}
-        <div style="clear:both"></div>
-      </div>
-    </div>
-  </body>
+    </body>
   </html>
 
 

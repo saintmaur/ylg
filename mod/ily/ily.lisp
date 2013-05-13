@@ -13,7 +13,7 @@
 
 (closure-template:compile-template :common-lisp-backend (ylg:path "mod/ily/tpl.htm"))
 
-;; (print (macroexpand-1 '
+
 (define-automat look "Автомат look-а"
   ((timestamp :timestamp)
    (target    :target)

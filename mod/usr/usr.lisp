@@ -68,7 +68,7 @@
   t)
 
 
-;; ;; Tests
+;; Tests
 
 ;; Регистрация пользователя_1 — успешно
 (assert (equal 'user (type-of (registration "user_1@example.tld"))))
