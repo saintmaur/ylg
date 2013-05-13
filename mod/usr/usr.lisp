@@ -8,7 +8,7 @@
                           :defgeneric
                           :standard-generic-function
                           :class-name)
-  (:export :*current-user* :registration :enter :email :password))
+  (:export :*current-user* :registration :enter :exit :send-login :email :password))
 
 (in-package #:usr)
 
@@ -55,7 +55,6 @@
 
 (defun enter (login password)
   (let ((account (get-account login)))
-    ;; (lib:err account)
     (when (null account)
       (return-from enter nil))
     (when
@@ -67,10 +66,16 @@
       t)))
 
 
-(define-action exit ()
+(defun exit ()
   (setf *current-user* nil)
   t)
 
+
+(defun send-login (login)
+  (let ((account (get-account login)))
+    (if (null account)
+        (return-from enter nil)
+        (password account))))
 
 ;; Tests
 

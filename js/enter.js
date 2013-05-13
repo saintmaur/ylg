@@ -18,7 +18,26 @@ $(document).ready(function(){
       method:"post",
       error:function(obj){
         alert(obj.responseText);
-    },
+      },
+      success:function(data){
+        window.location.href=data['location'];
+      }
+    });
+    return false;
+  });
+  // send-login dialog btn
+  $("#send-login").click(function(){
+    $.ajax({
+      url:"/ajax-send-login",
+      dataType:"json",
+      data: {
+        login : $("#enter-login").val(),
+      },
+      type: "POST",
+      method:"post",
+      error:function(obj){
+        alert(obj.responseText);
+      },
       success:function(data){
         window.location.href=data['location'];
       }
@@ -42,12 +61,28 @@ $(document).ready(function(){
       method:"post",
       error:function(obj){
         alert(obj.responseText);
-    },
+      },
       success:function(data){
         window.location.href=data['location'];
       }
     });
     return false;
   });
-  // ...
+  // leave btn
+  $("#leave").click(function(){
+    $.ajax({
+      url:"/ajax-leave",
+      dataType:"json",
+      data: "leave",
+      type: "POST",
+      method:"post",
+      error:function(obj){
+        alert(obj.responseText);
+      },
+      success:function(data){
+        window.location.href=data['location'];
+      }
+    });
+    return false;
+  });
 });

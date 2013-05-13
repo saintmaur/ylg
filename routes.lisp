@@ -36,7 +36,9 @@
     (let ((user (usr:registration (gethash "login" data))))
       (if (null user)
           "account exists"
-          (usr:password user)))))
+          (progn
+            (usr:enter (usr:email user) (usr:password user))
+            (json:encode-json-to-string (list (cons "location" "/"))))))))
 
 
 (restas:define-route ajax-enter ("/ajax-enter" :method :post)
@@ -44,9 +46,18 @@
     (let ((login    (gethash "login" data))
           (password (gethash "pass" data)))
       (if (usr:enter login password)
-          "ok"
+          (json:encode-json-to-string (list (cons "location" "/")))
           "err"))))
 
+(restas:define-route ajax-send-login ("/ajax-send-login" :method :post)
+  (let ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal)))
+    (let ((login    (gethash "login" data)))
+      (usr:send-login login))))
+
+
+(restas:define-route ajax-exit ("/ajax-exit" :method :post)
+  (usr:exit)
+  (json:encode-json-to-string (list (cons "location" "/"))))
 
 ;; plan file pages
 
