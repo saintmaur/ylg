@@ -24,9 +24,13 @@
 ;; main
 
 (restas:define-route main ("/")
-  (tpl:root2 (list :left (tpl:left)
+  (tpl:root (list :left (tpl:left)
                   :right (tpl:right)
                   :enterform (tpl:enterform))))
+
+(restas:define-route ajax-enter ("/ajax-enter")
+  "wefewfewf")
+
 
 
 ;; plan file pages

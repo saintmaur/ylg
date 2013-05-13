@@ -6,7 +6,7 @@ $("#enter").click(function(){
 });
 $("#submit").click(function(){
     $.ajax({
-    url:"#",
+    url:"/ajax-enter",
     dataType:"json",
     method:"post",
     error:function(obj){
