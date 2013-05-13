@@ -28,9 +28,14 @@
                   :right (tpl:right)
                   :enterform (tpl:enterform))))
 
-(restas:define-route ajax-enter ("/ajax-enter")
-  "wefewfewf")
 
+
+(restas:define-route ajax-enter ("/ajax-enter" :method :post)
+  (let ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal)))
+    (if (and (equal "test" (gethash "login" data))
+             (equal "test" (gethash "pass"  data)))
+        "ok"
+        "err")))
 
 
 ;; plan file pages

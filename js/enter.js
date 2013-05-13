@@ -1,21 +1,26 @@
 $(document).ready(function(){
-$("#enter").click(function(){
+  $("#enter").click(function(){
     $.fancybox({
-    href:"#enter-form"
+      href:"#enter-form"
     })
-});
-$("#submit").click(function(){
+  });
+  $("#submit").click(function(){
     $.ajax({
-    url:"/ajax-enter",
-    dataType:"json",
-    method:"post",
-    error:function(obj){
+      url:"/ajax-enter",
+      dataType:"json",
+      data: {
+        login : $("#login").val(),
+        pass  : $("#pass").val()
+      },
+      type: "POST",
+      method:"post",
+      error:function(obj){
         alert(obj.responseText);
     },
-    success:function(data){
+      success:function(data){
         window.location.href=data['location'];
-    }
+      }
     });
     return false;
-});
+  });
 });
