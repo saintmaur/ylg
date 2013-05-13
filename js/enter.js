@@ -68,12 +68,12 @@ $(document).ready(function(){
     });
     return false;
   });
-  // leave btn
-  $("#leave").click(function(){
+  // logoff btn
+  $("#logoff").click(function(){
     $.ajax({
-      url:"/ajax-leave",
+      url:"/ajax-logoff",
       dataType:"json",
-      data: "leave",
+      data: "logoff",
       type: "POST",
       method:"post",
       error:function(obj){

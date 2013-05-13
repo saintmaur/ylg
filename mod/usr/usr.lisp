@@ -8,7 +8,7 @@
                           :defgeneric
                           :standard-generic-function
                           :class-name)
-  (:export :*current-user* :registration :enter :exit :send-login :email :password))
+  (:export :*current-user* :registration :enter :logoff :send-login :email :password))
 
 (in-package #:usr)
 
@@ -19,7 +19,7 @@
    (password     :password)
    (new-password :password))
   (:logged :unlogged :link-sended)
-  ((:logged       :unlogged     :exit)       ;; Обнулить сессию
+  ((:logged       :unlogged     :logoff)       ;; Обнулить сессию
    (:unlogged     :logged       :enter)       ;; Залогиниться
    (:unlogged     :link-sended  :send-login)  ;; Забыл пароль - пошлем линк
    (:link-sended  :logged       :enter)))     ;; Залогиниться
@@ -66,7 +66,7 @@
       t)))
 
 
-(defun exit ()
+(defun logoff ()
   (setf *current-user* nil)
   t)
 
@@ -113,10 +113,10 @@
                        (all-accounts))))
 
 ;; Выход из системы пользователя_3 — успешно
-(assert (equal t (takt (get-account "user_3@example.tld") :unlogged :exit)))
+(assert (equal t (takt (get-account "user_3@example.tld") :unlogged :logoff)))
 
 ;; Выход из системы пользователя_4 — успешно
-(assert (equal t (takt (get-account "user_4@example.tld") :unlogged :exit)))
+(assert (equal t (takt (get-account "user_4@example.tld") :unlogged :logoff)))
 
 ;; TODO:
 ;; Отсылка пароля пользователю_4 — успешно

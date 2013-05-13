@@ -55,8 +55,8 @@
       (usr:send-login login))))
 
 
-(restas:define-route ajax-exit ("/ajax-exit" :method :post)
-  (usr:exit)
+(restas:define-route ajax-logoff ("/ajax-logoff" :method :post)
+  (usr:logoff)
   (json:encode-json-to-string (list (cons "location" "/"))))
 
 ;; plan file pages
