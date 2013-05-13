@@ -74,7 +74,7 @@
 (defun send-login (login)
   (let ((account (get-account login)))
     (if (null account)
-        (return-from enter nil)
+        nil
         (password account))))
 
 ;; Tests
