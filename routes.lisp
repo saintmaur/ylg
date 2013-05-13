@@ -24,7 +24,9 @@
 ;; main
 
 (restas:define-route main ("/")
-  (tpl:root (list :left (tpl:left) :right (tpl:right))))
+  (tpl:root2 (list :left (tpl:left)
+                  :right (tpl:right)
+                  :enterform (tpl:enterform))))
 
 
 ;; plan file pages

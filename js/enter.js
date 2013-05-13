@@ -1,0 +1,21 @@
+$(document).ready(function(){
+$("#enter").click(function(){
+    $.fancybox({
+    href:"#enter-form"
+    })
+});
+$("#submit").click(function(){
+    $.ajax({
+    url:"#",
+    dataType:"json",
+    method:"post",
+    error:function(obj){
+        alert(obj.responseText);
+    },
+    success:function(data){
+        window.location.href=data['location'];
+    }
+    });
+    return false;
+});
+});
