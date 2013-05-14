@@ -39,13 +39,13 @@
 
 
 {template authnotlogged}
-  <a href="#" id="enter">войти</a> |
-  <a href="#" id="register">регистрация</a>
+  <a href="#" id="btn-login">войти</a> |
+  <a href="#" id="btn-register">регистрация</a>
 {/template}
 
 {template authlogged}
   <a href="#" id="account-page">{$username}</a> |
-  <a href="#" id="logoff">выйти</a>
+  <a href="#" id="btn-logoff">выйти</a>
 {/template}
 
 
@@ -168,31 +168,31 @@
 
 {template enterform}
   <div style="display:none"> {\n}
-    <div id="enter-form"> {\n}
+    <div id="form-login"> {\n}
 	  <form action="" method="post"> {\n}
 	    <div class="form-line"> {\n}
-	      <input id="enter-login" name="login" type="text" /> {\n}
+	      <input id="fld-form-login--login" name="fld-form-login--login" type="text" /> {\n}
 	    </div> {\n}
 	    <div class="form-line"> {\n}
-	      <input id="enter-pass" name="pass" type="password" /> {\n}
+	      <input id="fld-form-login--password" name="fld-form-login--password" type="password" /> {\n}
 	    </div> {\n}
 	    <div class="form-line"> {\n}
-	      <input name="enter-submit" type="button" id="enter-submit" value="log in" /> {\n}
+	      <input id="btn-form-login-submit" name="btn-form-login-submit" type="button" value="log in" /> {\n}
 	    </div> {\n}
 	    <div class="form-line"> {\n}
-	      <input name="send-login" type="button" id="send-login" value="забыл пароль" /> {\n}
+	      <input id="btn-send-login" name="btn-send-login" type="button" value="забыл пароль" /> {\n}
 	    </div> {\n}
 	  </form> {\n}
     </div> {\n}
   </div> {\n}
   <div style="display:none"> {\n}
-    <div id="register-form"> {\n}
+    <div id="form-register"> {\n}
 	  <form action="" method="post"> {\n}
 	    <div class="form-line"> {\n}
-	      <input id="register-login" name="login" type="text" /> {\n}
+	      <input id="fld-form-register--login" name="fld-form-register--login" type="text" /> {\n}
 	    </div> {\n}
 	    <div class="form-line"> {\n}
-	      <input name="register-submit" type="button" id="register-submit" value="register" /> {\n}
+	      <input id="btn-form-register-submit" name="btn-form-register-submit" type="button" value="register" /> {\n}
 	    </div> {\n}
 	  </form> {\n}
     </div> {\n}

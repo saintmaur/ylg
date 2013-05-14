@@ -1,43 +1,42 @@
 $(document).ready(function(){
-  // enter btn
-  $("#enter").click(function(){
+  //
+  $("#btn-login").click(function(){
     $.fancybox({
-      href:"#enter-form"
+      href:"#form-login"
     })
   });
-  // submit dialog btn
-  $("#enter-submit").click(function(){
+  //
+  $("#btn-form-login-submit").click(function(){
     $.ajax({
-      url:"/ajax-enter",
+      url:"/action-login",
       dataType:"json",
       data: {
-        login : $("#enter-login").val(),
-        pass  : $("#enter-pass").val()
+        login     : $("#fld-form-login--login").val(),
+        password  : $("#fld-form-login--password").val()
       },
       type: "POST",
       method:"post",
       error:function(obj){
-	  getAlert(obj.responseText,"error");
+	    getAlert(obj.responseText,"error");
       },
       success:function(data){
-	  if(data.passed){
+	    if(data.passed){
 	      getAlert(data.msg,"success");
 	      window.location.href=data.location;
-	  } else {
+	    } else {
 	      getAlert(data.msg,"error");
-	  }
-
+	    }
       }
     });
     return false;
   });
-  // send-login dialog btn
-  $("#send-login").click(function(){
+  //
+  $("#btn-send-login").click(function(){
     $.ajax({
-      url:"/ajax-send-login",
+      url:"/action-send-login",
       dataType:"json",
       data: {
-        login : $("#enter-login").val(),
+        login : $("#fld-form-login--login").val(),
       },
       type: "POST",
       method:"post",
@@ -50,18 +49,18 @@ $(document).ready(function(){
     });
     return false;
   });
-  // register btn
-  $("#register").click(function(){
+  //
+  $("#btn-register").click(function(){
     $.fancybox({
-      href:"#register-form"
+      href:"#form-register"
     })
   });
-  $("#register-submit").click(function(){
+  $("#btn-form-register-submit").click(function(){
     $.ajax({
-      url:"/ajax-register",
+      url:"/action-register",
       dataType:"json",
       data: {
-        login : $("#register-login").val()
+        login : $("#fld-form-register--login").val()
       },
       type: "POST",
       method:"post",
@@ -74,10 +73,10 @@ $(document).ready(function(){
     });
     return false;
   });
-  // logoff btn
-  $("#logoff").click(function(){
+  //
+  $("#btn-logoff").click(function(){
     $.ajax({
-      url:"/ajax-logoff",
+      url:"/action-logoff",
       dataType:"json",
       data: "logoff",
       type: "POST",

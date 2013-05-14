@@ -19,7 +19,7 @@
    (password     :password)
    (new-password :password))
   (:logged :unlogged :link-sended)
-  ((:logged       :unlogged     :logoff)       ;; Обнулить сессию
+  ((:logged       :unlogged     :logoff)      ;; Обнулить сессию
    (:unlogged     :logged       :enter)       ;; Залогиниться
    (:unlogged     :link-sended  :send-login)  ;; Забыл пароль - пошлем линк
    (:link-sended  :logged       :enter)))     ;; Залогиниться
@@ -55,15 +55,21 @@
 
 (defun enter (login password)
   (let ((account (get-account login)))
-    (when (null account)
-      (return-from enter nil))
-    (when
-        (or (string= password (password account))
-            (string= password (new-password account)))
-      (setf (password account) password)
-      (setf (new-password account) "")
-      (setf *current-user* account)
-      t)))
+    (if (null account)
+        nil
+        (when
+            (or (string= password (password account))
+                (string= password (new-password account)))
+          (setf (password account) password)
+          (setf (new-password account) "")
+          (setf *current-user* account)
+          t))))
+
+(mapcar #'(lambda (x)
+            (email (car x)))
+        (all-accounts))
+
+(password (get-account "m"))
 
 
 (defun logoff ()

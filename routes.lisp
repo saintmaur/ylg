@@ -31,7 +31,7 @@
                             (tpl:authnotlogged)
                             (tpl:authlogged (list :username (usr:email usr:*current-user*)))))))
 
-(restas:define-route ajax-register ("/ajax-register" :method :post)
+(restas:define-route action-register ("/action-register" :method :post)
   (let ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal)))
     (let ((user (usr:registration (gethash "login" data))))
       (if (null user)
@@ -41,21 +41,26 @@
             (json:encode-json-to-string (list (cons "location" "/"))))))))
 
 
-(restas:define-route ajax-enter ("/ajax-enter" :method :post)
+(restas:define-route action-login ("/action-login" :method :post)
   (let ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal)))
     (let ((login    (gethash "login" data))
-          (password (gethash "pass" data)))
+          (password (gethash "password" data)))
       (if (usr:enter login password)
-          (json:encode-json-to-string (list (cons "location" "/")))
-          "err"))))
+          ;; "ok"
+          (json:encode-json-to-string (list
+                                       (cons "passed" "true")
+                                       (cons "location" "/")
+                                       (cons "msg" "Добро пожаловать")))
+          "Account not found"))))
 
-(restas:define-route ajax-send-login ("/ajax-send-login" :method :post)
+
+(restas:define-route action-send-login ("/action-send-login" :method :post)
   (let ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal)))
     (let ((login    (gethash "login" data)))
       (usr:send-login login))))
 
 
-(restas:define-route ajax-logoff ("/ajax-logoff" :method :post)
+(restas:define-route action-logoff ("/action-logoff" :method :post)
   (usr:logoff)
   (json:encode-json-to-string (list (cons "location" "/"))))
 
