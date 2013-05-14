@@ -75,6 +75,12 @@
 
 {template right}
   <div id="content"> {\n}
+
+    <form action="/file" method="POST" enctype="multipart/form-data">{\n}
+	  <input type="file" name="file" value="" />{\n}
+      <input type="submit" />{\n}
+    </form>
+
     <div class="floated-items"> {\n}
       <div class="floated-item"> {\n}
         <div class="item-img"> {\n}

@@ -64,6 +64,13 @@
   (usr:logoff)
   (json:encode-json-to-string (list (cons "location" "/"))))
 
+
+(restas:define-route file ("/file" :method :post)
+  (awhen (hunchentoot:post-parameter "file")
+    (destructuring-bind (pathname filename format)
+        it
+      (alexandria:read-file-into-string pathname))))
+
 ;; plan file pages
 
 (defmacro def/route (name param &body body)
