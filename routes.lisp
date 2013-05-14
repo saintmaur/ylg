@@ -24,8 +24,40 @@
 ;; main
 
 (restas:define-route main ("/")
-  (tpl:root (list :left (tpl:left) :right (tpl:right))))
+  (tpl:root (list :left (tpl:left)
+                  :right (tpl:right)
+                  :enterform (tpl:enterform)
+                  :auth (if (null usr:*current-user*)
+                            (tpl:authnotlogged)
+                            (tpl:authlogged (list :username (usr:email usr:*current-user*)))))))
 
+(restas:define-route ajax-register ("/ajax-register" :method :post)
+  (let ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal)))
+    (let ((user (usr:registration (gethash "login" data))))
+      (if (null user)
+          "account exists"
+          (progn
+            (usr:enter (usr:email user) (usr:password user))
+            (json:encode-json-to-string (list (cons "location" "/"))))))))
+
+
+(restas:define-route ajax-enter ("/ajax-enter" :method :post)
+  (let ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal)))
+    (let ((login    (gethash "login" data))
+          (password (gethash "pass" data)))
+      (if (usr:enter login password)
+          (json:encode-json-to-string (list (cons "location" "/")))
+          "err"))))
+
+(restas:define-route ajax-send-login ("/ajax-send-login" :method :post)
+  (let ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal)))
+    (let ((login    (gethash "login" data)))
+      (usr:send-login login))))
+
+
+(restas:define-route ajax-logoff ("/ajax-logoff" :method :post)
+  (usr:logoff)
+  (json:encode-json-to-string (list (cons "location" "/"))))
 
 ;; plan file pages
 

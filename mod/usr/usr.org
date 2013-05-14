@@ -40,16 +40,16 @@ Description:
 Examples:
 
 (registration "inbox@example.com") => #<ACCOUNT>
-* leave
+* logoff
 Syntax:
 
-leave => T
+logoff => T
 Description:
 
 Сбрасывает current-user и пользовательскую сессию.
 Examples:
 
-(leave) => T
+(logoff) => T
 * get-account
 Syntax:
 
