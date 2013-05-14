@@ -17,10 +17,16 @@ $(document).ready(function(){
       type: "POST",
       method:"post",
       error:function(obj){
-        alert(obj.responseText);
+	  getAlert(obj.responseText,"error");
       },
       success:function(data){
-        window.location.href=data['location'];
+	  if(data.passed){
+	      getAlert(data.msg,"success");
+	      window.location.href=data.location;
+	  } else {
+	      getAlert(data.msg,"error");
+	  }
+
       }
     });
     return false;
@@ -39,7 +45,7 @@ $(document).ready(function(){
         alert(obj.responseText);
       },
       success:function(data){
-        window.location.href=data['location'];
+        window.location.href=data.location;
       }
     });
     return false;
@@ -63,7 +69,7 @@ $(document).ready(function(){
         alert(obj.responseText);
       },
       success:function(data){
-        window.location.href=data['location'];
+        window.location.href=data.location;
       }
     });
     return false;
@@ -80,7 +86,7 @@ $(document).ready(function(){
         alert(obj.responseText);
       },
       success:function(data){
-        window.location.href=data['location'];
+        window.location.href=data.location;
       }
     });
     return false;
