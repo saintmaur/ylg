@@ -12,8 +12,6 @@
   :serial       t
   :components   ((:file "ylg")
                  (:static-file "tpl/tpl.htm")
-                 (:file "render")
-                 (:file "routes")
                  (:module "lib"
                           :serial t
                           :pathname "lib"
@@ -29,4 +27,6 @@
                           :components ((:file "ily")
                                        (:static-file "tpl.htm")
                                        (:file "routes")))
+                 (:file "render")
+                 (:file "routes")
                  (:file "init")))

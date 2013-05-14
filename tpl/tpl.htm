@@ -3,150 +3,194 @@
 {namespace tpl}
 
 {template root}
-  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-  <html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-      <title></title>
-      <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-      <link rel="stylesheet" type="text/css" href="/css/style.css"/>
-      <script type="text/javascript" src="/js/jquery.js"></script>
-      <script type="text/javascript">
-      </script>
-    </head>
-    <body>
-      <div id="wrap">
-        <div id="head-wrap">
-          <div id="head">
-            <div id="logo">
-              YLG Logo |
-              <a href="#">sign in</a>
-            </div>
-          </div>
-        </div>
-        <div id="content-wrap">
-          {$left  | noAutoescape}
-          {$right | noAutoescape}
-          <div style="clear:both"></div>
-        </div>
-      </div>
-    </body>
-  </html>
-
-
+  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">{\n}
+  <html xmlns="http://www.w3.org/1999/xhtml">{\n}
+    <head>{\n}
+      <title></title>{\n}
+      <meta http-equiv="content-type" content="text/html;charset=utf-8" />{\n}
+      <link rel="stylesheet" type="text/css" href="/css/style.css"/>{\n}
+      <link rel="stylesheet" type="text/css" href="/js/fancybox/jquery.fancybox-1.3.4.css"/>{\n}
+      <script type="text/javascript" src="/js/jquery-1.4.3.min.js"></script>{\n}
+      <script type="text/javascript" src="/js/fancybox/jquery.fancybox-1.3.4.pack.js"></script>{\n}
+      <script type="text/javascript" src="/js/enter.js"></script>{\n}
+    </head>{\n}
+    <body>{\n}
+      <div id="wrap">{\n}
+        <div id="head-wrap">{\n}
+	      <div id="head">{\n}
+	        <div id="enter-link-cont">{$auth | noAutoescape}</div>{\n}
+	        <div id="logo">YLG Logo</div>{\n}
+	      </div>{\n}
+        </div>{\n}
+        <div id="content-wrap">{\n}
+          {$left  | noAutoescape} {\n}
+          {$right | noAutoescape} {\n}
+          <div style="clear:both"></div> {\n}
+        </div>{\n}
+      </div>{\n}
+      {$enterform | noAutoescape} {\n}
+    </body>{\n}
+  </html>{\n}
 {/template}
 
 
+{template authnotlogged}
+  <a href="#" id="enter">войти</a> |
+  <a href="#" id="register">регистрация</a>
+{/template}
+
+{template authlogged}
+  <a href="#" id="account-page">{$username}</a> |
+  <a href="#" id="logoff">выйти</a>
+{/template}
+
+
+
 {template left}
-  <div id="left-sidebar">
-    <div id="left-sidebar-menu">
-      <ul>
-        <li>menupoint</li>
-        <li>menupoint</li>
-        <li>menupoint
-          <ul>
-            <li>submenupoint</li>
-            <li>submenupoint</li>
-            <li>submenupoint</li>
-            <li>submenupoint</li>
-          </ul>
-        </li>
-        <li>menupoint</li>
-        <li>menupoint</li>
-        <li>menupoint</li>
-      </ul>
-    </div>
-  </div>
+  <div id="left-sidebar"> {\n}
+    <div id="left-sidebar-menu"> {\n}
+      <ul> {\n}
+        <li>menupoint</li> {\n}
+        <li>menupoint</li> {\n}
+        <li>menupoint {\n}
+          <ul> {\n}
+            <li>submenupoint</li> {\n}
+            <li>submenupoint</li> {\n}
+            <li>submenupoint</li> {\n}
+            <li>submenupoint</li> {\n}
+          </ul> {\n}
+        </li> {\n}
+        <li>menupoint</li> {\n}
+        <li>menupoint</li> {\n}
+        <li>menupoint</li> {\n}
+      </ul> {\n}
+    </div> {\n}
+  </div> {\n}
 {/template}
 
 
 {template right}
-  <div id="content">
-    <div class="floated-items">
-      <div class="floated-item">
-        <div class="item-img">
-          <img src="" width="200" height="250"/>
-        </div>
-        <div class="item-data">
-          some data
-        </div>
-      </div>
-      <div class="floated-item">
-        <div class="item-img">
-          <img src="" width="200" height="250"/>
-        </div>
-        <div class="item-data">
-          some data
-        </div>
-      </div>
-      <div class="floated-item">
-        <div class="item-img">
-          <img src="" width="200"
-               height="250"/>
-        </div>
-        <div class="item-data">
-          some data
-        </div>
-      </div>
-      <div class="floated-item">
-        <div class="item-img">
-          <img src="" width="200"
-               height="250"/>
-        </div>
-        <div class="item-data">
-          some data
-        </div>
-      </div>
-      <div class="floated-item">
-        <div class="item-img">
-          <img src="" width="200"
-               height="250"/>
-        </div>
-        <div class="item-data">
-          some data
-        </div>
-      </div>
-      <div class="floated-item">
-        <div class="item-img">
-          <img src=""
-               width="200"
-               height="250"/>
-        </div>
-        <div class="item-data">
-          some data
-        </div>
-      </div>
-      <div class="floated-item">
-        <div class="item-img">
-          <img src=""
-               width="200"
-               height="250"/>
-        </div>
-        <div class="item-data">
-          some data
-        </div>
-      </div>
-      <div class="floated-item">
-        <div class="item-img">
-          <img src=""
-               width="200"
-               height="250"/>
-        </div>
-        <div class="item-data">
-          some
-          data
-        </div>
-      </div>
-      <div class="floated-item">
-        <div class="item-img">
-          <img src=""
-               width="200"
-               height="250"/>
-        </div>
-        <div class="item-data">
-          some
-          data
-        </div>
-      </div>
-    </div>
-  </div>
+  <div id="content"> {\n}
+    <div class="floated-items"> {\n}
+      <div class="floated-item"> {\n}
+        <div class="item-img"> {\n}
+          <img src="" width="200" height="250"/> {\n}
+        </div> {\n}
+        <div class="item-data"> {\n}
+          some data {\n}
+        </div> {\n}
+      </div> {\n}
+      <div class="floated-item"> {\n}
+        <div class="item-img"> {\n}
+          <img src="" width="200" height="250"/> {\n}
+        </div> {\n}
+        <div class="item-data"> {\n}
+          some data {\n}
+        </div> {\n}
+      </div> {\n}
+      <div class="floated-item"> {\n}
+        <div class="item-img"> {\n}
+          <img src="" width="200" {\n}
+               height="250"/> {\n}
+        </div> {\n}
+        <div class="item-data"> {\n}
+          some data {\n}
+        </div> {\n}
+      </div> {\n}
+      <div class="floated-item"> {\n}
+        <div class="item-img"> {\n}
+          <img src="" width="200" {\n}
+               height="250"/> {\n}
+        </div> {\n}
+        <div class="item-data"> {\n}
+          some data {\n}
+        </div> {\n}
+      </div> {\n}
+      <div class="floated-item"> {\n}
+        <div class="item-img"> {\n}
+          <img src="" width="200" {\n}
+               height="250"/> {\n}
+        </div> {\n}
+        <div class="item-data"> {\n}
+          some data {\n}
+        </div> {\n}
+      </div> {\n}
+      <div class="floated-item"> {\n}
+        <div class="item-img"> {\n}
+          <img src="" {\n}
+               width="200" {\n}
+               height="250"/> {\n}
+        </div> {\n}
+        <div class="item-data"> {\n}
+          some data {\n}
+        </div> {\n}
+      </div> {\n}
+      <div class="floated-item"> {\n}
+        <div class="item-img"> {\n}
+          <img src="" {\n}
+               width="200" {\n}
+               height="250"/> {\n}
+        </div> {\n}
+        <div class="item-data"> {\n}
+          some data {\n}
+        </div> {\n}
+      </div> {\n}
+      <div class="floated-item"> {\n}
+        <div class="item-img"> {\n}
+          <img src="" {\n}
+               width="200" {\n}
+               height="250"/> {\n}
+        </div> {\n}
+        <div class="item-data"> {\n}
+          some {\n}
+          data {\n}
+        </div> {\n}
+      </div> {\n}
+      <div class="floated-item"> {\n}
+        <div class="item-img"> {\n}
+          <img src="" {\n}
+               width="200" {\n}
+               height="250"/> {\n}
+        </div> {\n}
+        <div class="item-data"> {\n}
+          some {\n}
+          data {\n}
+        </div> {\n}
+      </div> {\n}
+    </div> {\n}
+  </div> {\n}
+{/template}
+
+
+{template enterform}
+  <div style="display:none"> {\n}
+    <div id="enter-form"> {\n}
+	  <form action="" method="post"> {\n}
+	    <div class="form-line"> {\n}
+	      <input id="enter-login" name="login" type="text" /> {\n}
+	    </div> {\n}
+	    <div class="form-line"> {\n}
+	      <input id="enter-pass" name="pass" type="password" /> {\n}
+	    </div> {\n}
+	    <div class="form-line"> {\n}
+	      <input name="enter-submit" type="button" id="enter-submit" value="log in" /> {\n}
+	    </div> {\n}
+	    <div class="form-line"> {\n}
+	      <input name="send-login" type="button" id="send-login" value="забыл пароль" /> {\n}
+	    </div> {\n}
+	  </form> {\n}
+    </div> {\n}
+  </div> {\n}
+  <div style="display:none"> {\n}
+    <div id="register-form"> {\n}
+	  <form action="" method="post"> {\n}
+	    <div class="form-line"> {\n}
+	      <input id="register-login" name="login" type="text" /> {\n}
+	    </div> {\n}
+	    <div class="form-line"> {\n}
+	      <input name="register-submit" type="button" id="register-submit" value="register" /> {\n}
+	    </div> {\n}
+	  </form> {\n}
+    </div> {\n}
+  </div> {\n}
 {/template}

@@ -8,7 +8,7 @@
                           :defgeneric
                           :standard-generic-function
                           :class-name)
-  (:export :current-user))
+  (:export :*current-user* :registration :enter :logoff :send-login :email :password))
 
 (in-package #:usr)
 
@@ -19,7 +19,7 @@
    (password     :password)
    (new-password :password))
   (:logged :unlogged :link-sended)
-  ((:logged       :unlogged     :exit)       ;; Обнулить сессию
+  ((:logged       :unlogged     :logoff)       ;; Обнулить сессию
    (:unlogged     :logged       :enter)       ;; Залогиниться
    (:unlogged     :link-sended  :send-login)  ;; Забыл пароль - пошлем линк
    (:link-sended  :logged       :enter)))     ;; Залогиниться
@@ -52,21 +52,30 @@
 (defun all-accounts ()
   (all-user))
 
-(define-action enter (email password)
-  (let ((data (get-account email)))
-    (when (null data)
+
+(defun enter (login password)
+  (let ((account (get-account login)))
+    (when (null account)
       (return-from enter nil))
-    (when (or (string= password (password data))
-              (string= password (new-password data)))
-      (setf (password data) password)
-      (setf (new-password data) "")
-      (setf *current-user* data)
+    (when
+        (or (string= password (password account))
+            (string= password (new-password account)))
+      (setf (password account) password)
+      (setf (new-password account) "")
+      (setf *current-user* account)
       t)))
 
-(define-action exit ()
+
+(defun logoff ()
   (setf *current-user* nil)
   t)
 
+
+(defun send-login (login)
+  (let ((account (get-account login)))
+    (if (null account)
+        nil
+        (password account))))
 
 ;; Tests
 
@@ -104,10 +113,10 @@
                        (all-accounts))))
 
 ;; Выход из системы пользователя_3 — успешно
-(assert (equal t (takt (get-account "user_3@example.tld") :unlogged :exit)))
+(assert (equal t (takt (get-account "user_3@example.tld") :unlogged :logoff)))
 
 ;; Выход из системы пользователя_4 — успешно
-(assert (equal t (takt (get-account "user_4@example.tld") :unlogged :exit)))
+(assert (equal t (takt (get-account "user_4@example.tld") :unlogged :logoff)))
 
 ;; TODO:
 ;; Отсылка пароля пользователю_4 — успешно
