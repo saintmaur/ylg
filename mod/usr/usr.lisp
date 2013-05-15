@@ -65,12 +65,6 @@
           (setf *current-user* account)
           t))))
 
-(mapcar #'(lambda (x)
-            (email (car x)))
-        (all-accounts))
-
-(password (get-account "m"))
-
 
 (defun logoff ()
   (setf *current-user* nil)

@@ -21,6 +21,10 @@
                           :serial t
                           :pathname "mod/usr"
                           :components ((:file "usr")))
+                 (:module "pht"
+                          :serial t
+                          :pathname "mod/pht"
+                          :components ((:file "pht")))
                  (:module "ily"
                           :serial t
                           :pathname "mod/ily"

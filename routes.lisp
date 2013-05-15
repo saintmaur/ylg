@@ -69,7 +69,11 @@
   (awhen (hunchentoot:post-parameter "file")
     (destructuring-bind (pathname filename format)
         it
-      (alexandria:read-file-into-string pathname))))
+      (let ((pic (pht:upload pathname filename format)))
+        (format nil "uploaded ~A at ~A (time: ~A)"
+                (pht::uploadfilename pic)
+                (pht::pathnamefile pic)
+                (pht::timestamp pic))))))
 
 ;; plan file pages
 
