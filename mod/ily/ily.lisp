@@ -7,11 +7,12 @@
                           :ensure-generic-function
                           :defgeneric
                           :standard-generic-function
-                          :class-name))
+                          :class-name)
+  (:export :get-look))
 
 (in-package #:ily)
 
-(closure-template:compile-template :common-lisp-backend (ylg:path "mod/ily/tpl.htm"))
+;(closure-template:compile-template :common-lisp-backend (ylg:path "mod/ily/tpl.htm"))
 
 
 (define-automat look "Автомат look-а"
@@ -54,6 +55,8 @@
 ;;   "ook")
 
 
+
+
 ;; Tests
 
 ;; Owner создает look,
@@ -88,6 +91,7 @@
 (takt (get-look 1) :public :publish-look)
 
 (assert (equal :public (state (get-look 1))))
+
 
 ;; Голосование
 ;; TODO
