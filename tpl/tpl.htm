@@ -201,19 +201,21 @@
 {template lookview}
     <div class="look-data">
       <div class="data">
-	<div class="look-photo">
-	  <div class="look-photo-cont"><img src="{$photo}" /></div>
-	  <div class="photo-desc">{$title}</div>
-	</div>
-	<div class="look-clothes">
-	  <ul>
-	    {foreach $good in $goods}
-	    <li><span class="cl-category">Брюки</span> <a href="#">ZARA</a></li>
-	    {ifempty}
-	    no data
-	    {/foreach}
-	  </ul>
-	</div>
+        {$id} <br />
+        {$timestamp} <br />
+	    <div class="look-photo">
+	      <div class="look-photo-cont"><img src="{$photo}" /></div>
+	      <div class="photo-desc">{$title}</div>
+	    </div>
+	    <div class="look-clothes">
+	      <ul>
+	        {foreach $good in $goods}
+	          <li><span class="cl-category">Брюки</span> <a href="#">ZARA</a></li>
+	          {ifempty}
+	          no data
+	        {/foreach}
+	      </ul>
+	    </div>
       </div>
     </div>
 {/template}

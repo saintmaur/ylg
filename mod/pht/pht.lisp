@@ -17,8 +17,7 @@
    (uploadfilename :filename)
    (pathnamefile   :pathname)
    (timestamp      :timestamp)
-   (user           :user)
-  (:uploaded :deleted :banned)
+   (user           :user))
   ((:uploaded     :deleted      :delpic)))
 
 (defun generate-filename ()

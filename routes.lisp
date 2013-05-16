@@ -78,16 +78,14 @@
 
 (restas:define-route looks ("/looks")
   (tpl:root (list :left (tpl:left)
-                  ;;  TODO: pass a valid list of looks + how to get a field from a look obj inside tmpl
-                  :right (tpl:lookslist  (mapcar #'(lambda (look-pair)
-                                                     (let ((look (car look-pair))
-                                                           (id (cdr look-pair)))
-                                                       (list
-                                                        :id id
-                                                        :timestamp (ily::timestamp look)
-                                                        :target (ily::target look)
-                                                        :votes (ily::votes look))))
-                                                 (ily:all-look)))
+                  :right (tpl:lookslist (list :looks (mapcar #'(lambda (look-pair)
+                                                                 (let ((look (car look-pair))
+                                                                       (id (cdr look-pair)))
+                                                                   (list :id id
+                                                                         :timestamp (ily::timestamp look)
+                                                                         :target (ily::target look)
+                                                                         :votes (ily::votes look))))
+                                                             (ily:all-look))))
                   :enterform (if (null usr:*current-user*)
                                  (tpl:enterform)
                                  nil)
@@ -95,15 +93,20 @@
                             (tpl:authnotlogged)
                             (tpl:authlogged (list :username (usr:email usr:*current-user*)))))))
 
-(restas:define-route looks ("/look/:id")
+(restas:define-route one-look ("/look/:id")
   (tpl:root (list :left (tpl:left)
-		  ;;  TODO: pass a valid list of looks + how to get a field from a look obj inside tmpl
-                  :right (if (null (setf look (ily:get-look id)))
-			     ("No such data")
-			     (tpl:lookview (list :photo (getf look photo) :title (getf look title) :goods (getf look goods))))
+                  :right  (let ((look (ily:get-look (parse-integer id))))
+                            (if (null look)
+                                "No such data"
+                                (tpl:lookview (list
+                                               :id id
+                                               ;; :photo (ily::photo look)
+                                               ;; :title (ily::title look)
+                                               :timestamp (ily::timestamp look)
+                                               :goods (ily::goods look)))))
                   :enterform (if (null usr:*current-user*)
-				 (tpl:enterform)
-				 nil)
+                                 (tpl:enterform)
+                                 nil)
                   :auth (if (null usr:*current-user*)
                             (tpl:authnotlogged)
                             (tpl:authlogged (list :username (usr:email usr:*current-user*)))))))
