@@ -7,11 +7,12 @@
                           :ensure-generic-function
                           :defgeneric
                           :standard-generic-function
-                          :class-name))
+                          :class-name)
+  (:export :get-look :all-look :find-look))
 
 (in-package #:ily)
 
-(closure-template:compile-template :common-lisp-backend (ylg:path "mod/ily/tpl.htm"))
+;(closure-template:compile-template :common-lisp-backend (ylg:path "mod/ily/tpl.htm"))
 
 
 (define-automat look "Автомат look-а"
@@ -24,8 +25,12 @@
   ((:draft   :public    :publish-look)
    (:public  :archived  :archive-look)))
 
+;; (votes (get-look 1))
 
+;; (all-look)
 
+;; (find-look #'(lambda (x)
+;; 	       (equal (votes (car x)) 'votes2)))
 ;; View/Controller
 
 ;; (defun show-create ()
@@ -54,6 +59,8 @@
 ;;   "ook")
 
 
+
+
 ;; Tests
 
 ;; Owner создает look,
@@ -65,7 +72,14 @@
 (make-look :timestamp (get-universal-time)
            :target '("club")
            :goods  '("shoes" "hat")
-           :votes  'votes
+           :votes  'votes1
+           :comments 'comments
+           :state :draft)
+
+(make-look :timestamp (get-universal-time)
+           :target '("club2")
+           :goods  '("shoes2" "hat2")
+           :votes  'votes2
            :comments 'comments
            :state :draft)
 
@@ -88,6 +102,7 @@
 (takt (get-look 1) :public :publish-look)
 
 (assert (equal :public (state (get-look 1))))
+
 
 ;; Голосование
 ;; TODO

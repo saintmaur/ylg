@@ -75,6 +75,39 @@
                 (pht::pathnamefile pic)
                 (pht::timestamp pic))))))
 
+
+(restas:define-route looks ("/looks")
+  (tpl:root (list :left (tpl:left)
+                  ;;  TODO: pass a valid list of looks + how to get a field from a look obj inside tmpl
+                  :right (tpl:lookslist  (mapcar #'(lambda (look-pair)
+                                                     (let ((look (car look-pair))
+                                                           (id (cdr look-pair)))
+                                                       (list
+                                                        :id id
+                                                        :timestamp (ily::timestamp look)
+                                                        :target (ily::target look)
+                                                        :votes (ily::votes look))))
+                                                 (ily:all-look)))
+                  :enterform (if (null usr:*current-user*)
+                                 (tpl:enterform)
+                                 nil)
+                  :auth (if (null usr:*current-user*)
+                            (tpl:authnotlogged)
+                            (tpl:authlogged (list :username (usr:email usr:*current-user*)))))))
+
+(restas:define-route looks ("/look/:id")
+  (tpl:root (list :left (tpl:left)
+		  ;;  TODO: pass a valid list of looks + how to get a field from a look obj inside tmpl
+                  :right (if (null (setf look (ily:get-look id)))
+			     ("No such data")
+			     (tpl:lookview (list :photo (getf look photo) :title (getf look title) :goods (getf look goods))))
+                  :enterform (if (null usr:*current-user*)
+				 (tpl:enterform)
+				 nil)
+                  :auth (if (null usr:*current-user*)
+                            (tpl:authnotlogged)
+                            (tpl:authlogged (list :username (usr:email usr:*current-user*)))))))
+
 ;; plan file pages
 
 (defmacro def/route (name param &body body)
@@ -90,6 +123,8 @@
 ;; (def/route about ("about")
 ;;   (path "content/about.org"))
 
+
+;ily routes
 
 (restas:mount-submodule -css- (#:restas.directory-publisher)
   (restas.directory-publisher:*baseurl* '("css"))

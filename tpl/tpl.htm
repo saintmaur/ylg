@@ -25,7 +25,9 @@
         </div>{\n}
         <div id="content-wrap">{\n}
           {$left  | noAutoescape} {\n}
-          {$right | noAutoescape} {\n}
+	  <div id="content">
+            {$right | noAutoescape} {\n}
+	  </div>
           <div style="clear:both"></div> {\n}
         </div>{\n}
       </div>{\n}
@@ -54,7 +56,7 @@
   <div id="left-sidebar"> {\n}
     <div id="left-sidebar-menu"> {\n}
       <ul> {\n}
-        <li>menupoint</li> {\n}
+        <li><a href="/looks">Как я вам?!</a></li> {\n}
         <li>menupoint</li> {\n}
         <li>menupoint {\n}
           <ul> {\n}
@@ -168,9 +170,53 @@
         </div> {\n}
       </div> {\n}
     </div> {\n}
-  </div> {\n}
 {/template}
 
+{template look}
+      <div class="floated-item"> {\n}
+	<div class="item-img"> {\n}
+	  <a href="/look/{$id}">
+	    <img src="{$look}" {\n}
+		 width="200" {\n}
+		 height="250"/>{\n}
+	  </a> {\n}
+	</div> {\n}
+	<div class="item-data"> {\n}
+	  {$timestamp} <br />
+	  {$votes} <br />
+	</div> {\n}
+      </div>
+{/template}
+
+{template lookslist}
+    <div class="floated-items"> {\n}
+      {foreach $look in $looks}
+      {call look data="$look" /}
+      {ifempty}
+      {/foreach}
+    </div>
+{/template}
+
+
+{template lookview}
+    <div class="look-data">
+      <div class="data">
+	<div class="look-photo">
+	  <div class="look-photo-cont"><img src="{$photo}" /></div>
+	  <div class="photo-desc">{$title}</div>
+	</div>
+	<div class="look-clothes">
+	  <ul>
+	    {foreach $good in $goods}
+	    <li><span class="cl-category">Брюки</span> <a href="#">ZARA</a></li>
+	    {ifempty}
+	    no data
+	    {/foreach}
+	  </ul>
+	</div>
+      </div>
+    </div>
+{/template}
 
 {template enterform}
   <div style="display:none"> {\n}

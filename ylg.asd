@@ -29,8 +29,7 @@
                           :serial t
                           :pathname "mod/ily"
                           :components ((:file "ily")
-                                       (:static-file "tpl.htm")
-                                       (:file "routes")))
+                                       (:static-file "tpl.htm")))
                  (:file "render")
                  (:file "routes")
                  (:file "init")))
