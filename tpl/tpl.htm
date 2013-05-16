@@ -165,9 +165,7 @@
     </div> {\n}
 {/template}
 
-{template lookslist}
-    <div class="floated-items"> {\n}
-      {foreach $look in $looks}
+{template look}
       <div class="floated-item"> {\n}
 	<div class="item-img"> {\n}
 	  <a href="/look/{$id}">
@@ -177,10 +175,16 @@
 	  </a> {\n}
 	</div> {\n}
 	<div class="item-data"> {\n}
-	  some {\n}
-	  data {\n}
+	  {$timestamp} <br />
+	  {$votes} <br />
 	</div> {\n}
       </div>
+{/template}
+
+{template lookslist}
+    <div class="floated-items"> {\n}
+      {foreach $look in $looks}
+      {call look data="$look" /}
       {ifempty}
       {/foreach}
     </div>

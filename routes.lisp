@@ -62,7 +62,15 @@
 (restas:define-route looks ("/looks")
   (tpl:root (list :left (tpl:left)
 		  ;;  TODO: pass a valid list of looks + how to get a field from a look obj inside tmpl
-                  :right (tpl:lookslist (list :looks (list 1 2 3 5)))
+                  :right (tpl:lookslist  (mapcar #'(lambda (look-pair)
+						     (let ((look (car look-pair))
+							   (id (cdr look-pair)))
+						       (list
+							:id id
+							:timestamp (ily::timestamp look)
+							:target (ily::target look)
+							:votes (ily::votes look))))
+						 (ily:all-look)))
                   :enterform (if (null usr:*current-user*)
 				 (tpl:enterform)
 				 nil)

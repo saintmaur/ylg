@@ -8,7 +8,7 @@
                           :defgeneric
                           :standard-generic-function
                           :class-name)
-  (:export :get-look))
+  (:export :get-look :all-look :find-look))
 
 (in-package #:ily)
 
@@ -25,8 +25,12 @@
   ((:draft   :public    :publish-look)
    (:public  :archived  :archive-look)))
 
+;; (votes (get-look 1))
 
+;; (all-look)
 
+;; (find-look #'(lambda (x)
+;; 	       (equal (votes (car x)) 'votes2)))
 ;; View/Controller
 
 ;; (defun show-create ()
@@ -68,7 +72,14 @@
 (make-look :timestamp (get-universal-time)
            :target '("club")
            :goods  '("shoes" "hat")
-           :votes  'votes
+           :votes  'votes1
+           :comments 'comments
+           :state :draft)
+
+(make-look :timestamp (get-universal-time)
+           :target '("club2")
+           :goods  '("shoes2" "hat2")
+           :votes  'votes2
            :comments 'comments
            :state :draft)
 
