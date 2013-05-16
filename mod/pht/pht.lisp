@@ -13,10 +13,11 @@
 (in-package #:pht)
 
 (define-automat pic "Автомат картинки"
-  ((pictype       :pictype)
+  ((pictype        :pictype)
    (uploadfilename :filename)
-   (pathnamefile  :pathname)
-   (timestamp     :timestamp))
+   (pathnamefile   :pathname)
+   (timestamp      :timestamp)
+   (user           :user)
   (:uploaded :deleted :banned)
   ((:uploaded     :deleted      :delpic)))
 
@@ -37,4 +38,5 @@
       (make-pic :pictype input-format
                 :uploadfilename input-filename
                 :pathnamefile outfilepath
-                :timestamp (get-universal-time)))))
+                :timestamp (get-universal-time)
+                :user usr:*current-user*))))
