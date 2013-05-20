@@ -111,6 +111,40 @@
                             (tpl:authnotlogged)
                             (tpl:authlogged (list :username (usr:email usr:*current-user*)))))))
 
+(restas:define-route choices ("/choices")
+  (tpl:root (list :left (tpl:left)
+                  :right (tpl:choiceslist (list :choices (mapcar #'(lambda (choice-pair)
+                                                                 (let ((choice (car choice-pair))
+                                                                       (id (cdr choice-pair)))
+                                                                   (list :id id
+                                                                         :timestamp (adv::timestamp choice)
+                                                                         :target (adv::target choice)
+                                                                         :votes (adv::votes choice))))
+                                                             (adv:all-choice))))
+                  :enterform (if (null usr:*current-user*)
+                                 (tpl:enterform)
+                                 nil)
+                  :auth (if (null usr:*current-user*)
+                            (tpl:authnotlogged)
+                            (tpl:authlogged (list :username (usr:email usr:*current-user*)))))))
+
+(restas:define-route one-choice ("/choice/:id")
+  (tpl:root (list :left (tpl:left)
+                  :right  (let ((choice (adv:get-choice (parse-integer id))))
+                            (if (null choice)
+                                "No such data"
+                                (tpl:choiceview (list
+                                               :id id
+                                               ;; :photo (adv::photo choice)
+                                               ;; :title (adv::title choice)
+                                               :timestamp (adv::timestamp choice)
+                                               :goods (adv::goods choice)))))
+                  :enterform (if (null usr:*current-user*)
+                                 (tpl:enterform)
+                                 nil)
+                  :auth (if (null usr:*current-user*)
+                            (tpl:authnotlogged)
+                            (tpl:authlogged (list :username (usr:email usr:*current-user*)))))))
 
 
 ;; plan file pages

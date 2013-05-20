@@ -139,11 +139,14 @@ a:focus {
     width:100%;
 }
 
-.look-photo {
+.look-photo,.choice-photo1,.choice-photo2 {
     float:left;
-    width:400px;
+
     height:450px;
     border:1px dashed #aaa;
+}
+.look-photo{
+    width:400px;
 }
 .look-photo-cont {
     width:400px;
@@ -235,7 +238,7 @@ a:focus {
     padding:3px 0
 }
 .data{
-    float:right;
+    /*float:right;*/
 }
 .fom-line-narr .title {
     color:#bbb;
@@ -336,4 +339,17 @@ a:focus {
     background-color:red !important;
     color:#eee;
     font-weight:bold;
+}
+
+.choice-photo1{
+    float:left;
+    width:350px;
+}
+.choice-photo2{
+    float:right;
+    width:350px;
+}
+
+#choice-data .look-photo-cont {
+    width: 350px;
 }

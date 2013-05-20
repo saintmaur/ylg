@@ -30,6 +30,10 @@
                           :pathname "mod/ily"
                           :components ((:file "ily")
                                        (:static-file "tpl.htm")))
+		 (:module "adv"
+                          :serial t
+                          :pathname "mod/adv"
+                          :components ((:file "adv")))
                  (:file "render")
                  (:file "routes")
                  (:file "init")))
