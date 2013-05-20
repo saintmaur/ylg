@@ -111,6 +111,8 @@
                             (tpl:authnotlogged)
                             (tpl:authlogged (list :username (usr:email usr:*current-user*)))))))
 
+
+
 ;; plan file pages
 
 (defmacro def/route (name param &body body)
