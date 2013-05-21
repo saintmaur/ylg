@@ -57,7 +57,7 @@
     <div id="left-sidebar-menu"> {\n}
       <ul> {\n}
         <li><a href="/looks">Как я вам?!</a></li> {\n}
-        <li>menupoint</li> {\n}
+        <li><a href="/choices">Надо брать?!</a></li> {\n}
         <li>menupoint {\n}
           <ul> {\n}
             <li>submenupoint</li> {\n}
@@ -216,6 +216,49 @@
 	        {/foreach}
 	      </ul>
 	    </div>
+      </div>
+    </div>
+{/template}
+
+{template choice}
+      <div class="floated-item"> {\n}
+	<div class="item-img"> {\n}
+	  <a href="/choice/{$id}">
+	    <img src="{$choice}" {\n}
+		 width="200" {\n}
+		 height="250"/>{\n}
+	  </a> {\n}
+	</div> {\n}
+	<div class="item-data"> {\n}
+	  {$timestamp} <br />
+	  {$votes} <br />
+	</div> {\n}
+      </div>
+{/template}
+
+{template choiceslist}
+    <div class="floated-items"> {\n}
+      {foreach $choice in $choices}
+      {call choice data="$choice" /}
+      {ifempty}
+      {/foreach}
+    </div>
+{/template}
+
+{template choiceview}
+    <div class="look-data">
+      <div id="choice-data">
+        {$id} <br />
+        {$timestamp} <br />
+	    <div class="choice-photo1">
+	      <div class="look-photo-cont"><img src="{$photo1}" /></div>
+	      <div class="photo-desc">{$timestamp}</div>
+	    </div>
+	    <div class="choice-photo2">
+	      <div class="look-photo-cont"><img src="{$photo2}" /></div>
+	      <div class="photo-desc">{$timestamp}</div>
+	    </div>
+	    <div style="clear:both"></div>
       </div>
     </div>
 {/template}
