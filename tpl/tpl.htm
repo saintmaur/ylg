@@ -213,11 +213,16 @@
             <img src="/pic/{$pic}" />
           </div>
 	      <div class="photo-desc">{$title}</div>
+          <div>
+            <input type="button" value="Хорошо выглядишь!" onclick="alert('TODO: Голос учтен, показать состояние на кнопке');" />
+            <input type="button" value="Переоденься!" onclick="alert('TODO: Голос учтен, показать состояние на кнопке');" />
+          </div>
 	    </div>
 	    <div class="look-clothes">
 	      <ul>
 	        {foreach $good in $goods}
 	          <li><span class="cl-category">Брюки</span> <a href="#">ZARA</a></li>
+	          <li><span class="cl-category">TODO: Добавление данных</span></li>
 	          {ifempty}
 	          no data
 	        {/foreach}

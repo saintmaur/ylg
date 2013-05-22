@@ -115,6 +115,22 @@
                             (tpl:authnotlogged)
                             (tpl:authlogged (list :username (usr:email usr:*current-user*)))))))
 
+
+(restas:define-route action-vote-look ("/action-vote-look" :method :post)
+  (let ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal)))
+    (let ((look-id    (gethash "look-id" data))
+          (vote       (gethash "vote" data)))
+      (if (ily:vote look-id vote usr:*current-user*)
+          ;; "ok"
+          (json:encode-json-to-string (list
+                                       (cons "passed" "true")
+                                       (cons "location" "/")
+                                       (cons "msg" "Голос учтен")))
+          ;; "err"
+          "Какая-то ошибка"))))
+
+
+
 (restas:define-route choices ("/choices")
   (tpl:root (list :left (tpl:left)
                   :right (tpl:choiceslist (list :choices (mapcar #'(lambda (choice-pair)

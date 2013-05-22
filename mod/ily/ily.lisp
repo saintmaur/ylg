@@ -8,7 +8,7 @@
                           :defgeneric
                           :standard-generic-function
                           :class-name)
-  (:export :get-look :all-look :find-look))
+  (:export :get-look :all-look :find-look :vote))
 
 (in-package #:ily)
 
@@ -27,13 +27,25 @@
   ((:draft   :public    :publish-look)
    (:public  :archived  :archive-look)))
 
+(define-entity vote ()
+  ((user-id  :user-id)
+   (look-id  :look-id)
+   (voting   :voting)))
+
+(defun vote (look-id voting &optional (current-user usr:*current-user*))
+  (let ((vote (make-vote :look-id look-id
+                         :user-id (usr::find-user (usr::get-user current-user))
+                         :voting voting))
+        (look (get-look look-id)))
+    (setf (votes look)
+          (append (votes look)
+                  (list (find-vote vote))))))
+
+;; (vote 1 'like 3)
 ;; (votes (get-look 1))
+;; (look-id (get-vote 1))
+;; (user-id (get-vote 1))
 
-;; (all-look)
-
-;; (find-look #'(lambda (x)
-;; 	       (equal (votes (car x)) 'votes2)))
-;; View/Controller
 
 ;; (defun show-create ()
 ;;   "ook"
@@ -63,6 +75,7 @@
 
 
 
+
 ;; Tests
 
 ;; Owner создает look,
@@ -74,7 +87,7 @@
 (make-look :timestamp (get-universal-time)
            :target '("club")
            :goods  '("shoes" "hat")
-           :votes  'votes1
+           :votes  nil
            :preview "1x.jpg"
            :pic "1.jpg"
            :comments 'comments
@@ -83,7 +96,7 @@
 (make-look :timestamp (get-universal-time)
            :target '("club2")
            :goods  '("shoes2" "hat2")
-           :votes  'votes2
+           :votes  nil
            :preview "2x.jpg"
            :pic "2.jpg"
            :comments 'comments
@@ -92,7 +105,7 @@
 (make-look :timestamp (get-universal-time)
            :target '("club2")
            :goods  '("shoes2" "hat2")
-           :votes  'votes2
+           :votes  nil
            :preview "3x.jpg"
            :pic "3.jpg"
            :comments 'comments
@@ -101,7 +114,7 @@
 (make-look :timestamp (get-universal-time)
            :target '("club2")
            :goods  '("shoes2" "hat2")
-           :votes  'votes2
+           :votes  nil
            :preview "4x.jpg"
            :pic "4.jpg"
            :comments 'comments
