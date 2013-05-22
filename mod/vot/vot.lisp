@@ -12,7 +12,7 @@
 
 (in-package #:vot)
 
-;; (closure-template:compile-template :common-lisp-backend (ylg:path "mod/ily/tpl.htm"))
+;; (closure-template:compile-template :common-lisp-backend (ylg:path "mod/vot/tpl.htm"))
 
 (define-entity vote ()
   ((user-id    :user-id)
