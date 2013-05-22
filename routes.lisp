@@ -120,7 +120,7 @@
   (let ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal)))
     (let ((look-id    (gethash "look-id" data))
           (vote       (gethash "vote" data)))
-      (if (ily:vote look-id vote usr:*current-user*)
+      (if (ily:vote-look look-id vote usr:*current-user*)
           ;; "ok"
           (json:encode-json-to-string (list
                                        (cons "passed" "true")

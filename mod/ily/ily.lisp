@@ -8,7 +8,7 @@
                           :defgeneric
                           :standard-generic-function
                           :class-name)
-  (:export :get-look :all-look :find-look :vote))
+  (:export :get-look :all-look :find-look :vote-look))
 
 (in-package #:ily)
 
@@ -27,24 +27,22 @@
   ((:draft   :public    :publish-look)
    (:public  :archived  :archive-look)))
 
-(define-entity vote ()
-  ((user-id  :user-id)
-   (look-id  :look-id)
-   (voting   :voting)))
 
-(defun vote (look-id voting &optional (current-user usr:*current-user*))
-  (let ((vote (make-vote :look-id look-id
-                         :user-id (usr::find-user (usr::get-user current-user))
-                         :voting voting))
+(defun vote-look (look-id voting &optional (current-user usr:*current-user*))
+  (let ((vote (vot:make-vote :entity-id look-id
+                             :entity 'look
+                             :user-id (usr::find-user (usr::get-user current-user))
+                             :voting voting))
         (look (get-look look-id)))
     (setf (votes look)
           (append (votes look)
-                  (list (find-vote vote))))))
+                  (list (vot:find-vote vote))))))
 
-;; (vote 1 'like 3)
+;; (vote-look 1 'like 3)
 ;; (votes (get-look 1))
-;; (look-id (get-vote 1))
-;; (user-id (get-vote 1))
+;; (vot:all-vote)
+;; (vot:entity-id (vot:get-vote 3))
+;; (vot:entity-id (vot::get-vote 2))
 
 
 ;; (defun show-create ()
