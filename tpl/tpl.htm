@@ -84,12 +84,11 @@
 
 {template right}
   <div id="content"> {\n}
-
-    <form action="/file" method="POST" enctype="multipart/form-data">{\n}
-	  <input type="file" name="file" value="" />{\n}
+    {call lookeditform /}
+    <form style="display:none" id="file-upload-form" action="/file" method="POST" enctype="multipart/form-data">{\n}
+      <input type="file" name="file" value="" />{\n}
       <input type="submit" />{\n}
     </form>
-
     <div class="floated-items"> {\n}
       <div class="floated-item"> {\n}
         <div class="item-img"> {\n}
@@ -196,7 +195,7 @@
 {template lookslist}
   <div class="floated-items"> {\n}
     {foreach $look in $looks}
-      {call look data="$look" /}
+    {call look data="$look" /}
       {ifempty}
     {/foreach}
   </div>
@@ -231,6 +230,70 @@
 	        {/foreach}
 	      </ul>
 	    </div>
+      </div>
+    </div>
+{/template}
+
+{template lookeditform}
+    <div style="display:none">
+      <div id="edit-look-form-cont">
+	<form action="#">
+	  <input type="hidden" name="look-photo" value="" />
+	  <input type="hidden" name="id" value="" />
+	  <div id="edit-look-form-wrap">
+	    <div id="edit-look-form-photo-wrap">
+	      <div id="edit-look-form-photo">
+		<img src="" width="470" />
+	      </div>
+	      <div id="edit-look-form-filters">
+		<div class="edit-look-form-filter"><img src="" /></div>
+		<div class="edit-look-form-filter"><img src="" /></div>
+		<div class="edit-look-form-filter"><img src="" /></div>
+		<div class="edit-look-form-filter"><img src="" /></div>
+		<div class="edit-look-form-filter"><img src="" /></div>
+		<div class="edit-look-form-filter"><img src="" /></div>
+	      </div>
+	    </div>
+	    <div id="edit-look-form-clothes">
+	      <h2>ВЫБЕРИТЕ НУЖНОЕ</h2>
+	      <h3>Куда пойдем?</h3>
+	      <select name="look-whereto" size="5" multiple="multiple">
+		<option value="1">на работу</option>
+		<option value="2">домой</option>
+		<option value="3">на работу</option>
+		<option value="4">домой</option>
+		<option value="5">домой</option>
+		<option value="6">на работу</option>
+		<option value="7">на работу</option>
+		<option value="8">на работу</option>
+	      </select>
+	      <div id="clo-select">
+		<a href="#"><span class="greyed">+</span>&nbsp;добавить предмет гардероба</a>
+	      </div>
+	      <div id="clo-item-form" style="display:none">
+		<input type="hidden" name="clo-item-id" value="" />
+		<div class="form-line-narr"><span class="title">Категория:</span>&nbsp;<div class="data"><input type="text" name="category" /></div><div style="clear:both"></div></div>
+		<div class="form-line-narr"><span class="title">Бренд:</span>&nbsp;<div class="data"><input type="text" name="brand" /></div><div style="clear:both"></div></div>
+		<div class="form-line-narr"><span class="title">Магазин:</span>&nbsp;<div class="data"><input type="text" name="shop" /></div><div style="clear:both"></div></div>
+		<div class="form-line-narr"><span class="title" style="text-align:right"><a href="#" class="cancel">отменить</a></span>&nbsp;<div class="data"><input type="button" name="save-0" class="save-data" value="сохранить" /></div><div style="clear:both"></div></div>
+	      </div>
+	      <ul id="clo-items-list"></ul>
+	    </div>
+	    <div style="clear:both"></div>
+	    <div id="look-edit-actions-wrap">
+	      <div id="look-edit-actions">
+		<div id="save-button">
+		  <input type="button" id="save-button" value="Сохранить"/>
+		</div>
+		<div id="publish-button">
+		  <input type="button" id="publish-button" value="Опубликовать" />
+		</div>
+	      </div>
+	    </div>
+	    <div style="clear:both">
+	    </div>
+	  </form>
+	</div>
       </div>
     </div>
 {/template}
