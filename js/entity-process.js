@@ -127,12 +127,13 @@ function editCloLine(data){
 }
 
 $(function(){
-    $('a.call-upload-form').ajaxUpload
-    (
-        {
-	    url:'http://lagidze.b2b/admin/uploadimg',
+    $('a.call-upload-form').ajaxUpload(
+      {
+	    url:'/file',
 	    secureuri:false,
 	    name:'custom_img',
+        type: "POST",
+        method: "POST",
 	    onSubmit:function() {
 
 	    },
@@ -144,7 +145,7 @@ $(function(){
 		    href:"#edit-look-form-cont"
 		});
 	    }
-        }
+      }
     );
     $('.edit-look-link-cont').click(function(){
 
