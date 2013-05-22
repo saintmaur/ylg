@@ -60,7 +60,7 @@ function publishLook(id){
 	dataType:"json",
 	method:"post",
 	error:function(obj){
-	    alert(obj.responseText);
+	    getAlert(obj.responseText,'error');
 	},
 	success:function(data){
 	    $.fancybox.close();
@@ -75,10 +75,11 @@ function saveLook(id){
 	dataType:"json",
 	method:"post",
 	error:function(obj){
-	    alert(obj.responseText);
+	    getAlert(obj.responseText,'error');
 	},
 	success:function(data){
 	    $.fancybox.close();
+	    document.location.reload(true);
 	}
     });
 }
@@ -89,7 +90,7 @@ function delCloItem(id){
 	dataType:"json",
 	method:"post",
 	error:function(obj){
-	    alert(obj.responseText);
+	    getAlert(obj.responseText,'error');
 	},
 	success:function(data){
 	    $('#item-'+id).remove();
@@ -127,31 +128,39 @@ function editCloLine(data){
 }
 
 $(function(){
-    $('a.call-upload-form').ajaxUpload(
-      {
-	    url:'/file',
-	    secureuri:false,
-	    name:'custom_img',
-        type: "POST",
-        method: "POST",
-	    onSubmit:function() {
 
-	    },
-	    onComplete: function (data, status)
-	    {
-		//var obj = jQuery.parseJSON(data);
-		$("#edit-look-form-cont").find('img').attr('src',data['photo']);
-		$.fancybox({
-		    href:"#edit-look-form-cont"
-		});
+	$('a.call-upload-form').click(function(){
+	    var input;//var form;
+	    if(!$("#__ajaxUploadIFRAME").size()){
+		ajaxUploadIframe = $('<iframe src="/js/form.html" id="__ajaxUploadIFRAME" name="__ajaxUploadIFRAME"></iframe>').attr('style','style="width:100px;height:100px;border:1px solid #fff;display:none"');
+		$(document.body).append(ajaxUploadIframe);
+	    } else {
+		ajaxUploadIframe = $("#__ajaxUploadIFRAME");
+		ajaxUploadIframe.attr('src','/js/form.html');
+		document.getElementById("__ajaxUploadIFRAME").location.reload();
 	    }
-      }
-    );
-    $('.edit-look-link-cont').click(function(){
-
-	$.fancybox({
-	    href:"#edit-look-form-cont"
+	    ajaxUploadIframe.load(function(){
+		input = ajaxUploadIframe.contents().find('input[name="file"]');
+		form = ajaxUploadIframe.contents().find('#file-upload-form');
+		input.change(function(){
+		    form.submit();
+		    ajaxUploadIframe.load(function() {
+			response = $(this).contents().find('html body').text();
+			ajaxUploadIframe.remove();
+			var data = jQuery.parseJSON(response);
+			//TODO: error handling
+			$("#edit-look-form-cont").find('img').attr('src',data['photo']);
+			$.fancybox({
+			    href:"#edit-look-form-cont"
+			});
+		    });
+		});
+		input.click();
 	});
+    });
+
+    $('.edit-look-link-cont').click(function(){
+	getLook($(this).attr('id'));
     });
     $('#clo-select').click(function(){
 	getCloLineForm(0);
