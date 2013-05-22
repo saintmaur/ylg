@@ -83,6 +83,34 @@
            :comments 'comments
            :state :draft)
 
+(make-look :timestamp (get-universal-time)
+           :target '("club2")
+           :goods  '("shoes2" "hat2")
+           :votes  'votes2
+           :comments 'comments
+           :state :draft)
+
+(make-look :timestamp (get-universal-time)
+           :target '("club2")
+           :goods  '("shoes2" "hat2")
+           :votes  'votes2
+           :comments 'comments
+           :state :draft)
+
+(make-look :timestamp (get-universal-time)
+           :target '("club2")
+           :goods  '("shoes2" "hat2")
+           :votes  'votes2
+           :comments 'comments
+           :state :draft)
+
+(make-look :timestamp (get-universal-time)
+           :target '("club2")
+           :goods  '("shoes2" "hat2")
+           :votes  'votes2
+           :comments 'comments
+           :state :draft)
+
 (assert (equal 'look (type-of (get-look 1))))
 
 ;; ;; (опционально) Owner редактирует look, добавляя, удаляя или изменяя данные и фотографии.
