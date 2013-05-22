@@ -16,11 +16,13 @@
 
 
 (define-automat look "Автомат look-а"
-  ((timestamp :timestamp)
-   (target    :target)
-   (goods     :goods)
-   (votes     :votes)
-   (comments  :comments))
+  ((timestamp   :timestamp)
+   (target      :target)
+   (goods       :goods)
+   (votes       :votes)
+   (preview     :pic)
+   (pic         :pic)
+   (comments    :comments))
   (:draft :public :archived)
   ((:draft   :public    :publish-look)
    (:public  :archived  :archive-look)))
@@ -73,6 +75,8 @@
            :target '("club")
            :goods  '("shoes" "hat")
            :votes  'votes1
+           :preview "1x.jpg"
+           :pic "1.jpg"
            :comments 'comments
            :state :draft)
 
@@ -80,6 +84,8 @@
            :target '("club2")
            :goods  '("shoes2" "hat2")
            :votes  'votes2
+           :preview "2x.jpg"
+           :pic "2.jpg"
            :comments 'comments
            :state :draft)
 
@@ -87,6 +93,8 @@
            :target '("club2")
            :goods  '("shoes2" "hat2")
            :votes  'votes2
+           :preview "3x.jpg"
+           :pic "3.jpg"
            :comments 'comments
            :state :draft)
 
@@ -94,20 +102,8 @@
            :target '("club2")
            :goods  '("shoes2" "hat2")
            :votes  'votes2
-           :comments 'comments
-           :state :draft)
-
-(make-look :timestamp (get-universal-time)
-           :target '("club2")
-           :goods  '("shoes2" "hat2")
-           :votes  'votes2
-           :comments 'comments
-           :state :draft)
-
-(make-look :timestamp (get-universal-time)
-           :target '("club2")
-           :goods  '("shoes2" "hat2")
-           :votes  'votes2
+           :preview "4x.jpg"
+           :pic "4.jpg"
            :comments 'comments
            :state :draft)
 

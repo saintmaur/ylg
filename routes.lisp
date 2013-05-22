@@ -84,7 +84,9 @@
                                                                    (list :id id
                                                                          :timestamp (ily::timestamp look)
                                                                          :target (ily::target look)
-                                                                         :votes (ily::votes look))))
+                                                                         :votes (ily::votes look)
+                                                                         :preview (ily::preview look)
+                                                                         )))
                                                              (ily:all-look))))
                   :enterform (if (null usr:*current-user*)
                                  (tpl:enterform)
@@ -100,7 +102,7 @@
                                 "No such data"
                                 (tpl:lookview (list
                                                :id id
-                                               ;; :photo (ily::photo look)
+                                               :pic (ily::pic look)
                                                ;; :title (ily::title look)
                                                :timestamp (ily::timestamp look)
                                                :goods (ily::goods look)))))
@@ -176,3 +178,7 @@
 (restas:mount-submodule -img- (#:restas.directory-publisher)
   (restas.directory-publisher:*baseurl* '("img"))
   (restas.directory-publisher:*directory* (path "img/")))
+
+(restas:mount-submodule -pic- (#:restas.directory-publisher)
+  (restas.directory-publisher:*baseurl* '("pic"))
+  (restas.directory-publisher:*directory* (path "pic/")))

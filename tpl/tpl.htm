@@ -59,6 +59,10 @@
     <div id="left-sidebar-menu"> {\n}
       <ul> {\n}
         <li><a href="/looks">Как я вам?!</a></li> {\n}
+          <ul> {\n}
+            <li><a href="#edit-look-form-cont" class="call-upload-form">загрузить фотографию</a></li> {\n}
+            <li>submenupoint</li> {\n}
+          </ul> {\n}
         <li><a href="/choices">Надо брать?!</a></li> {\n}
         <li>menupoint {\n}
           <ul> {\n}
@@ -68,7 +72,6 @@
             <li>submenupoint</li> {\n}
           </ul> {\n}
         </li> {\n}
-        <li><a href="#edit-look-form-cont" class="call-upload-form">загрузить фотографию</a></li> {\n}
         <li>menupoint</li> {\n}
         <li>menupoint</li> {\n}
       </ul> {\n}
@@ -178,9 +181,7 @@
   <div class="floated-item"> {\n}
 	<div class="item-img"> {\n}
 	  <a href="/look/{$id}">
-	    <img src="{$look}" {\n}
-		     width="200" {\n}
-		     height="250"/>{\n}
+	    <img src="/pic/{$preview}" width="200" height="250"/>{\n}
 	  </a> {\n}
 	</div> {\n}
 	<div class="item-data"> {\n}
@@ -206,7 +207,9 @@
         {$id} <br />
         {$timestamp} <br />
 	    <div class="look-photo">
-	      <div class="look-photo-cont"><img src="{$photo}" /></div>
+	      <div class="look-photo-cont">
+            <img src="/pic/{$pic}" />
+          </div>
 	      <div class="photo-desc">{$title}</div>
 	    </div>
 	    <div class="look-clothes">
