@@ -79,12 +79,12 @@
       </ul> {\n}
     </div> {\n}
   </div> {\n}
+  {call lookeditform /}
 {/template}
 
 
 {template right}
   <div id="content"> {\n}
-    {call lookeditform /}
     <form style="display:none" id="file-upload-form" action="/file" method="POST" enctype="multipart/form-data">{\n}
       <input type="file" name="file" value="" />{\n}
       <input type="submit" />{\n}
