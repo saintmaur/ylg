@@ -149,7 +149,7 @@ $(function(){
 			ajaxUploadIframe.remove();
 			var data = jQuery.parseJSON(response);
 			//TODO: error handling
-			$("#edit-look-form-cont").find('img').attr('src',data['photo']);
+			$("#edit-look-form-photo").find('img').attr('src',data['photo']);
 			$.fancybox({
 			    href:"#edit-look-form-cont"
 			});
