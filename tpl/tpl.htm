@@ -187,8 +187,20 @@
 	</div> {\n}
 	<div class="item-data"> {\n}
 	  {$timestamp} <br />
-	  {$votes} <br />
 	</div> {\n}
+  </div>
+{/template}
+
+{template photovoteblock}
+  <div id="{$entity}-{$id}" class="{$entity}-votes">
+    <div class="votes-wrap">
+      <div class="vote1"><a href="#" onclick="vote('{$entity}','{$id}','{$vote}','#{$entity}-{$id}')">gold</a></div>
+      <div class="l">{$like}</div>
+      <div class="s">{$sum}</div>
+      <div class="d">{$dislike}</div>
+      <div class="vote-1"><a href="#" onclick="vote('{$entity}','{$id}','-{$vote}','#{$entity}-{$id}')">shit</a></div>
+    </div>
+    <div style="clear:both"></div>
   </div>
 {/template}
 
@@ -212,13 +224,7 @@
             <img src="/pic/{$pic}" />
           </div>
 	      <div class="photo-desc">{$title}</div>
-          <div>
-            <input type="button" value="Хорошо выглядишь!" onclick="alert('TODO: Голос учтен, показать состояние на кнопке');" />
-            <input type="button" value="Переоденься!" onclick="alert('TODO: Голос учтен, показать состояние на кнопке');" />
-          </div>
-          <div>
-            TODO: Owners controls
-          </div>
+	      {call photovoteblock data="$voting" /}
 	    </div>
 	    <div class="look-clothes">
 	      <ul>

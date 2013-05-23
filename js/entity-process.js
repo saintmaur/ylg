@@ -88,7 +88,7 @@ function delCloItem(id){
     $.ajax({
 	url:"#",
 	dataType:"json",
-	method:"post",
+	type:"post",
 	error:function(obj){
 	    getAlert(obj.responseText,'error');
 	},
@@ -125,6 +125,43 @@ function editCloLine(data){
     var tmpl = '<span class="category">=>category<=</span><ul><li><span class="clo-list-capt">бренд:</span>&nbsp;<a href="#">=>brand<=</a></li><li><span class="clo-list-capt">магазин:</span>&nbsp;<a href="#">=>shop<=</a></li></ul>';
     saveCloItem(data);
     $("#item-"+globData['id']).html(replaceStrTmpl(tmpl,globData));
+}
+
+function vote(entity,id,vote,sel){
+    $.ajax({
+	url:"/action-vote-"+entity,
+	dataType:"json",
+	type:"post",
+	data:'look-id='+id+'&vote='+vote,
+	error:function(obj){
+	    getAlert(obj.responseText,'error');
+	},
+	success:function(data){
+	    if(data['passed'])
+		updVotes(entity,id);
+	}
+    });
+    return false;
+}
+function getVotes(entity,id){
+    var vote = {success:false,vote:0}
+    $.ajax({
+	url:"/get-votes-"+entity,
+	dataType:"json",
+	type:"post",
+	data:'id='+id,
+	error:function(obj){
+	    getAlert(obj.responseText,'error');
+	},
+	success:function(data){
+	    if(data['success']){
+		$(sel).find('.l').text(data['like']);
+		$(sel).find('.s').text(data['sum']);
+		$(sel).find('.d').text(data['dislike']);
+	    }
+	}
+    });
+    return false;
 }
 
 $(function(){

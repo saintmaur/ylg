@@ -353,3 +353,24 @@ a:focus {
 #choice-data .look-photo-cont {
     width: 350px;
 }
+
+.look-votes {
+    width:100%
+    text-align:center;
+    height:30px;
+    padding-top:5px;
+}
+
+.look-votes .votes-wrap{
+    margin:0 auto;
+}
+
+.look-votes .votes-wrap div{
+    float:left;
+    width:20%
+    padding:3px;
+    margin: 0 3px;
+}
+.look-votes .l,.look-votes .s,.look-votes .d {
+    border:1px solid #ccc;
+}
