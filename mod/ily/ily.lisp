@@ -38,7 +38,10 @@
           (append (votes look)
                   (list (vot:find-vote vote))))))
 
-;; (vote-look 1 'like 3)
+
+;;(vote-look 1 1 3)
+
+;;(vot::vote-summary 'ily::look 1)
 ;; (votes (get-look 1))
 ;; (vot:all-vote)
 ;; (vot:entity-id (vot:get-vote 3))

@@ -108,6 +108,7 @@
                                 (tpl:lookview (list
                                                :id id
                                                :pic (ily::pic look)
+					       :voting (append (list :id id :entity "look" :vote 1) (vot::vote-summary 'look id) ) ;;TODO may differ for simple users and stylist, etc.
                                                ;; :title (ily::title look)
                                                :timestamp (ily::timestamp look)
                                                :goods (ily::goods look)))))
@@ -133,6 +134,10 @@
           "Какая-то ошибка"))))
 
 
+(restas:define-route get-votes-look ("/get-votes-look" :method :post)
+  (let ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal)))
+    (let ((look-id (gethash "look-id" data)))
+          (json:encode-json-to-string (vot::vote-summary '(ily::get-look look-id) look-id)))))
 
 (restas:define-route choices ("/choices")
   (tpl:root (list :left (tpl:left)
