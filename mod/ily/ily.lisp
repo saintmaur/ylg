@@ -8,7 +8,7 @@
                           :defgeneric
                           :standard-generic-function
                           :class-name)
-  (:export :get-look :all-look :find-look))
+  (:export :get-look :all-look :find-look :vote-look))
 
 (in-package #:ily)
 
@@ -27,13 +27,23 @@
   ((:draft   :public    :publish-look)
    (:public  :archived  :archive-look)))
 
+
+(defun vote-look (look-id voting &optional (current-user usr:*current-user*))
+  (let ((vote (vot:make-vote :entity-id look-id
+                             :entity 'look
+                             :user-id (usr::find-user (usr::get-user current-user))
+                             :voting voting))
+        (look (get-look look-id)))
+    (setf (votes look)
+          (append (votes look)
+                  (list (vot:find-vote vote))))))
+
+;; (vote-look 1 'like 3)
 ;; (votes (get-look 1))
+;; (vot:all-vote)
+;; (vot:entity-id (vot:get-vote 3))
+;; (vot:entity-id (vot::get-vote 2))
 
-;; (all-look)
-
-;; (find-look #'(lambda (x)
-;; 	       (equal (votes (car x)) 'votes2)))
-;; View/Controller
 
 ;; (defun show-create ()
 ;;   "ook"
@@ -63,6 +73,7 @@
 
 
 
+
 ;; Tests
 
 ;; Owner создает look,
@@ -74,7 +85,7 @@
 (make-look :timestamp (get-universal-time)
            :target '("club")
            :goods  '("shoes" "hat")
-           :votes  'votes1
+           :votes  nil
            :preview "1x.jpg"
            :pic "1.jpg"
            :comments 'comments
@@ -83,7 +94,7 @@
 (make-look :timestamp (get-universal-time)
            :target '("club2")
            :goods  '("shoes2" "hat2")
-           :votes  'votes2
+           :votes  nil
            :preview "2x.jpg"
            :pic "2.jpg"
            :comments 'comments
@@ -92,7 +103,7 @@
 (make-look :timestamp (get-universal-time)
            :target '("club2")
            :goods  '("shoes2" "hat2")
-           :votes  'votes2
+           :votes  nil
            :preview "3x.jpg"
            :pic "3.jpg"
            :comments 'comments
@@ -101,7 +112,7 @@
 (make-look :timestamp (get-universal-time)
            :target '("club2")
            :goods  '("shoes2" "hat2")
-           :votes  'votes2
+           :votes  nil
            :preview "4x.jpg"
            :pic "4.jpg"
            :comments 'comments

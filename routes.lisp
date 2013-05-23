@@ -69,14 +69,16 @@
   (awhen (hunchentoot:post-parameter "file")
     (destructuring-bind (pathname filename format)
         it
-      ;; (let ((pic (pht:upload pathname filename format)))
-      ;;   ;; (format nil "uploaded ~A at ~A (time: ~A)"
-      ;;   ;;         (pht::uploadfilename pic)
-      ;;   ;;         (pht::pathnamefile pic)
-      ;;   ;;         (pht::timestamp pic))
-      ;;   "{photo : pic/1.jpg}"
-      ;;   )
-      "{\"photo\" : \"pic/1.jpg\"}")))
+      (let ((pic (pht:upload pathname filename format)))
+        (format nil "uploaded ~A at ~A (time: ~A)"
+                (pht::uploadfilename pic)
+                (pht::pathnamefile pic)
+                (pht::timestamp pic))
+        (json:encode-json-to-string (list (cons "photo" (concatenate 'string "/pic/" (pht::namefile pic)))))
+        ;; "{photo : pic/1.jpg}"
+        )
+      ;; "{\"photo\" : \"pic/1.jpg\"}"
+      )))
 
 
 (restas:define-route looks ("/looks")
@@ -115,6 +117,22 @@
                   :auth (if (null usr:*current-user*)
                             (tpl:authnotlogged)
                             (tpl:authlogged (list :username (usr:email usr:*current-user*)))))))
+
+
+(restas:define-route action-vote-look ("/action-vote-look" :method :post)
+  (let ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal)))
+    (let ((look-id    (gethash "look-id" data))
+          (vote       (gethash "vote" data)))
+      (if (ily:vote-look look-id vote usr:*current-user*)
+          ;; "ok"
+          (json:encode-json-to-string (list
+                                       (cons "passed" "true")
+                                       (cons "location" "/")
+                                       (cons "msg" "Голос учтен")))
+          ;; "err"
+          "Какая-то ошибка"))))
+
+
 
 (restas:define-route choices ("/choices")
   (tpl:root (list :left (tpl:left)

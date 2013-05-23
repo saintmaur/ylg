@@ -25,12 +25,16 @@
                           :serial t
                           :pathname "mod/pht"
                           :components ((:file "pht")))
+                 (:module "vot"
+                          :serial t
+                          :pathname "mod/vot"
+                          :components ((:file "vot")))
                  (:module "ily"
                           :serial t
                           :pathname "mod/ily"
                           :components ((:file "ily")
                                        (:static-file "tpl.htm")))
-		 (:module "adv"
+                 (:module "adv"
                           :serial t
                           :pathname "mod/adv"
                           :components ((:file "adv")))

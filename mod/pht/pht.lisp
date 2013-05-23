@@ -16,6 +16,7 @@
   ((pictype        :pictype)
    (uploadfilename :filename)
    (pathnamefile   :pathname)
+   (namefile       :namefile)
    (timestamp      :timestamp)
    (user           :user))
   ((:uploaded     :deleted      :delpic)))
@@ -37,5 +38,6 @@
       (make-pic :pictype input-format
                 :uploadfilename input-filename
                 :pathnamefile outfilepath
+                :namefile output-filename
                 :timestamp (get-universal-time)
                 :user usr:*current-user*))))
