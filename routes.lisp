@@ -69,14 +69,16 @@
   (awhen (hunchentoot:post-parameter "file")
     (destructuring-bind (pathname filename format)
         it
-      ;; (let ((pic (pht:upload pathname filename format)))
-      ;;   ;; (format nil "uploaded ~A at ~A (time: ~A)"
-      ;;   ;;         (pht::uploadfilename pic)
-      ;;   ;;         (pht::pathnamefile pic)
-      ;;   ;;         (pht::timestamp pic))
-      ;;   "{photo : pic/1.jpg}"
-      ;;   )
-      "{\"photo\" : \"pic/1.jpg\"}")))
+      (let ((pic (pht:upload pathname filename format)))
+        (format nil "uploaded ~A at ~A (time: ~A)"
+                (pht::uploadfilename pic)
+                (pht::pathnamefile pic)
+                (pht::timestamp pic))
+        (json:encode-json-to-string (list (cons "photo" (concatenate 'string "/pic/" (pht::namefile pic)))))
+        ;; "{photo : pic/1.jpg}"
+        )
+      ;; "{\"photo\" : \"pic/1.jpg\"}"
+      )))
 
 
 (restas:define-route looks ("/looks")
