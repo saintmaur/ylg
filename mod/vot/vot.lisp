@@ -33,6 +33,8 @@
 	    (usr::email (car x)))
 	(usr::all-user))
 
+(vote-summary 'ily::look 4)
+
 (defun vote-summary (entity entity-id)
   (let ((objects (find-vote #'(lambda (x)
 				(and (equal (entity (car x)) entity)
@@ -49,3 +51,9 @@
     (list :like like :dislike dislike :sum sum)))
 
 ;(getf (vote-summary 'ily::look 4) :sum)
+
+(let ((entity ...)
+      (entitu-id ..))
+  (find-comment #'(lambda (x)
+		    (and (equal (entity (car x)) entity)
+			 (equal (entity-id (car x)) entity-id)))))

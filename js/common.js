@@ -1,3 +1,10 @@
+function replaceStrTmpl(str,data){
+    for(i in data){
+	str.replace("=>"+i+"<=",data[i]);
+    }
+    return str;
+}
+
 function getAlert(msg,type,x,y){
 //параметрами задаются: текст сообщения, стилизация(ошибка или успех) и расположение
     x = x!=undefined?x:20;

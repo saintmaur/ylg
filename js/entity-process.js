@@ -9,13 +9,6 @@ var globData;
 	},"1000");
 
     };
-function replaceStrTmpl(str,data){
-    for(i in data){
-	str.replace("=>"+i+"<=",data[i]);
-    }
-    return str;
-}
-
 function getCloItem(id){
     $.ajax({
 	url:"#",
