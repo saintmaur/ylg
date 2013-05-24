@@ -29,6 +29,10 @@
 
 (all-vote)
 
+(mapcar #'(lambda(x)
+	    (usr::email (car x)))
+	(usr::all-user))
+
 (defun vote-summary (entity entity-id)
   (let ((objects (find-vote #'(lambda (x)
 				(and (equal (entity (car x)) entity)
@@ -44,4 +48,4 @@
 	    objects)
     (list :like like :dislike dislike :sum sum)))
 
-;; (getf (vote-summary 'ily::look 1) :sum)
+;(getf (vote-summary 'ily::look 4) :sum)
