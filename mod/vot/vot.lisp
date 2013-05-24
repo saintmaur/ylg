@@ -26,13 +26,6 @@
 ;; (entity-id (get-vote 2))
 
 
-
-(all-vote)
-
-(mapcar #'(lambda(x)
-	    (usr::email (car x)))
-	(usr::all-user))
-
 (defun vote-summary (entity entity-id)
   (let ((objects (find-vote #'(lambda (x)
 				(and (equal (entity (car x)) entity)
