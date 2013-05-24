@@ -24,4 +24,15 @@
   ((:public  :hidden    :hide-comment)
    (:hidden  :public    :unhide-comment)))
 
+
+(defun vote-comment (comment-id voting &optional (current-user usr:*current-user*))
+  (let ((vote (vot:make-vote :entity-id comment-id
+                             :entity 'comment
+                             :user-id (usr::find-user (usr::get-user current-user))
+                             :voting voting))
+        (comment (get-comment comment-id)))
+    (setf (votes comment)
+          (append (votes comment)
+                  (list (vot:find-vote vote))))))
+
 ;; Tests
