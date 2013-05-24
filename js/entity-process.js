@@ -137,19 +137,23 @@ function vote(entity,id,vote,sel){
 	    getAlert(obj.responseText,'error');
 	},
 	success:function(data){
-	    if(data['passed'])
-		updVotes(entity,id);
+	    if(data['passed']){
+		getAlert(data['msg'],"success");
+		updVotes(entity,id,sel);
+	    } else {
+		getAlert(data.msg,"error");
+	    }
 	}
     });
     return false;
 }
-function getVotes(entity,id){
+function updVotes(entity,id,sel){
     var vote = {success:false,vote:0}
     $.ajax({
 	url:"/get-votes-"+entity,
 	dataType:"json",
 	type:"post",
-	data:'id='+id,
+	data:'look-id='+id,
 	error:function(obj){
 	    getAlert(obj.responseText,'error');
 	},
