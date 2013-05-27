@@ -192,10 +192,12 @@
 {/template}
 
 {template comment}
-  <div class="comment-item" id="{$id}-comment"></div>
+  <div class="comment-item" id="{$id}-comment">
+    <div></div>
+  </div>
 {/template}
 {template commentslist}
-  <div class="comments-wrap" id="{$entity}-comments">
+  <div class="comments-wrap" style="padding-top:30px;" id="{$entity}-comments">
     <div class="comments-list">
       <div class="comment-item" id="comment-form-tmpl-wrap">
 	<div class="comment-item" id="=>id<=-comment-form"></div>
@@ -203,8 +205,8 @@
       <div class="comment-item" id="comment-block-tmpl-wrap">
 	<div class="comment-item" id="=>id<=-comment"></div>
       </div>
-      {foreach $comment in $comments}
-      {call comment data="$comment" /}
+      {foreach $cmt in $comments}
+      {call comment data="$cmt" /}
       {ifempty}
       {/foreach}
     </div>
@@ -222,6 +224,7 @@
     </div>
     <div style="clear:both"></div>
   </div>
+  <div style="clear:both;"></div>
 {/template}
 
 {template lookslist}
@@ -250,16 +253,17 @@
 	    <div class="look-clothes">
 	      <ul>
 	        {foreach $good in $goods}
-	          <li><span class="cl-category">Брюки</span> <a href="#">ZARA</a></li>
-	          <li><span class="cl-category">TODO: Добавление данных</span></li>
-	          {ifempty}
-	          no data
+	        <li><span class="cl-category">Брюки</span> <a href="#">ZARA</a></li>
+	        <li><span class="cl-category">TODO: Добавление данных</span></li>
+	        {ifempty}
+	        no data
 	        {/foreach}
 	      </ul>
 	    </div>
       </div>
     </div>
-    {call commentslist data="$comments"}
+    <div style="clear:both;"></div>
+    {call commentslist data="$commenting" /}
   </div>
 {/template}
 
