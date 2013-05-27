@@ -191,6 +191,26 @@
   </div>
 {/template}
 
+{template comment}
+  <div class="comment-item" id="{$id}-comment"></div>
+{/template}
+{template commentslist}
+  <div class="comments-wrap" id="{$entity}-comments">
+    <div class="comments-list">
+      <div class="comment-item" id="comment-form-tmpl-wrap">
+	<div class="comment-item" id="=>id<=-comment-form"></div>
+      </div>
+      <div class="comment-item" id="comment-block-tmpl-wrap">
+	<div class="comment-item" id="=>id<=-comment"></div>
+      </div>
+      {foreach $comment in $comments}
+      {call comment data="$comment" /}
+      {ifempty}
+      {/foreach}
+    </div>
+  </div>
+{/template}
+
 {template photovoteblock}
   <div id="{$entity}-{$id}" class="{$entity}-votes">
     <div class="votes-wrap">
@@ -215,6 +235,7 @@
 
 
 {template lookview}
+  <div class="look-wrap">
     <div class="look-data">
       <div class="data">
         {$id} <br />
@@ -238,6 +259,8 @@
 	    </div>
       </div>
     </div>
+    {call commentslist data="$comments"}
+  </div>
 {/template}
 
 {template lookeditform}

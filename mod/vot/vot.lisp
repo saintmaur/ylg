@@ -43,3 +43,9 @@
     (list :like like :dislike dislike :sum sum)))
 
 ;(getf (vote-summary 'ily::look 4) :sum)
+
+(let ((entity ...)
+      (entitu-id ..))
+  (find-comment #'(lambda (x)
+		    (and (equal (entity (car x)) entity)
+			 (equal (entity-id (car x)) entity-id)))))
