@@ -40,10 +40,23 @@
 
 
 
+
+(defun build_trees (entity entity-id)
+  (let ((roots (find-comment #'(lambda (x)
+				 (and (equal (entity (car x)) entity)
+				      (equal (entity-id (car x)) entity-id))))))
+    (flet ((tmp (target)
+	     ...))
+      (loop :for root :in roots :collect
+	 (tmp root)
+
+
+  (test 'ily::look 1)
+
 (defun entity-comments (entity entity-id)
   (let ((objects (find-comment #'(lambda (x)
-                                (and (equal (entity (car x)) entity)
-                                     (equal (entity-id (car x)) entity-id)))))
+				   (and (equal (entity (car x)) entity)
+					(equal (entity-id (car x)) entity-id)))))
 	(id 0)
 	(author 0)
 	(text 0)
@@ -51,17 +64,15 @@
 	(parent-id 0)
 	(votes nil)
 	(entity-comments-list nil))
-  (sort objects #'< :key #'(lambda(x)
-			     (timestamp (car x))))
-  (mapcar #'(lambda (x)
-	      (setf id (cdr x))
-	      (setf parent-id (cmt::parent-id (car x)))
-	      (setf author (cmt::author-id (car x)))
-	      (setf ts (cmt::timestamp (car x)))
-	      (setf text (cmt::text (car x)))
-	      (push (list :id id :author author :text text :timestamp ts :entity-id entity-id :votes votes) entity-comments-list))
-	  objects)
-  entity-comments-list))
+    (mapcar #'(lambda (x)
+		(setf id (cdr x))
+		(setf parent-id (cmt::parent-id (car x)))
+		(setf author (cmt::author-id (car x)))
+		(setf ts (cmt::timestamp (car x)))
+		(setf text (cmt::text (car x)))
+		(push (list :id id :author author :text text :timestamp ts :entity-id entity-id :votes votes :children nil) entity-comments-list))
+	    objects)
+    entity-comments-list))
 
 ;; Tests
 
@@ -72,4 +83,10 @@
 ;; 		  (and (equal (entity (car x)) 'ily::look)
 ;;                                      (equal (entity-id (car x)) 1))))
 
-(entity-comments 'ily::look 1)
+(sort (entity-comments 'ily::look 1) #'> :key #'(lambda(x) (getf x :timestamp)))
+
+(loop for item in list
+     do ())
+
+(process-properties (entity-comments 'ily::look 1) (list :parent-id :timestamp))
+
