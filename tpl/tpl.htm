@@ -193,9 +193,28 @@
 
 {template comment}
   <div class="comment-item" id="{$id}-comment">
-    <div></div>
+    <div class="comment-body">
+
+    </div>
+    <div class="comment-children">
+      {foreach $child in $children}
+      {call comment data="$child" /}
+      {ifempty /}
+      {/foreach}
+    </div>
   </div>
 {/template}
+
+{template commentdup}
+  <div class="comment-item" id="{$id}-comment">
+    <div class="comment-body">
+
+    </div>
+    <div class="comment-children">
+    </div>
+  </div>
+{/template}
+
 {template commentslist}
   <div class="comments-wrap" style="padding-top:30px;" id="{$entity}-comments">
     <div class="comments-list">

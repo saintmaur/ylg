@@ -29,10 +29,6 @@
                           :serial t
                           :pathname "mod/vot"
                           :components ((:file "vot")))
-                 (:module "cmt"
-                          :serial t
-                          :pathname "mod/cmt"
-                          :components ((:file "cmt")))
                  (:module "ily"
                           :serial t
                           :pathname "mod/ily"
@@ -42,6 +38,10 @@
                           :serial t
                           :pathname "mod/adv"
                           :components ((:file "adv")))
+		 (:module "cmt"
+                          :serial t
+                          :pathname "mod/cmt"
+                          :components ((:file "cmt")))
                  (:file "render")
                  (:file "routes")
                  (:file "init")))

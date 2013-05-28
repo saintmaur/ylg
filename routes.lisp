@@ -100,6 +100,7 @@
                             (tpl:authnotlogged)
                             (tpl:authlogged (list :username (usr:email usr:*current-user*)))))))
 
+
 (restas:define-route one-look ("/look/:id")
   (tpl:root (list :left (tpl:left)
                   :right  (let ((look (ily:get-look (parse-integer id))))
