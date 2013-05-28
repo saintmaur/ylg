@@ -19,7 +19,10 @@
   ((entity      :entity)     ;; may be other comment entity
    (entity-id   :entity-id)
    (timestamp   :timestamp)
-   (votes       :votes))
+   (votes       :votes)
+   (author-id   :author-id)
+   (text        :text)
+   (parent-id   :parent-id))
   (:public :hidden)
   ((:public  :hidden    :hide-comment)
    (:hidden  :public    :unhide-comment)))
@@ -35,4 +38,38 @@
           (append (votes comment)
                   (list (vot:find-vote vote))))))
 
+
+
+(defun entity-comments (entity entity-id)
+  (let ((objects (find-comment #'(lambda (x)
+                                (and (equal (entity (car x)) entity)
+                                     (equal (entity-id (car x)) entity-id)))))
+	(id 0)
+	(author 0)
+	(text 0)
+	(ts 0)
+	(parent-id 0)
+	(votes nil)
+	(entity-comments-list nil))
+  (sort objects #'< :key #'(lambda(x)
+			     (timestamp (car x))))
+  (mapcar #'(lambda (x)
+	      (setf id (cdr x))
+	      (setf parent-id (cmt::parent-id (car x)))
+	      (setf author (cmt::author-id (car x)))
+	      (setf ts (cmt::timestamp (car x)))
+	      (setf text (cmt::text (car x)))
+	      (push (list :id id :author author :text text :timestamp ts :entity-id entity-id :votes votes) entity-comments-list))
+	  objects)
+  entity-comments-list))
+
 ;; Tests
+
+
+(make-comment :author-id 1 :text "test" :entity 'ily::look :entity-id 1 :timestamp (get-universal-time))
+
+;; (find-comment #'(lambda (x)
+;; 		  (and (equal (entity (car x)) 'ily::look)
+;;                                      (equal (entity-id (car x)) 1))))
+
+(entity-comments 'ily::look 1)

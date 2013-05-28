@@ -108,8 +108,9 @@
                                 (tpl:lookview (list
                                                :id id
                                                :pic (ily::pic look)
-					       :voting (append (list :id id :entity "look" :vote 1) (vot::vote-summary 'ily::look (parse-integer id))) ;;TODO may differ for simple users and stylist, etc.
+					       :voting (append (list :id id :entity "look" :vote 1) (vot::vote-summary 'ily::look (parse-integer id))) ;;TODO :vote may differ for simple users and stylist, etc.
                                                ;; :title (ily::title look)
+					       :commenting (list :entity "look" :entity-id id :comments (cmt::entity-comments 'ily::look (parse-integer id)))
                                                :timestamp (ily::timestamp look)
                                                :goods (ily::goods look)))))
                   :enterform (if (null usr:*current-user*)
