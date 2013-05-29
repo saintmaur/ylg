@@ -16,6 +16,7 @@
       <script type="text/javascript" src="/js/enter.js"></script>{\n}
       <script type="text/javascript" src="/js/ajaxupload.js"></script>{\n}
       <script type="text/javascript" src="/js/entity-process.js"></script>{\n}
+      <script type="text/javascript" src="/js/comments.js"></script>{\n}
     </head>{\n}
     <body>{\n}
       <div id="wrap">{\n}
@@ -63,19 +64,8 @@
             <li> {\n}
               <a href="#edit-look-form-cont" class="call-upload-form">загрузить фотографию</a>{\n}
             </li> {\n}
-            <li>submenupoint</li> {\n}
           </ul> {\n}
         <li><a href="/choices">Надо брать?!</a></li> {\n}
-        <li>menupoint {\n}
-          <ul> {\n}
-            <li>submenupoint</li> {\n}
-            <li>submenupoint</li> {\n}
-            <li>submenupoint</li> {\n}
-            <li>submenupoint</li> {\n}
-          </ul> {\n}
-        </li> {\n}
-        <li>menupoint</li> {\n}
-        <li>menupoint</li> {\n}
       </ul> {\n}
     </div> {\n}
   </div> {\n}
@@ -194,23 +184,36 @@
 {template comment}
   <div class="comment-item" id="{$id}-comment">
     <div class="comment-body">
-
-    </div>
-    <div class="comment-children">
-      {foreach $child in $children}
-      {call comment data="$child" /}
-      {ifempty /}
-      {/foreach}
-    </div>
-  </div>
-{/template}
-
-{template commentdup}
-  <div class="comment-item" id="{$id}-comment">
-    <div class="comment-body">
-
-    </div>
-    <div class="comment-children">
+      <table>
+	<tr>
+	  <td style="width:40px;height=40px;">
+	    <img src="{$userpic}" width="40" height="40" />
+	  </td>
+	  <td>
+	    <div class="comment-data-wrap">
+	      <div class="comment-data-header">
+		<div class="author">
+		  {$author} - {$timestamp}
+		</div>
+		<div class="reply">
+		  <a href="#" class="reply-on-comment-link" id="reply-on-{$id}">ответить</a>
+		</div>
+	      </div>
+	      <div class="comment-data-text">
+		{$text}
+	      </div>
+	      <div class="comment-data-footer">
+		<div>
+		  <span>голосовать</span>
+		  /*<a href="#" class="vote-plus" id="vote-for-comment-{$id}">+</a>
+		  <a href="#" class="vote-minus" id="vote-against-comment-{$id}">-</a>*/
+		  /*{call photovote data="{$voting}" /}*/
+		</div>
+	      </div>
+	    </div>
+	  </td>
+	</tr>
+      </table>
     </div>
   </div>
 {/template}
@@ -218,8 +221,20 @@
 {template commentslist}
   <div class="comments-wrap" style="padding-top:30px;" id="{$entity}-comments">
     <div class="comments-list">
-      <div class="comment-item" id="comment-form-tmpl-wrap">
-	<div class="comment-item" id="=>id<=-comment-form"></div>
+      <div style="display:none" id="comment-form-tmpl-wrap">
+	<div class="comment-item" id="=&gt;id&lt;=-comment-form">
+	  <form method="post" action="/add-comment">
+	    <div class="form-line">
+	      <input name="entity" type="hidden" value="=&gt;entity&lt;=" />
+	      <input name="entity-id" type="hidden" value="=&gt;entity-id&lt;=" />
+	      <input name="id" type="hidden" value="=&gt;id&lt;=" />
+	      <textarea name="text">=&gt;text&lt;=</textarea>
+	    </div>
+	    <div class="form-line button">
+	      <input type="button" class="save-comment" value="post" />
+	    </div>
+	  </form>
+	</div>
       </div>
       <div class="comment-item" id="comment-block-tmpl-wrap">
 	<div class="comment-item" id="=>id<=-comment"></div>
@@ -228,6 +243,20 @@
       {call comment data="$cmt" /}
       {ifempty}
       {/foreach}
+    </div>
+    <div class="comment-item" id="zero-comment-form">
+      <form method="post" action="/add-comment">
+	<div class="form-line">
+	  <input name="entity" type="hidden" value="{$entity}" />
+	  <input name="entity-id" type="hidden" value="{$entid}" />
+	  <input name="author" type="hidden" value="{$currentuser}" />
+	  <input name="id" type="hidden" value="0" />
+	  <textarea name="text"></textarea>
+	</div>
+	<div class="form-line button">
+	  <input type="button" class="save-comment" value="post" />
+	</div>
+      </form>
     </div>
   </div>
 {/template}

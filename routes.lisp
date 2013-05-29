@@ -111,10 +111,10 @@
                                                :pic (ily::pic look)
 					       :voting (append (list :id id :entity "look" :vote 1) (vot::vote-summary 'ily::look (parse-integer id))) ;;TODO :vote may differ for simple users and stylist, etc.
                                                ;; :title (ily::title look)
-					       :commenting (list :entity "look" :entity-id id :comments (cmt::entity-comments 'ily::look (parse-integer id)))
+					       :commenting (list :entity "look" :entid id :comments (cmt::entity-comments 'ily::look (parse-integer id)) :currentuser (usr:email usr:*current-user*))
                                                :timestamp (ily::timestamp look)
                                                :goods (ily::goods look)))))
-                  :enterform (if (null usr:*current-user*)
+                  :enterform (if (null (usr:email usr:*current-user*))
                                  (tpl:enterform)
                                  nil)
                   :auth (if (null usr:*current-user*)
@@ -178,6 +178,26 @@
                   :auth (if (null usr:*current-user*)
                             (tpl:authnotlogged)
                             (tpl:authlogged (list :username (usr:email usr:*current-user*)))))))
+
+
+(restas:define-route save-comment ("/save-comment" :method :post)
+  (let ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal)))
+    (let ((entity (gethash "entity" data))
+	   (entity-id (gethash "entity-id" data))
+	   (id (gethash "id" data))
+	   (author (gethash "author" data))
+	   (text (gethash "text" data)))
+      (if (= 0 id)
+	  (cmt::make-comment
+	   :text text
+	   :author author
+	   :entity-id entity-id
+	   ;; TODO :entity [перевести строковое представление в ссылку на объект]
+	   :timestamp (get-universal-time))
+	  ;;TODO edit-comment
+	  )
+      (json:encode-json-alist-to-string (list
+					 (cons "success" "true"))))))
 
 
 ;; plan file pages

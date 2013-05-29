@@ -1,6 +1,9 @@
 function replaceStrTmpl(str,data){
-    for(i in data){
-	str.replace("=>"+i+"<=",data[i]);
+    if(str != "undefined" && str != null){
+	for(i in data){
+	    var re = new RegExp("(=>"+i+"<=|=&gt;"+i+"&lt;=)",'g');
+	    str = str.replace(re,data[i]);
+	}
     }
     return str;
 }

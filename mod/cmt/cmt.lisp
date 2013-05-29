@@ -41,17 +41,17 @@
 
 
 
-(defun build_trees (entity entity-id)
-  (let ((roots (find-comment #'(lambda (x)
-				 (and (equal (entity (car x)) entity)
-				      (equal (entity-id (car x)) entity-id))))))
-    (flet ((tmp (target)
-	     ...))
-      (loop :for root :in roots :collect
-	 (tmp root)
+;; (defun build_trees (entity entity-id)
+;;   (let ((roots (find-comment #'(lambda (x)
+;; 				 (and (equal (entity (car x)) entity)
+;; 				      (equal (entity-id (car x)) entity-id))))))
+;;     (flet ((tmp (target)
+;; 	     ...))
+;;       (loop :for root :in roots :collect
+;; 	 (tmp root)
 
 
-  (test 'ily::look 1)
+;;   (test 'ily::look 1)
 
 (defun entity-comments (entity entity-id)
   (let ((objects (find-comment #'(lambda (x)
@@ -70,7 +70,7 @@
 		(setf author (cmt::author-id (car x)))
 		(setf ts (cmt::timestamp (car x)))
 		(setf text (cmt::text (car x)))
-		(push (list :id id :author author :text text :timestamp ts :entity-id entity-id :votes votes :children nil) entity-comments-list))
+		(push (list :id id :author author :text text :timestamp ts :entity-id entity-id :voting (vot::vote-summary 'cmt::comment id) :children nil) entity-comments-list))
 	    objects)
     entity-comments-list))
 
@@ -85,8 +85,4 @@
 
 (sort (entity-comments 'ily::look 1) #'> :key #'(lambda(x) (getf x :timestamp)))
 
-(loop for item in list
-     do ())
-
-(process-properties (entity-comments 'ily::look 1) (list :parent-id :timestamp))
 
