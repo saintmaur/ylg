@@ -1,11 +1,10 @@
-var formTmpl = $("#comment-form-tmpl-wrap").html();
-var blockTmpl = $("#comment-block-tmpl-wrap").html();
-
+var formTmpl,blockTmpl;
 function removeComment(id){
     $("#"+id+"-comment").remove();
 }
 
 function mapCommentForm(data,id){
+//comment edit
     var cmtBlock = $(".comments-list").find("#"+id+"-comment");
     var x = cmtBlock.offset().left;
     var y = cmtBlock.offset().top;
@@ -18,7 +17,24 @@ function mapCommentForm(data,id){
     }
 }
 
+function getCommentForm(sel,entityId,id){
+    var block = $(sel);
+    var x = block.offset().left;
+    var y = block.offset().top;
+    if(!$("#"+id+"-comment-form").size()){
+	var data = {
+	    "entity":"comment",
+	    "entity-id":entityId,
+	    "id":id,
+	    "text":""
+	}
+	var cmtForm = replaceStrTmpl(formTmpl,data);
+	block.after(cmtForm);
+    }
+}
+
 function placeSavedComment(data,id){
+//place a block w data into appropriate place
     var commentBlock = replaceStrTmpl(blockTmpl,data);
     if(!$(".comments-list").find("#"+id+"-comment").size()){
 	$(".comments-list").append(commentBlock);
@@ -81,22 +97,33 @@ function saveComment(entity,id,data){
 	},
 	success:function(data){
 	    if(data.success){
-		placeCommentForm(data,id);
+		placeSavedComment(data,id);
 	    }
 	}
     });
 }
 
-
 $(function(){
-    $(".save-comment-link").click(function(){
-	var entid = $(".comments-wrap").attr('id');
-	var entity = entid.substring(0,id.indexOf('-'));
+    formTmpl = $("#comment-form-tmpl-wrap").html();
+    blockTmpl = $("#comment-block-tmpl-wrap").html();
 
-	var form = $(this).closest("form");
-	var cid = form.find("#comment-id").val();
-	var data = form.serialize();
-	saveComment(entity,cid,data);
+    $(".reply-on-comment-link").click(function(){
+	var id = $(this).attr("id").substring($(this).attr("id").lastIndexOf("-")+1,$(this).attr("id").length);
+	getCommentForm("#"+id+"-comment",id,0);
+	return false;
+    });
+
+    $(".save-comment").live({
+	"click":function(){
+	    var entid = $(".comments-wrap").attr('id');
+	    var entity = entid.substring(0,entid.indexOf('-'));
+	    var form = $(this).closest("form");
+	    var cid = form.find("#comment-id").val();
+	    var data = form.serialize();
+	    console.log(data);
+	    saveComment(entity,cid,data);
+	    return false;
+	}
     });
     $(".edit-comment-link").click(function(){
 

@@ -374,3 +374,16 @@ a:focus {
 .look-votes .l,.look-votes .s,.look-votes .d {
     border:1px solid #ccc;
 }
+
+.comment-item{
+    width:400px;
+    text-align:left;
+}
+
+.comment-item textarea {
+    width:400px;height:50px
+}
+
+.comment-item .button {
+    text-align:right
+}
