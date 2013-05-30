@@ -333,7 +333,7 @@ a:focus {
 
 .success{
     background-color:green !important;
-    color:#000;
+    color:#eee;
 }
 .error{
     background-color:red !important;

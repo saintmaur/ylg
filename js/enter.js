@@ -22,7 +22,7 @@ $(document).ready(function(){
       success:function(data){
 	    if(data.passed){
 	      getAlert(data.msg,"success");
-	      window.location.href=data.location;
+		window.location.reload();
 	    } else {
 	      getAlert(data.msg,"error");
 	    }
@@ -44,7 +44,7 @@ $(document).ready(function(){
         alert(obj.responseText);
       },
       success:function(data){
-        window.location.href=data.location;
+          window.location.reload();
       }
     });
     return false;
@@ -68,7 +68,7 @@ $(document).ready(function(){
         alert(obj.responseText);
       },
       success:function(data){
-        window.location.href=data.location;
+          window.location.reload();
       }
     });
     return false;
@@ -85,7 +85,7 @@ $(document).ready(function(){
         alert(obj.responseText);
       },
       success:function(data){
-        window.location.href=data.location;
+          window.location.reload();
       }
     });
     return false;

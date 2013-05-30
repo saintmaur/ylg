@@ -20,9 +20,8 @@
    (entity-id   :entity-id)
    (timestamp   :timestamp)
    (votes       :votes)
-   (author-id   :author-id)
-   (text        :text)
-   (parent-id   :parent-id))
+   (author      :author)
+   (text        :text))
   (:public :hidden)
   ((:public  :hidden    :hide-comment)
    (:hidden  :public    :unhide-comment)))
@@ -55,30 +54,33 @@
 
 (defun entity-comments (entity entity-id)
   (let ((objects (find-comment #'(lambda (x)
-				   (and (equal (entity (car x)) entity)
+				   (and 1;;(equal (entity (car x)) entity)
 					(equal (entity-id (car x)) entity-id)))))
 	(id 0)
 	(author 0)
 	(text 0)
 	(ts 0)
-	(parent-id 0)
 	(votes nil)
 	(entity-comments-list nil))
     (mapcar #'(lambda (x)
 		(setf id (cdr x))
-		(setf parent-id (cmt::parent-id (car x)))
-		(setf author (cmt::author-id (car x)))
+		(setf author (cmt::author (car x)))
 		(setf ts (cmt::timestamp (car x)))
+		(setf entity (cmt::entity (car x)))
 		(setf text (cmt::text (car x)))
-		(push (list :id id :author author :text text :timestamp ts :entity-id entity-id :voting (vot::vote-summary 'cmt::comment id) :children nil) entity-comments-list))
+		(push (list :id id :author author :text text :timestamp ts :entity-id entity-id :entity entity :voting (vot::vote-summary 'cmt::comment id) :children nil) entity-comments-list))
 	    objects)
     entity-comments-list))
 
 ;; Tests
 
-
-(make-comment :author-id 1 :text "test" :entity 'ily::look :entity-id 1 :timestamp (get-universal-time))
-
+(loop for i from 1 to 1 do
+     (make-comment
+      :author 6
+      :text "dfvdfvdsfv f"
+      :entity 'ily::look
+      :entity-id 1
+      :timestamp (get-universal-time)))
 ;; (find-comment #'(lambda (x)
 ;; 		  (and (equal (entity (car x)) 'ily::look)
 ;;                                      (equal (entity-id (car x)) 1))))

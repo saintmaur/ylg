@@ -130,6 +130,7 @@ function vote(entity,id,vote,sel){
 	    getAlert(obj.responseText,'error');
 	},
 	success:function(data){
+	    console.log(data);
 	    if(data['passed']){
 		getAlert(data['msg'],"success");
 		updVotes(entity,id,sel);

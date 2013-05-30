@@ -36,6 +36,7 @@ function getCommentForm(sel,entityId,id){
 function placeSavedComment(data,id){
 //place a block w data into appropriate place
     var commentBlock = replaceStrTmpl(blockTmpl,data);
+
     if(!$(".comments-list").find("#"+id+"-comment").size()){
 	$(".comments-list").append(commentBlock);
     } else {
@@ -86,18 +87,22 @@ function delComment(entity,id){
     });
 }
 
-function saveComment(entity,id,data){
+function saveComment(entity,id,indata){
+
     $.ajax({
-	url:"/save-comment",
-	type:"post",
+	url:"/save-comment-on-"+entity,
+	type:"POST",
 	dataType:"json",
-	data:data+"&entity="+entity,
+	data:indata,
 	error:function(obj){
 	    getAlert(obj.responseText,"error");
 	},
-	success:function(data){
-	    if(data.success){
-		placeSavedComment(data,id);
+	success:function(outdata){
+	    if(outdata.success){
+		getAlert(outdata.msg,"success");
+		placeSavedComment(indata,id);
+	    } else {
+		getAlert(outdata.msg,"error");
 	    }
 	}
     });
