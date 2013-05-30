@@ -76,13 +76,58 @@
 
 ;; Tests
 
+(make-comment :author-id 1 :text "комментарий look-а" :entity 'ily::look :entity-id 1 :timestamp (get-universal-time))
 
-(make-comment :author-id 1 :text "test" :entity 'ily::look :entity-id 1 :timestamp (get-universal-time))
+(make-comment :author-id 1 :text "комментарий комментария look-а" :entity 'cmt::comment :entity-id 1 :timestamp (get-universal-time))
 
-;; (find-comment #'(lambda (x)
-;; 		  (and (equal (entity (car x)) 'ily::look)
-;;                                      (equal (entity-id (car x)) 1))))
+(make-comment :author-id 1 :text "комментарий комментария комментария look-а" :entity 'cmt::comment :entity-id 2 :timestamp (get-universal-time))
+
+(make-comment :author-id 1 :text "еще один комментарий комментария look-а" :entity 'cmt::comment :entity-id 1 :timestamp (get-universal-time))
+
+(make-comment :author-id 1 :text "еще один комментарий look-а" :entity 'ily::look :entity-id 1 :timestamp (get-universal-time))
+
+
 
 (sort (entity-comments 'ily::look 1) #'> :key #'(lambda(x) (getf x :timestamp)))
 
 
+(defun get-roots (entity entity-id)
+  (find-comment #'(lambda (x)
+                    (and (equal (entity (car x)) entity)
+                         (equal (entity-id (car x)) entity-id)))))
+
+(get-roots 'ily::look 1)
+(get-roots 'cmt::comment 1)
+(get-roots 'cmt::comment 2)
+(get-roots 'cmt::comment 3)
+
+(defun make-tree (root)
+  (let ((childs (get-roots (type-of (car root)) (cdr root))))
+    (list :parent root
+          :childs (unless (null childs)
+                    (loop :for child :in childs :collect
+                       (make-tree child))))))
+
+(make-tree (cons (ily::get-look 1) 1))
+(make-tree (cons (get-comment 1) 1))
+(make-tree (cons (get-comment 2) 2))
+(make-tree (cons (get-comment 3) 3))
+
+(defun find-all-comments (entity entity-id)
+  (loop :for root :in (get-roots entity entity-id) :collect
+     (make-tree root)))
+
+(find-all-comments 'ily::look 1)
+
+(defun traverse-tree (root &optional (level 0))
+  (format t "~%level: ~A: ~A"
+          level
+          (bprint (text (car (getf root :parent)))))
+  (unless (null (getf root :childs))
+    (incf level)
+    (loop :for child :in (getf root :childs) :do
+       (traverse-tree child level))))
+
+;; смотри на вывод в консоли
+(loop :for root :in (find-all-comments 'ily::look 1) :do
+   (traverse-tree root))
