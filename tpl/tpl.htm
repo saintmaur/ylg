@@ -186,7 +186,10 @@
     <div class="comment-body">
       <table>
 	<tr>
-	  <td style="width:40px;height=40px;">
+	  {for $i in range(0,$level,1)}
+	  <td style="width:20px">&nbsp;</td>
+	  {/for}
+	  <td style="">
 	    <img src="{$userpic}" width="40" height="40" />
 	  </td>
 	  <td>
@@ -223,7 +226,7 @@
     <div class="comment-body">
       <table>
 	<tr>
-	  <td style="width:40px;height=40px;">
+	  <td style="">
 	    <img src="" width="40" height="40" />
 	  </td>
 	  <td>
@@ -264,11 +267,12 @@
 	    <div class="form-line">
 	      <input name="entity" type="hidden" value="=&gt;entity&lt;=" />
 	      <input name="entity-id" type="hidden" value="=&gt;entity-id&lt;=" />
-	      <input name="id" type="hidden" value="=&gt;id&lt;=" />
+	      <input name="id" class="id" type="hidden" value="=&gt;id&lt;=" />
+	      <input name="author" type="hidden" value="{$currentuser}" />
 	      <textarea name="text">=&gt;text&lt;=</textarea>
 	    </div>
 	    <div class="form-line button">
-	      <input type="button" class="save-comment" value="post" />
+	      <a href="#" class="cancel-edit-link">отмена</a>&nbsp;<input type="button" class="save-comment" value="post" />
 	    </div>
 	  </form>
 	</div>
@@ -281,7 +285,7 @@
       {ifempty}
       {/foreach}
     </div>
-    <div class="comment-item" id="zero-comment-form">
+    <div class="comment-item" id="new-comment-form">
       <form method="post" action="/add-comment">
 	<div class="form-line">
 	  <input name="entity" type="hidden" value="{$entity}" />

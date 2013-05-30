@@ -128,7 +128,7 @@
                        (if (funcall func x)
                            (push x rs)))
                    (,all-entity))
-           rs))
+           (reverse rs)))
        )))
 
 

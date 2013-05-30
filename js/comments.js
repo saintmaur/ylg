@@ -28,9 +28,15 @@ function getCommentForm(sel,entityId,id){
 	    "id":id,
 	    "text":""
 	}
-	var cmtForm = replaceStrTmpl(formTmpl,data);
-	block.after(cmtForm);
+	var cmtForm = $(replaceStrTmpl(formTmpl,data));
+    } else {
+	var cmtForm = $("#"+id+"-comment-form");
+	cmtForm.find("form").trigger('reset');
+	cmtForm.hide();
     }
+    $("#new-comment-form").hide();
+    block.after(cmtForm)
+    cmtForm.fadeIn();
 }
 
 function placeSavedComment(data,id){
@@ -62,12 +68,12 @@ function getComment(entity,id){
 
 function cancelEdit(id){
     var form = $("#"+id+"-comment-form").find("form");
+    form.hide();
+    form.trigger('reset');
     if(id){
 	$(".comments-list").find("#"+id+"-comment").fadeIn();
-	form.hide();
-    } else {
-	form.trigger( 'reset' );
     }
+    $("#new-comment-form").fadeIn();
 }
 
 function delComment(entity,id){
@@ -135,5 +141,12 @@ $(function(){
     });
     $(".del-comment-link").click(function(){
 
+    });
+    $(".cancel-edit-link").live({
+	"click": function(){
+	    alert($(this).closest("form").find("input[name='id']").val())
+	    cancelEdit(cid);
+	    return false;
+	}
     });
 });
