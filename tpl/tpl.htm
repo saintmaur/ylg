@@ -186,7 +186,10 @@
     <div class="comment-body">
       <table>
 	<tr>
-	  <td style="width:40px;height=40px;">
+	  {for $i in range(0,$level,1)}
+	  <td style="width:20px">&nbsp;</td>
+	  {/for}
+	  <td style="">
 	    <img src="{$userpic}" width="40" height="40" />
 	  </td>
 	  <td>
@@ -207,7 +210,44 @@
 		  <span>голосовать</span>
 		  /*<a href="#" class="vote-plus" id="vote-for-comment-{$id}">+</a>
 		  <a href="#" class="vote-minus" id="vote-against-comment-{$id}">-</a>*/
-		  /*{call photovote data="{$voting}" /}*/
+		  /*{call photovoteblock data="{$voting}" /}*/
+		</div>
+	      </div>
+	    </div>
+	  </td>
+	</tr>
+      </table>
+    </div>
+  </div>
+{/template}
+
+{template commenttmpl}
+  <div class="comment-item" id="=>id<=-comment">
+    <div class="comment-body">
+      <table>
+	<tr>
+	  <td style="">
+	    <img src="" width="40" height="40" />
+	  </td>
+	  <td>
+	    <div class="comment-data-wrap">
+	      <div class="comment-data-header">
+		<div class="author">
+		  =>author<= - =>timestamp<=
+		</div>
+		<div class="reply">
+		  <a href="#" class="reply-on-comment-link" id="reply-on-=>id<=">ответить</a>
+		</div>
+	      </div>
+	      <div class="comment-data-text">
+		=>text<=
+	      </div>
+	      <div class="comment-data-footer">
+		<div>
+		  <span>голосовать</span>
+		  /*<a href="#" class="vote-plus" id="vote-for-comment-{$id}">+</a>
+		  <a href="#" class="vote-minus" id="vote-against-comment-{$id}">-</a>*/
+		  /*{call photovoteblock data="{$voting}" /}*/
 		</div>
 	      </div>
 	    </div>
@@ -227,24 +267,25 @@
 	    <div class="form-line">
 	      <input name="entity" type="hidden" value="=&gt;entity&lt;=" />
 	      <input name="entity-id" type="hidden" value="=&gt;entity-id&lt;=" />
-	      <input name="id" type="hidden" value="=&gt;id&lt;=" />
+	      <input name="id" class="id" type="hidden" value="=&gt;id&lt;=" />
+	      <input name="author" type="hidden" value="{$currentuser}" />
 	      <textarea name="text">=&gt;text&lt;=</textarea>
 	    </div>
 	    <div class="form-line button">
-	      <input type="button" class="save-comment" value="post" />
+	      <a href="#" class="cancel-edit-link" onclick="return cancelEdit(=&gt;id&lt;=)">отмена</a>&nbsp;<input type="button" class="save-comment" value="post" />
 	    </div>
 	  </form>
 	</div>
       </div>
-      <div class="comment-item" id="comment-block-tmpl-wrap">
-	<div class="comment-item" id="=>id<=-comment"></div>
+      <div class="comment-item" style="display:none;" id="comment-block-tmpl-wrap">
+	{call commenttmpl /}
       </div>
       {foreach $cmt in $comments}
       {call comment data="$cmt" /}
       {ifempty}
       {/foreach}
     </div>
-    <div class="comment-item" id="zero-comment-form">
+    <div class="comment-item" id="new-comment-form">
       <form method="post" action="/add-comment">
 	<div class="form-line">
 	  <input name="entity" type="hidden" value="{$entity}" />
@@ -264,11 +305,11 @@
 {template photovoteblock}
   <div id="{$entity}-{$id}" class="{$entity}-votes">
     <div class="votes-wrap">
-      <div class="vote1"><a href="#" onclick="vote('{$entity}','{$id}','{$vote}','#{$entity}-{$id}')">gold</a></div>
+      <div class="vote1"><a href="#" onclick="return vote('{$entity}','{$id}','{$vote}','#{$entity}-{$id}')">gold</a></div>
       <div class="l">{$like}</div>
       <div class="s">{$sum}</div>
       <div class="d">{$dislike}</div>
-      <div class="vote-1"><a href="#" onclick="vote('{$entity}','{$id}','-{$vote}','#{$entity}-{$id}')">shit</a></div>
+      <div class="vote-1"><a href="#" onclick="return vote('{$entity}','{$id}','-{$vote}','#{$entity}-{$id}')">shit</a></div>
     </div>
     <div style="clear:both"></div>
   </div>

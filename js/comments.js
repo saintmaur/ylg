@@ -28,14 +28,22 @@ function getCommentForm(sel,entityId,id){
 	    "id":id,
 	    "text":""
 	}
-	var cmtForm = replaceStrTmpl(formTmpl,data);
-	block.after(cmtForm);
+	var cmtForm = $(replaceStrTmpl(formTmpl,data));
+    } else {
+	var cmtForm = $("#"+id+"-comment-form");
+	cmtForm.find("form").trigger('reset');
+	cmtForm.hide();
     }
+    $("#new-comment-form").hide();
+    console.log(block)
+    block.after(cmtForm)
+    cmtForm.fadeIn();
 }
 
 function placeSavedComment(data,id){
 //place a block w data into appropriate place
     var commentBlock = replaceStrTmpl(blockTmpl,data);
+
     if(!$(".comments-list").find("#"+id+"-comment").size()){
 	$(".comments-list").append(commentBlock);
     } else {
@@ -61,12 +69,13 @@ function getComment(entity,id){
 
 function cancelEdit(id){
     var form = $("#"+id+"-comment-form").find("form");
+    $("#"+id+"-comment-form").hide();
+    form.trigger('reset');
     if(id){
 	$(".comments-list").find("#"+id+"-comment").fadeIn();
-	form.hide();
-    } else {
-	form.trigger( 'reset' );
     }
+    $("#new-comment-form").show();
+    return false;
 }
 
 function delComment(entity,id){
@@ -86,18 +95,22 @@ function delComment(entity,id){
     });
 }
 
-function saveComment(entity,id,data){
+function saveComment(entity,id,indata){
+
     $.ajax({
-	url:"/save-comment",
-	type:"post",
+	url:"/save-comment-on-"+entity,
+	type:"POST",
 	dataType:"json",
-	data:data+"&entity="+entity,
+	data:indata,
 	error:function(obj){
 	    getAlert(obj.responseText,"error");
 	},
-	success:function(data){
-	    if(data.success){
-		placeSavedComment(data,id);
+	success:function(outdata){
+	    if(outdata.success){
+		getAlert(outdata.msg,"success");
+		placeSavedComment(indata,id);
+	    } else {
+		getAlert(outdata.msg,"error");
 	    }
 	}
     });
@@ -107,10 +120,12 @@ $(function(){
     formTmpl = $("#comment-form-tmpl-wrap").html();
     blockTmpl = $("#comment-block-tmpl-wrap").html();
 
-    $(".reply-on-comment-link").click(function(){
-	var id = $(this).attr("id").substring($(this).attr("id").lastIndexOf("-")+1,$(this).attr("id").length);
-	getCommentForm("#"+id+"-comment",id,0);
-	return false;
+    $(".reply-on-comment-link").live({
+	"click":function(){
+	    var id = $(this).attr("id").substring($(this).attr("id").lastIndexOf("-")+1,$(this).attr("id").length);
+	    getCommentForm("#"+id+"-comment",id,0);
+	    return false;
+	}
     });
 
     $(".save-comment").live({
@@ -120,7 +135,6 @@ $(function(){
 	    var form = $(this).closest("form");
 	    var cid = form.find("#comment-id").val();
 	    var data = form.serialize();
-	    console.log(data);
 	    saveComment(entity,cid,data);
 	    return false;
 	}
