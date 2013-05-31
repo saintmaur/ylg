@@ -210,7 +210,7 @@
 		  <span>голосовать</span>
 		  /*<a href="#" class="vote-plus" id="vote-for-comment-{$id}">+</a>
 		  <a href="#" class="vote-minus" id="vote-against-comment-{$id}">-</a>*/
-		  /*{call photovote data="{$voting}" /}*/
+		  /*{call photovoteblock data="{$voting}" /}*/
 		</div>
 	      </div>
 	    </div>
@@ -247,7 +247,7 @@
 		  <span>голосовать</span>
 		  /*<a href="#" class="vote-plus" id="vote-for-comment-{$id}">+</a>
 		  <a href="#" class="vote-minus" id="vote-against-comment-{$id}">-</a>*/
-		  /*{call photovote data="{$voting}" /}*/
+		  /*{call photovoteblock data="{$voting}" /}*/
 		</div>
 	      </div>
 	    </div>
@@ -272,7 +272,7 @@
 	      <textarea name="text">=&gt;text&lt;=</textarea>
 	    </div>
 	    <div class="form-line button">
-	      <a href="#" class="cancel-edit-link">отмена</a>&nbsp;<input type="button" class="save-comment" value="post" />
+	      <a href="#" class="cancel-edit-link" onclick="return cancelEdit(=&gt;id&lt;=)">отмена</a>&nbsp;<input type="button" class="save-comment" value="post" />
 	    </div>
 	  </form>
 	</div>

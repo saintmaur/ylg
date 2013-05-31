@@ -35,6 +35,7 @@ function getCommentForm(sel,entityId,id){
 	cmtForm.hide();
     }
     $("#new-comment-form").hide();
+    console.log(block)
     block.after(cmtForm)
     cmtForm.fadeIn();
 }
@@ -68,12 +69,13 @@ function getComment(entity,id){
 
 function cancelEdit(id){
     var form = $("#"+id+"-comment-form").find("form");
-    form.hide();
+    $("#"+id+"-comment-form").hide();
     form.trigger('reset');
     if(id){
 	$(".comments-list").find("#"+id+"-comment").fadeIn();
     }
-    $("#new-comment-form").fadeIn();
+    $("#new-comment-form").show();
+    return false;
 }
 
 function delComment(entity,id){
@@ -118,10 +120,12 @@ $(function(){
     formTmpl = $("#comment-form-tmpl-wrap").html();
     blockTmpl = $("#comment-block-tmpl-wrap").html();
 
-    $(".reply-on-comment-link").click(function(){
-	var id = $(this).attr("id").substring($(this).attr("id").lastIndexOf("-")+1,$(this).attr("id").length);
-	getCommentForm("#"+id+"-comment",id,0);
-	return false;
+    $(".reply-on-comment-link").live({
+	"click":function(){
+	    var id = $(this).attr("id").substring($(this).attr("id").lastIndexOf("-")+1,$(this).attr("id").length);
+	    getCommentForm("#"+id+"-comment",id,0);
+	    return false;
+	}
     });
 
     $(".save-comment").live({
@@ -131,7 +135,6 @@ $(function(){
 	    var form = $(this).closest("form");
 	    var cid = form.find("#comment-id").val();
 	    var data = form.serialize();
-	    console.log(data);
 	    saveComment(entity,cid,data);
 	    return false;
 	}
@@ -141,12 +144,5 @@ $(function(){
     });
     $(".del-comment-link").click(function(){
 
-    });
-    $(".cancel-edit-link").live({
-	"click": function(){
-	    alert($(this).closest("form").find("input[name='id']").val())
-	    cancelEdit(cid);
-	    return false;
-	}
     });
 });
