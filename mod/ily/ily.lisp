@@ -151,6 +151,11 @@
   (print 'pub))
 
 (takt (get-look 1) :public :publish-look)
+(takt (get-look 2) :public :publish-look)
+(takt (get-look 3) :public :publish-look)
+(takt (get-look 4) :public :publish-look)
+
+
 
 (assert (equal :public (state (get-look 1))))
 
