@@ -114,6 +114,7 @@
 					       :commenting (list
 							    :entity "look"
 							    :entid id
+							    :pack "ily"
 							    :comments (cmt::entity-comments 'ily::look (parse-integer id))
 							    :currentuser (if usr::*current-user*
 									     (usr::find-user usr::*current-user*)
@@ -189,32 +190,49 @@
                             (tpl:authnotlogged)
                             (tpl:authlogged (list :username (usr:email usr:*current-user*)))))))
 
-(restas:define-route save-comment-on-look ("/save-comment-on-look" :method :post)
+
+
+(restas:define-route save-comment ("/save-comment" :method :post)
   (let ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal)))
-    (let ( (entity-id (gethash "entity-id" data))
-	   (id (gethash "id" data))
+    (let ( (entity-id (parse-integer (gethash "entity-id" data)))
+	   (id (parse-integer (gethash "id" data)))
 	   (author (gethash "author" data))
 	   (text (gethash "text" data))
 	   (msg "")
-	   (result 0))
+	   (result 0)
+	   (entity (gethash "entity" data))
+	   (pack (gethash "pack" data))
+	   (timestamp (get-universal-time)))
       (if (equal "" author)
 	  (setf msg "Необходимо авторизоваться!")
       	  (progn
-      	    (if (equal "0" id)
-		(progn
-		  (cmt::make-comment
-		   :text text
-		   :author (parse-integer author)
-		   :entity-id entity-id
-		   :entity 'ily::look
-		   :timestamp (get-universal-time))
+      	    (if (equal 0 id)
+		(multiple-value-bind (new-obj new-id)
+		    (cmt::make-comment
+		     :text text
+		     :author (parse-integer author)
+		     :entity-id entity-id
+		     :entity (find-symbol (string-upcase entity) (find-package (string-upcase pack)))
+		     :timestamp (get-universal-time))
+		  (setf id new-id)
 		  (setf msg "успешно"))
-      		(let ((comment (cmt::find-comment (parse-integer id))))
-      		  (setf (cmt::text comment) text)))
+      		(let ((comment (cmt::find-comment id)))
+      		  (setf (cmt::text comment) text)
+		  (setf timestamp (cmt::timestamp comment))))
 	    (setf result 1)))
       (json:encode-json-alist-to-string (list
 					 (cons "success" result)
-					 (cons "msg" msg))))))
+					 (cons "msg" msg)
+					 (cons "data" (json:encode-json-alist-to-string
+					 	       (list
+					 		(cons "text" text)
+					 		(cons "timestamp" timestamp)
+					 		(cons "author" author)
+					 		(cons "id" id)
+					 		(cons "entity-id" entity-id)
+							(cons "pack" pack)
+							(cons "entity" entity)))))))))
+
 
 
 ;; plan file pages
