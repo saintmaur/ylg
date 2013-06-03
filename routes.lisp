@@ -61,6 +61,7 @@
 
 
 (restas:define-route action-logoff ("/action-logoff" :method :post)
+  ;; (usr::takt usr::*current-user* :unlogged :logoff)
   (usr:logoff)
   (json:encode-json-to-string (list (cons "location" "/"))))
 
@@ -82,24 +83,16 @@
 
 
 (restas:define-route looks ("/looks")
-  (tpl:root (list :left (tpl:left)
-                  :right (tpl:lookslist (list :looks (mapcar #'(lambda (look-pair)
-                                                                 (let ((look (car look-pair))
-                                                                       (id (cdr look-pair)))
-                                                                   (list :id id
-                                                                         :timestamp (ily::timestamp look)
-                                                                         :target (ily::target look)
-                                                                         :votes (ily::votes look)
-                                                                         :preview (ily::preview look)
-                                                                         )))
-                                                             (ily:all-look))))
+  (tpl:root (list :left  (tpl:left)
+                  :right (ily:show-look-list (ily:find-look #'(lambda (x)
+                                                                (and (equal (ily::state (car x)) :public)
+                                                                     (equal (ily::state (car x)) :archive)))))
                   :enterform (if (null usr:*current-user*)
                                  (tpl:enterform)
                                  nil)
                   :auth (if (null usr:*current-user*)
                             (tpl:authnotlogged)
                             (tpl:authlogged (list :username (usr:email usr:*current-user*)))))))
-
 
 (restas:define-route one-look ("/look/:id")
   (tpl:root (list :left (tpl:left)
@@ -147,12 +140,14 @@
 
 (restas:define-route get-votes-look ("/get-votes-look" :method :post)
   (let ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal)))
-    (let* ((look-id (gethash "look-id" data)) (votes (vot::vote-summary 'ily::look (parse-integer look-id))))
+    (let* ((look-id  (gethash "look-id" data))
+           (votes    (vot::vote-summary 'ily::look (parse-integer look-id))))
       (json:encode-json-alist-to-string (list
 					 (cons "success" "true")
 					 (cons "like" (getf votes :like))
 					 (cons "sum" (getf votes :sum))
 					 (cons "dislike" (getf votes :dislike)))))))
+
 
 (restas:define-route choices ("/choices")
   (tpl:root (list :left (tpl:left)
