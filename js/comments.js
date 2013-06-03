@@ -26,7 +26,8 @@ function getCommentForm(sel,entityId,id){
 	    "entity":"comment",
 	    "entity-id":entityId,
 	    "id":id,
-	    "text":""
+	    "text":"",
+	    "pack":"cmt"
 	}
 	var cmtForm = $(replaceStrTmpl(formTmpl,data));
     } else {
@@ -40,14 +41,19 @@ function getCommentForm(sel,entityId,id){
     cmtForm.fadeIn();
 }
 
-function placeSavedComment(data,id){
+function placeSavedComment(data){
 //place a block w data into appropriate place
-    var commentBlock = replaceStrTmpl(blockTmpl,data);
-
-    if(!$(".comments-list").find("#"+id+"-comment").size()){
-	$(".comments-list").append(commentBlock);
+    if(!$(".comments-list").find("#"+data.id+"-comment").size()){
+	if(data.entity == "comment"){
+	    var target = $(".comments-list").find("#"+data['entity-id']+"-comment");
+	    data['padding'] = parseInt(target.css("padding-left"))+20+"px"
+	    var commentBlock = replaceStrTmpl(blockTmpl,data);
+	    target.after($(commentBlock));
+	} else {
+	    $(".comments-list").append(commentBlock);
+	}
     } else {
-	$(".comments-list").find("#"+id+"-comment").replaceWith(commentBlock);
+	$(".comments-list").find("#"+data['entity-id']+"-comment").replaceWith(commentBlock);
     }
 }
 function getComment(entity,id){
@@ -95,22 +101,21 @@ function delComment(entity,id){
     });
 }
 
-function saveComment(entity,id,indata){
-
+function saveComment(entity,indata){
     $.ajax({
-	url:"/save-comment-on-"+entity,
+	url:"/save-comment",
 	type:"POST",
 	dataType:"json",
 	data:indata,
 	error:function(obj){
 	    getAlert(obj.responseText,"error");
 	},
-	success:function(outdata){
-	    if(outdata.success){
-		getAlert(outdata.msg,"success");
-		placeSavedComment(indata,id);
+	success:function(response){
+	    if(response.success){
+		getAlert(response.msg,"success");
+		placeSavedComment($.parseJSON(response.data));
 	    } else {
-		getAlert(outdata.msg,"error");
+		getAlert(response.msg,"error");
 	    }
 	}
     });
@@ -135,7 +140,7 @@ $(function(){
 	    var form = $(this).closest("form");
 	    var cid = form.find("#comment-id").val();
 	    var data = form.serialize();
-	    saveComment(entity,cid,data);
+	    saveComment(entity,data);
 	    return false;
 	}
     });

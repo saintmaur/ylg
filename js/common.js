@@ -28,3 +28,13 @@ function getAlert(msg,type,x,y){
 	},'2500');
     }
 }
+
+function unserializeData(data){
+    var obj = {};
+    var pairs = data.split("&");
+    for(var i in pairs){
+	var p = pairs[i].split("=");
+	obj["\""+p[0]+"\""] = p[1];
+    }
+    return obj;
+}

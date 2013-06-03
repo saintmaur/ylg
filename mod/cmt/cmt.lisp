@@ -84,6 +84,7 @@
 
 (make-comment :author 1 :text "еще один комментарий look-а" :entity 'ily::look :entity-id 1 :timestamp (get-universal-time))
 
+(make-comment :author 1 :text "еще один комментарий look-а" :entity 'cmt::comment :entity-id 7 :timestamp (get-universal-time))
 
 (defun get-roots (entity entity-id)
   (find-comment #'(lambda (x)
@@ -111,28 +112,28 @@
   (loop :for root :in (get-roots entity entity-id) :collect
      (make-tree root)))
 
-(find-all-comments 'ily::look 1)
-
-
 (defvar *comments-list* nil)
 
-(defun traverse-tree (root &optional (level 0))
+(defun traverse-tree (comments-list root &optional (level 0))
   (let ((id (find-comment (car (getf root :parent)))))
-    (push (list
-	   :id id
-	   :author (author (car (getf root :parent)))
-	   :text (text (car (getf root :parent)))
-	   :timestamp (timestamp (car (getf root :parent)))
-	   :entity-id (entity-id (car (getf root :parent)))
-	   :entity (entity (car (getf root :parent)))
-	   :voting (vot::vote-summary (type-of (car root)) id)
-	   :level level) *comments-list*)
-;;  (format t "~%level: ~A: ~A"         level          (bprint (text (car (getf root :parent)))))
+    (setf comments-list
+	  (append comments-list
+		  (list (list
+			 :id id
+			 :author (author (car (getf root :parent)))
+			 :text (text (car (getf root :parent)))
+			 :timestamp (timestamp (car (getf root :parent)))
+			 :entity-id (entity-id (car (getf root :parent)))
+			 :entity (entity (car (getf root :parent)))
+			 :voting (vot::vote-summary (type-of (car root)) id)
+			 :level level))))
+    ;;  (format t "~%level: ~A: ~A"         level          (bprint (text (car (getf root :parent)))))
     (unless (null (getf root :childs))
       (incf level)
       (loop :for child :in (getf root :childs) :do
-	 (traverse-tree child level)))
-    *comments-list*))
+	 (setf comments-list
+	       (traverse-tree comments-list child level))))
+    comments-list))
 
 ;; смотри на вывод в консоли
 ;; (loop :for root :in (find-all-comments 'ily::look 1) :do
@@ -140,7 +141,12 @@
 
 
 (defun entity-comments (entity entity-id)
-  (setf *comments-list* nil)
-  (loop :for root :in (find-all-comments entity entity-id) :do
-   (traverse-tree root))
-  *comments-list*)
+  ;; (setf *comments-list* nil)
+  (let ((comments-list))
+    (loop :for root :in (find-all-comments entity entity-id) :do
+       (print "---")
+       (setf comments-list
+	     (traverse-tree comments-list root)))
+    comments-list))
+
+
