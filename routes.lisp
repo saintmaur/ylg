@@ -61,7 +61,6 @@
 
 
 (restas:define-route action-logoff ("/action-logoff" :method :post)
-  ;; (usr::takt usr::*current-user* :unlogged :logoff)
   (usr:logoff)
   (json:encode-json-to-string (list (cons "location" "/"))))
 
