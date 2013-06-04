@@ -8,7 +8,7 @@
                           :defgeneric
                           :standard-generic-function
                           :class-name)
-  (:export :*current-user* :registration :enter :logoff :send-login :email :password))
+  (:export :*current-user* :registration :enter :logoff :email :password :takt :get-account))
 
 (in-package #:usr)
 
@@ -20,10 +20,11 @@
    (new-password :password))
   (:logged :unlogged :link-sended)
   ((:logged       :unlogged     :logoff)      ;; Обнулить сессию
-   (:unlogged     :logged       :enter)       ;; Залогиниться
-   (:unlogged     :link-sended  :send-login)  ;; Забыл пароль - пошлем линк
+   (:unlogged     :logged       :none)       ;; Залогиниться
+   (:unlogged     :link-sended  :none)  ;; Забыл пароль - пошлем линк
    (:link-sended  :logged       :enter)))     ;; Залогиниться
 
+(defun none ())
 
 (defun generate-password ()
   (symbol-name (gensym "PASSWORD-")))
@@ -63,19 +64,15 @@
           (setf (password account) password)
           (setf (new-password account) "")
           (setf *current-user* account)
+          (setf (state *current-user*) :logged)
           t))))
 
 
 (defun logoff ()
+  (when (not (null *current-user*))
+    (setf (state *current-user*) :unlogged))
   (setf *current-user* nil)
   t)
-
-
-(defun send-login (login)
-  (let ((account (get-account login)))
-    (if (null account)
-        nil
-        (password account))))
 
 ;; Tests
 
@@ -128,38 +125,3 @@
 ;; Попытка логина пользователя_3 с неправильным паролем — неуспешно
 ;; Попытка логина пользователя_3 с новым паролем — успешно
 ;; Попытка логина пользователя_2 со старым паролем — успешно
-
-
-;; (define-action send-login (GET email)
-;;   (request-protect
-;;    (let ((data (get-user email)))
-;;      ;; TODO: compile and store link ??
-;;      (send-email (getf data :email) link)
-;;      (setf (getf data :state) :link-sended))))
-
-;; (define-action need-change-password (GET token)
-;;   (request-protect
-;;    (let ((data (get-user token)))
-;;      (setf (getf data :state) :logged-for-change-password))))
-
-;; (define-action change-pass (POST token oldpassword newpassword)
-;;   (request-protect
-;;    (let ((data (get-user token)))
-;;      (if (getf data :password)==oldpassword
-;;          ((setf (getf data :password) newpassword)
-;;           (setf (getf session :token) (token data))
-;;           (setf (getf data :state) :logged-for-change-password))
-;;          (return "401 Unauthorized")))))
-
-;; (define-action setf ())
-;; (define-action getf ())
-
-;; (define-action destroy-user (login password))
-
-;; (define-action token ())
-
-;; (define-action get-user ())
-
-;; ((200 "Ok" <some-data>)
-;;  (404 "Not Found")       ;; login not found
-;;  (403 "Forbidden"))))    ;; password wrong

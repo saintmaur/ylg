@@ -144,9 +144,6 @@
   ;; (setf *comments-list* nil)
   (let ((comments-list))
     (loop :for root :in (find-all-comments entity entity-id) :do
-       (print "---")
        (setf comments-list
 	     (traverse-tree comments-list root)))
     comments-list))
-
-

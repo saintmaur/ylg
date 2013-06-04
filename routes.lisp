@@ -56,12 +56,15 @@
 
 (restas:define-route action-send-login ("/action-send-login" :method :post)
   (let ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal)))
-    (let ((login    (gethash "login" data)))
-      (usr:send-login login))))
+    (let* ((login    (gethash "login" data))
+           (account  (usr::get-account login)))
+      (unless (null account)
+        (usr:takt account :link-sended :none)
+        (usr:password account)))))
 
 
 (restas:define-route action-logoff ("/action-logoff" :method :post)
-  (usr:logoff)
+  (usr:takt usr:*current-user* :unlogged :logoff)
   (json:encode-json-to-string (list (cons "location" "/"))))
 
 
@@ -101,8 +104,10 @@
                                 (tpl:lookview (list
                                                :id id
                                                :pic (ily::pic look)
-					       :voting (append (list :id id :entity "look" :vote 1) (vot::vote-summary 'ily::look (parse-integer id))) ;;TODO :vote may differ for simple users and stylist, etc.
-                                               ;; :title (ily::title look)
+					       :voting (append (list :id id :entity "look" :vote 1)
+                                           (vot::vote-summary 'ily::look (parse-integer id)))
+                           ;; TODO :vote may differ for simple users and stylist, etc.
+                           ;; :title (ily::title look)
 					       :commenting (list
 							    :entity "look"
 							    :entid id

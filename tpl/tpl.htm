@@ -182,7 +182,7 @@
 {/template}
 
 {template comment}
-  <div class="comment-item" id="{$id}-comment" style="padding-left:{$level*20}px">
+  <div class="comment-item" id="{$id}-comment" style="padding-left:{$level*20}px; border: 1px dotted black; margin: 0 0 10px 0;">
     <div class="comment-body">
       <img src="{$userpic}" width="40" height="40" />
       <div class="comment-data-wrap">
@@ -199,7 +199,7 @@
 	</div>
 	<div class="comment-data-footer">
 	  <div>
-	    <span>голосовать</span>
+	    <span style="color: red">голосовать</span>
 	    /*<a href="#" class="vote-plus" id="vote-for-comment-{$id}">+</a>
 	    <a href="#" class="vote-minus" id="vote-against-comment-{$id}">-</a>*/
 	    /*{call photovoteblock data="{$voting}" /}*/
