@@ -49,52 +49,25 @@
 ;;       (loop :for root :in roots :collect
 ;; 	 (tmp root)
 
+;; (make-comment :author 6 :text "комментарий look-а" :entity 'ily::look :entity-id 1 :timestamp (get-universal-time))
 
-;;   (test 'ily::look 1)
+;; (make-comment :author 6 :text "комментарий комментария look-а" :entity 'cmt::comment :entity-id 1 :timestamp (get-universal-time))
 
-;; (defun entity-comments (entity entity-id)
-;;   (let ((objects (find-comment #'(lambda (x)
-;; 				   (and 1;;(equal (entity (car x)) entity)
-;; 					(equal (entity-id (car x)) entity-id)))))
-;; 	(id 0)
-;; 	(author 0)
-;; 	(text 0)
-;; 	(ts 0)
-;; 	(votes nil)
-;; 	(entity-comments-list nil))
-;;     (mapcar #'(lambda (x)
-;; 		(setf id (cdr x))
-;; 		(setf author (cmt::author (car x)))
-;; 		(setf ts (cmt::timestamp (car x)))
-;; 		(setf entity (cmt::entity (car x)))
-;; 		(setf text (cmt::text (car x)))
-;; 		(push (list :id id :author author :text text :timestamp ts :entity-id entity-id :entity entity :voting (vot::vote-summary 'cmt::comment id) :children nil) entity-comments-list))
-;; 	    objects)
-;;     entity-comments-list))
+;; (make-comment :author 6 :text "комментарий комментария комментария look-а" :entity 'cmt::comment :entity-id 2 :timestamp (get-universal-time))
 
-;; Tests
+;; (make-comment :author 6 :text "еще один комментарий комментария look-а" :entity 'cmt::comment :entity-id 1 :timestamp (get-universal-time))
 
-(make-comment :author 1 :text "комментарий look-а" :entity 'ily::look :entity-id 1 :timestamp (get-universal-time))
-
-(make-comment :author 1 :text "комментарий комментария look-а" :entity 'cmt::comment :entity-id 1 :timestamp (get-universal-time))
-
-(make-comment :author 1 :text "комментарий комментария комментария look-а" :entity 'cmt::comment :entity-id 2 :timestamp (get-universal-time))
-
-(make-comment :author 1 :text "еще один комментарий комментария look-а" :entity 'cmt::comment :entity-id 1 :timestamp (get-universal-time))
-
-(make-comment :author 1 :text "еще один комментарий look-а" :entity 'ily::look :entity-id 1 :timestamp (get-universal-time))
-
-(make-comment :author 1 :text "еще один комментарий look-а" :entity 'cmt::comment :entity-id 7 :timestamp (get-universal-time))
+;; (make-comment :author 6 :text "еще один комментарий look-а" :entity 'ily::look :entity-id 1 :timestamp (get-universal-time))
 
 (defun get-roots (entity entity-id)
   (find-comment #'(lambda (x)
                     (and (equal (entity (car x)) entity)
                          (equal (entity-id (car x)) entity-id)))))
 
-(get-roots 'ily::look 1)
-(get-roots 'cmt::comment 1)
-(get-roots 'cmt::comment 2)
-(get-roots 'cmt::comment 3)
+;; (get-roots 'ily::look 1)
+;; (get-roots 'cmt::comment 1)
+;; (get-roots 'cmt::comment 2)
+;; (get-roots 'cmt::comment 3)
 
 (defun make-tree (root)
   (let ((childs (get-roots (type-of (car root)) (cdr root))))
@@ -103,16 +76,10 @@
                     (loop :for child :in childs :collect
                        (make-tree child))))))
 
-(make-tree (cons (ily::get-look 1) 1))
-(make-tree (cons (get-comment 1) 1))
-(make-tree (cons (get-comment 2) 2))
-(make-tree (cons (get-comment 3) 3))
-
-(defun find-all-comments (entity entity-id)
-  (loop :for root :in (get-roots entity entity-id) :collect
-     (make-tree root)))
-
-(defvar *comments-list* nil)
+;; (make-tree (cons (ily::get-look 1) 1))
+;; (make-tree (cons (get-comment 1) 1))
+;; (make-tree (cons (get-comment 2) 2))
+;; (make-tree (cons (get-comment 3) 3))
 
 (defun traverse-tree (comments-list root &optional (level 0))
   (let ((id (find-comment (car (getf root :parent)))))
@@ -120,12 +87,21 @@
 	  (append comments-list
 		  (list (list
 			 :id id
-			 :author (author (car (getf root :parent)))
+			 :author (usr::email (usr::get-user (author (car (getf root :parent)))))
 			 :text (text (car (getf root :parent)))
 			 :timestamp (timestamp (car (getf root :parent)))
-			 :entity-id (entity-id (car (getf root :parent)))
+			 :entityId (entity-id (car (getf root :parent)))
 			 :entity (entity (car (getf root :parent)))
-			 :voting (vot::vote-summary (type-of (car root)) id)
+			 :voting (append (list
+                              :id id
+                              :entity "comment"
+                              :pack "cmt"
+                              :vote 1
+                              :voted (vot::check-if-voted
+                                      :author (author (car (getf root :parent)))
+                                      :entity 'comment
+                                      :entity-id id)
+                              (vot::vote-summary 'comment id)))
 			 :level level))))
     ;;  (format t "~%level: ~A: ~A"         level          (bprint (text (car (getf root :parent)))))
     (unless (null (getf root :childs))
@@ -135,13 +111,10 @@
 	       (traverse-tree comments-list child level))))
     comments-list))
 
-;; смотри на вывод в консоли
-;; (loop :for root :in (find-all-comments 'ily::look 1) :do
-;;    (traverse-tree root))
-
+(defun get-comments-by-author (&key author entity (id nil))
+  (find-comment)
 
 (defun entity-comments (entity entity-id)
-  ;; (setf *comments-list* nil)
   (let ((comments-list))
     (loop :for root :in (find-all-comments entity entity-id) :do
        (setf comments-list

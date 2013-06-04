@@ -70,7 +70,7 @@
                                 (tpl:lookview (list
                                                :id id
                                                :pic (ily::pic look)
-					       :voting (append (list :id id :entity "look" :vote 1)
+					       :voting (append (list :id id :entity "look" :pack "ily" :vote 1)
                                            (vot::vote-summary 'ily::look (parse-integer id)))
                            ;; TODO :vote may differ for simple users and stylist, etc.
                            ;; :title (ily::title look)
@@ -81,7 +81,7 @@
 							    :comments (cmt::entity-comments 'ily::look (parse-integer id))
 							    :currentuser (if usr::*current-user*
 									     (usr::find-user usr::*current-user*)
-									     ""))
+									     0))
                                                :timestamp (ily::timestamp look)
                                                :goods (ily::goods look)))))
                   :enterform (if (null usr:*current-user*)
@@ -91,28 +91,37 @@
                             (tpl:authnotlogged)
                             (tpl:authlogged (list :username (usr:email usr:*current-user*)))))))
 
-
-(restas:define-route action-vote-look ("/action-vote-look" :method :post)
+(restas:define-route vote ("/vote" :method :post)
   (let ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal)))
-    (let ((look-id    (gethash "look-id" data))
-          (vote       (gethash "vote" data)))
+    (let ((entity-id  (parse-integer (gethash "entity-id" data)))
+          (entity (gethash "entity" data))
+          (pack (gethash "pack" data))
+          (vote (parse-integer (gethash "vote" data))))
       (if (and
-	   usr:*current-user*
-	   (ily:vote-look (parse-integer look-id) (parse-integer vote) usr:*current-user*))
+           usr:*current-user*
+           (vot::make-vote
+            :entity (find-symbol (string-upcase entity) (find-package (string-upcase pack)))
+            :entity-id entity-id
+            :user-id (usr::find-user usr:*current-user*)
+            :voting vote))
           ;; "ok"
           (json:encode-json-to-string (list
                                        (cons "passed" 1)
-                                       (cons "location" "/")
                                        (cons "msg" "Голос учтен")))
           ;; "err"
           (json:encode-json-to-string (list
                                        (cons "passed" 0)
                                        (cons "msg" "Ошибка доступа")))))))
 
-(restas:define-route get-votes-look ("/get-votes-look" :method :post)
+
+(restas:define-route get-entity-votes ("/get-entity-votes" :method :post)
   (let ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal)))
-    (let* ((look-id  (gethash "look-id" data))
-           (votes    (vot::vote-summary 'ily::look (parse-integer look-id))))
+    (let* ((entity-id  (gethash "entity-id" data))
+           (entity  (gethash "entity" data))
+           (pack  (gethash "pack" data))
+           (votes    (vot::vote-summary
+                      (find-symbol (string-upcase entity) (find-package (string-upcase pack)))
+                      (parse-integer entity-id))))
       (json:encode-json-alist-to-string (list
 					 (cons "success" "true")
 					 (cons "like" (getf votes :like))
@@ -160,45 +169,75 @@
 (restas:define-route save-comment ("/save-comment" :method :post)
   (let ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal)))
     (let ( (entity-id (parse-integer (gethash "entity-id" data)))
-	   (id (parse-integer (gethash "id" data)))
-	   (author (gethash "author" data))
-	   (text (gethash "text" data))
-	   (msg "")
-	   (result 0)
-	   (entity (gethash "entity" data))
-	   (pack (gethash "pack" data))
-	   (timestamp (get-universal-time)))
-      (if (equal "" author)
-	  (setf msg "Необходимо авторизоваться!")
+          (id (parse-integer (gethash "id" data)))
+           (author (parse-integer (gethash "author" data)))
+           (text (gethash "text" data))
+           (msg "")
+           (result 0)
+           (entity (gethash "entity" data))
+           (pack (gethash "pack" data))
+           (timestamp (get-universal-time)))
+      (if (equal 0 author)
+          (setf msg "Необходимо авторизоваться!")
       	  (progn
       	    (if (equal 0 id)
-		(multiple-value-bind (new-obj new-id)
-		    (cmt::make-comment
-		     :text text
-		     :author (parse-integer author)
-		     :entity-id entity-id
-		     :entity (find-symbol (string-upcase entity) (find-package (string-upcase pack)))
-		     :timestamp (get-universal-time))
-		  (setf id new-id)
-		  (setf msg "успешно"))
-      		(let ((comment (cmt::find-comment id)))
-      		  (setf (cmt::text comment) text)
-		  (setf timestamp (cmt::timestamp comment))))
-	    (setf result 1)))
+                (multiple-value-bind (new-obj new-id)
+                    (cmt::make-comment
+                     :text text
+                     :author author
+                     :entity-id entity-id
+                     :entity (find-symbol (string-upcase entity) (find-package (string-upcase pack)))
+                     :timestamp timestamp)
+                  (setf id new-id)
+                  (setf msg "успешно"))
+                (let ((comment (cmt::find-comment id)))
+                  (setf (cmt::text comment) text)
+                  (setf timestamp (cmt::timestamp comment))))
+            (setf result 1)))
       (json:encode-json-alist-to-string (list
-					 (cons "success" result)
-					 (cons "msg" msg)
-					 (cons "data" (json:encode-json-alist-to-string
-					 	       (list
-					 		(cons "text" text)
-					 		(cons "timestamp" timestamp)
-					 		(cons "author" author)
-					 		(cons "id" id)
-					 		(cons "entity-id" entity-id)
-							(cons "pack" pack)
-							(cons "entity" entity)))))))))
+                                         (cons "success" result)
+                                         (cons "msg" msg)
+                                         (cons "data" (if (not (equal 0 result))
+                                                          (json:encode-json-alist-to-string
+                                                           (list
+                                                            (cons "text" text)
+                                                            (cons "timestamp" timestamp)
+                                                            (cons "author" (usr::email (usr::get-user author)))
+                                                            (cons "id" id)
+                                                            (cons "entity-id" entity-id)
+                                                            (cons "vote" 1)
+                                                            (cons "pack" pack)
+                                                            (cons "entity" entity)
+                                                            (cons "sum" (getf (vot::vote-summary (find-symbol (string-upcase entity) (find-package (string-upcase pack))) id) :sum))
+                                                            (cons "like" (getf (vot::vote-summary (find-symbol (string-upcase entity) (find-package (string-upcase pack))) id) :like))
+                                                            (cons "dislike" (getf (vot::vote-summary (find-symbol (string-upcase entity) (find-package (string-upcase pack))) id) :dislike))))
+                                                          ())))))))
+
+(restas:define-route del-comment ("/del-comment" :method :post)
+  (let ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal)))
+    (let* ((id  (parse-integer (gethash "id" data)))
+           (author  (cmt::author (cmt::get-comment id)))
+           (msg "")
+           (result (if (and
+                        (equal author (usr::find-user usr::*current-user*))
+                        (cmt::del-comment id))
+                       (progn
+                         (setf msg "успешно")
+                         1)
+                       (progn
+                         (setf msg "Ошибка доступа. Скорей всего..")
+                         0))))
+      (json:encode-json-alist-to-string (list
+                                         (cons "success" result)
+                                         (cons "msg" msg))))))
 
 
+(restas:define-route get-comment ("/get-comment" :method :post)
+  (let ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal)))
+    (let* ((id  (parse-integer (gethash "id" data))))
+      (json:encode-json-alist-to-string (list
+                                         (cons "success" 1)
+                                         (cons "text" (cmt::text (cmt::get-comment id))))))))
 
 ;; plan file pages
 

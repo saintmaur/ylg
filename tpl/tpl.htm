@@ -182,8 +182,8 @@
 {/template}
 
 {template comment}
-  <div class="comment-item" id="{$id}-comment" style="padding-left:{$level*20}px; border: 1px dotted black; margin: 0 0 10px 0;">
-    <div class="comment-body">
+  <div class="comment-item" id="{$id}-comment">
+    <div class="comment-body" {if $level > 0} id="child-of-{$entityId}" {/if} style="padding-left:{$level*20}px;">
       <img src="{$userpic}" width="40" height="40" />
       <div class="comment-data-wrap">
 	<div class="comment-data-header">
@@ -194,15 +194,25 @@
 	    <a href="#" class="reply-on-comment-link" id="reply-on-{$id}">ответить</a>
 	  </div>
 	</div>
+
 	<div class="comment-data-text">
 	  {$text}
 	</div>
 	<div class="comment-data-footer">
 	  <div>
-	    <span style="color: red">голосовать</span>
-	    /*<a href="#" class="vote-plus" id="vote-for-comment-{$id}">+</a>
-	    <a href="#" class="vote-minus" id="vote-against-comment-{$id}">-</a>*/
-	    /*{call photovoteblock data="{$voting}" /}*/
+	    <div style="color: red">голосовать</div>
+        <div class="ctrl-wrap">
+          <div class="edit-cmt">
+            <a href="#" id="edit-cmt-{$id}" >ред.</a>
+          </div>
+          <div class="del-cmt">
+            <a href="#"  id="del-cmt-{$id}" >удал.</a>
+          </div>
+        </div>
+        <div class="cmt-wrap">
+          {call voteblock data="$voting" /}
+        </div>
+        <div style="clear:both"></div>
 	  </div>
 	</div>
       </div>
@@ -211,8 +221,8 @@
   {/template}
 
   {template commenttmpl}
-  <div class="comment-item" id="=>id<=-comment" style="padding-left:=>padding<=">
-    <div class="comment-body">
+  <div class="comment-item" id="=>id<=-comment">
+    <div class="comment-body" id="child-of-=>entity-id<=" style="padding-left:=>padding<=">
       <table>
 	<tr>
 	  <td style="">
@@ -236,7 +246,7 @@
 		  <span>голосовать</span>
 		  /*<a href="#" class="vote-plus" id="vote-for-comment-{$id}">+</a>
 		  <a href="#" class="vote-minus" id="vote-against-comment-{$id}">-</a>*/
-		  /*{call photovoteblock data="{$voting}" /}*/
+		  {call voteblocktmpl /}
 		</div>
 	      </div>
 	    </div>
@@ -251,7 +261,7 @@
   <div class="comments-wrap" style="padding-top:30px;" id="{$entity}-comments">
     <div class="comments-list">
       <div style="display:none" id="comment-form-tmpl-wrap">
-	<div class="comment-item" id="=&gt;id&lt;=-comment-form">
+	<div class="comment-form" id="=&gt;id&lt;=-comment-form">
 	  <form method="post" action="/add-comment">
 	    <div class="form-line">
 	      <input name="entity" type="hidden" value="=&gt;entity&lt;=" />
@@ -275,7 +285,7 @@
       {ifempty}
       {/foreach}
     </div>
-    <div class="comment-item" id="new-comment-form">
+    <div class="comment-form" id="new-comment-form">
       <form method="post" action="/add-comment">
 	<div class="form-line">
 	  <input name="entity" type="hidden" value="{$entity}" />
@@ -293,14 +303,40 @@
   </div>
 {/template}
 
-{template photovoteblock}
+{template voteblock}
   <div id="{$entity}-{$id}" class="{$entity}-votes">
     <div class="votes-wrap">
-      <div class="vote1"><a href="#" onclick="return vote('{$entity}','{$id}','{$vote}','#{$entity}-{$id}')">gold</a></div>
+      <div class="vote1">
+        {if $voted==1}
+        <a href="#" class="vote-link" onclick="return vote('{$pack}','{$entity}','{$id}','{$vote}','#{$entity}-{$id}')">+</a>
+        {else}
+        <span class="disabled">+</span>
+        {/if}
+      </div>
       <div class="l">{$like}</div>
       <div class="s">{$sum}</div>
       <div class="d">{$dislike}</div>
-      <div class="vote-1"><a href="#" onclick="return vote('{$entity}','{$id}','-{$vote}','#{$entity}-{$id}')">shit</a></div>
+      <div class="vote-1">
+        {if $voted==1}
+        <a href="#" class="vote-link" onclick="return vote('{$pack}','{$entity}','{$id}','-{$vote}','#{$entity}-{$id}')">-</a>
+        {else}
+        <span class="disabled">-</span>
+        {/if}
+      </div>
+    </div>
+    <div style="clear:both"></div>
+  </div>
+  <div style="clear:both;"></div>
+{/template}
+
+{template voteblocktmpl}
+  <div id="=>entity<=-=>id<=" class="=>entity<=-votes">
+    <div class="votes-wrap">
+      <div class="vote1"><a href="#" onclick="return vote('=>pack<=','=>entity<=','=>id<=','=>vote<=','#=>entity<=-=>id<=')">+</a></div>
+      <div class="l">=>like<=</div>
+      <div class="s">=>sum<=</div>
+      <div class="d">=>dislike<=</div>
+      <div class="vote-1"><a href="#" onclick="return vote('=>pack<=','=>entity<=','=>id<=','-=>vote<=','#=>entity<=-=>id<=')">-</a></div>
     </div>
     <div style="clear:both"></div>
   </div>
@@ -328,7 +364,7 @@
             <img src="/pic/{$pic}" />
           </div>
 	      <div class="photo-desc">{$title}</div>
-	      {call photovoteblock data="$voting" /}
+	      {call voteblock data="$voting" /}
 	    </div>
 	    <div class="look-clothes">
 	      <ul>

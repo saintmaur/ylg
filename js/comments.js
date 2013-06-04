@@ -4,72 +4,66 @@ function removeComment(id){
 }
 
 function mapCommentForm(data,id){
-//comment edit
+    //comment edit
     var cmtBlock = $(".comments-list").find("#"+id+"-comment");
-    var x = cmtBlock.offset().left;
-    var y = cmtBlock.offset().top;
-    if(!$("#"+id+"-comment-form").size()){
-	var cmtForm = replaceStrTmpl(formTmpl,data);
+ 	var cmtForm = replaceStrTmpl(formTmpl,data);
 	cmtBlock.hide().append(cmtForm);
-    } else {
-	var cmtForm = $(".comments-list").find("#"+id+"-comment").hide();
-	$("#"+id+"-comment-form").fadeIn();
-    }
 }
 
 function getCommentForm(sel,entityId,id){
     var block = $(sel);
-    var x = block.offset().left;
-    var y = block.offset().top;
-    if(!$("#"+id+"-comment-form").size()){
-	var data = {
-	    "entity":"comment",
-	    "entity-id":entityId,
-	    "id":id,
-	    "text":"",
-	    "pack":"cmt"
-	}
-	var cmtForm = $(replaceStrTmpl(formTmpl,data));
+    var data = {};
+    console.log(entityId +' ' + id);
+    if(!id){
+	    data = {
+	        "entity":"comment",
+	        "entity-id":entityId,
+	        "id":id,
+	        "text":"",
+	        "pack":"cmt"
+	    }
     } else {
-	var cmtForm = $("#"+id+"-comment-form");
-	cmtForm.find("form").trigger('reset');
-	cmtForm.hide();
+
     }
+	var cmtForm = $(replaceStrTmpl(formTmpl,data));
     $("#new-comment-form").hide();
-    console.log(block)
     block.after(cmtForm)
     cmtForm.fadeIn();
 }
 
 function placeSavedComment(data){
-//place a block w data into appropriate place
+    //place a block w data into appropriate place
     if(!$(".comments-list").find("#"+data.id+"-comment").size()){
-	if(data.entity == "comment"){
-	    var target = $(".comments-list").find("#"+data['entity-id']+"-comment");
-	    data['padding'] = parseInt(target.css("padding-left"))+20+"px"
-	    var commentBlock = replaceStrTmpl(blockTmpl,data);
-	    target.after($(commentBlock));
-	} else {
-	    $(".comments-list").append(commentBlock);
-	}
+	    if(data.entity == "comment"){
+	        var target = $(".comments-list").find("#"+data['entity-id']+"-comment");
+	        data['padding'] = parseInt(target.find('.comment-body').css("padding-left"))+20+"px"
+	        var commentBlock = replaceStrTmpl(blockTmpl,data);
+	        target.after($(commentBlock));
+	        $("#0-comment-form").hide().find("form").trigger('reset');
+	        $("#new-comment-form").fadeIn();
+	    } else {
+	        var commentBlock = replaceStrTmpl(blockTmpl,data);
+	        $(".comments-list").append(commentBlock);
+	        $("#new-comment-form").find("form").trigger('reset');
+	    }
     } else {
-	$(".comments-list").find("#"+data['entity-id']+"-comment").replaceWith(commentBlock);
+	    $(".comments-list").find("#"+data['entity-id']+"-comment").replaceWith(commentBlock);
     }
 }
 function getComment(entity,id){
     $.ajax({
-	url:"/get-comment",
-	type:"post",
-	dataType:"json",
-	data:"comment-id="+id+"&entity="+entity,
-	error:function(obj){
-	    getAlert(obj.responseText,"error");
-	},
-	success:function(data){
-	    if(data.success){
-		mapCommentForm(data,id);
+	    url:"/get-comment",
+	    type:"post",
+	    dataType:"json",
+	    data:"comment-id="+id+"&entity="+entity,
+	    error:function(obj){
+	        getAlert(obj.responseText,"error");
+	    },
+	    success:function(data){
+	        if(data.success){
+		        mapCommentForm(data,id);
+	        }
 	    }
-	}
     });
 }
 
@@ -78,46 +72,46 @@ function cancelEdit(id){
     $("#"+id+"-comment-form").hide();
     form.trigger('reset');
     if(id){
-	$(".comments-list").find("#"+id+"-comment").fadeIn();
+	    $(".comments-list").find("#"+id+"-comment").fadeIn();
     }
     $("#new-comment-form").show();
     return false;
 }
 
-function delComment(entity,id){
+function delComment(id){
     $.ajax({
-	url:"/del-comment",
-	type:"post",
-	dataType:"json",
-	data:"comment-id="+id+"&entity="+entity,
-	error:function(obj){
-	    getAlert(obj.responseText,"error");
-	},
-	success:function(data){
-	    if(data.success){
-		removeComment(id);
+	    url:"/del-comment",
+	    type:"post",
+	    dataType:"json",
+	    data:"id="+id,
+	    error:function(obj){
+	        getAlert(obj.responseText,"error");
+	    },
+	    success:function(data){
+	        if(data.success){
+		        removeComment(id);
+	        }
 	    }
-	}
     });
 }
 
 function saveComment(entity,indata){
     $.ajax({
-	url:"/save-comment",
-	type:"POST",
-	dataType:"json",
-	data:indata,
-	error:function(obj){
-	    getAlert(obj.responseText,"error");
-	},
-	success:function(response){
-	    if(response.success){
-		getAlert(response.msg,"success");
-		placeSavedComment($.parseJSON(response.data));
-	    } else {
-		getAlert(response.msg,"error");
+	    url:"/save-comment",
+	    type:"POST",
+	    dataType:"json",
+	    data:indata,
+	    error:function(obj){
+	        getAlert(obj.responseText,"error");
+	    },
+	    success:function(response){
+	        if(response.success){
+		        getAlert(response.msg,"success");
+		        placeSavedComment($.parseJSON(response.data));
+	        } else {
+		        getAlert(response.msg,"error");
+	        }
 	    }
-	}
     });
 }
 
@@ -126,28 +120,34 @@ $(function(){
     blockTmpl = $("#comment-block-tmpl-wrap").html();
 
     $(".reply-on-comment-link").live({
-	"click":function(){
-	    var id = $(this).attr("id").substring($(this).attr("id").lastIndexOf("-")+1,$(this).attr("id").length);
-	    getCommentForm("#"+id+"-comment",id,0);
-	    return false;
-	}
+	    "click":function(){
+	        var id = $(this).attr("id").substring($(this).attr("id").lastIndexOf("-")+1,$(this).attr("id").length);
+	        getCommentForm("#"+id+"-comment",id,0);
+	        return false;
+	    }
     });
 
     $(".save-comment").live({
-	"click":function(){
-	    var entid = $(".comments-wrap").attr('id');
-	    var entity = entid.substring(0,entid.indexOf('-'));
-	    var form = $(this).closest("form");
-	    var cid = form.find("#comment-id").val();
-	    var data = form.serialize();
-	    saveComment(entity,data);
-	    return false;
-	}
+	    "click":function(){
+	        var entid = $(".comments-wrap").attr('id');
+	        var entity = entid.substring(0,entid.indexOf('-'));
+	        var form = $(this).closest("form");
+	        var cid = form.find("#comment-id").val();
+	        var data = form.serialize();
+	        saveComment(entity,data);
+	        return false;
+	    }
     });
-    $(".edit-comment-link").click(function(){
-
+    $(".edit-cmt").find('a').click(function(){
+        var selId = $(this).attr('id');
+        var id = selId.substring(selId.lastIndexOf('-')+1,selId.length);
+        getCommentForm(id);
+        return false;
     });
-    $(".del-comment-link").click(function(){
-
+    $(".del-cmt").find('a').click(function(){
+        var selId = $(this).attr('id');
+        var id = selId.substring(selId.lastIndexOf('-')+1,selId.length);
+        delComment(id);
+        return false;
     });
 });
