@@ -29,7 +29,7 @@
 (defun generate-password ()
   (symbol-name (gensym "PASSWORD-")))
 
-(defun registration (email)
+ (defun registration (email)
   ;; TODO: Проверяеть email на валидность, если не валиден - сигнализировать err-param
   ;; Если есть уже такой email - возвращать nil
   (when (get-account email)
@@ -75,7 +75,6 @@
   t)
 
 ;; Tests
-
 ;; Регистрация пользователя_1 — успешно
 (assert (equal 'user (type-of (registration "user_1@example.tld"))))
 
