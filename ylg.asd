@@ -20,7 +20,8 @@
                  (:module "usr"
                           :serial t
                           :pathname "mod/usr"
-                          :components ((:file "usr")))
+                          :components ((:file "usr")
+                                       (:file "routes")))
                  (:module "pht"
                           :serial t
                           :pathname "mod/pht"
