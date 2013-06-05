@@ -27,13 +27,12 @@
 
 (defun check-if-voted (&key author entity entity-id)
   (if (and (vot::find-vote #'(lambda (x)
-                           (and (equal (vot::user-id (car x))
-                                       author)
-                                (equal (vot::entity (car x)) entity)
-                           (equal (vot::entity-id (car x)) entity-id))))
-       t))
-  1
-  0)
+                               (and (equal (vot::user-id (car x)) author)
+                                    (equal (vot::entity (car x)) entity)
+                                    (equal (vot::entity-id (car x)) entity-id))))
+           t)
+      1  0))
+
 
 (defun vote-summary (entity entity-id)
   (let ((objects (find-vote #'(lambda (x)

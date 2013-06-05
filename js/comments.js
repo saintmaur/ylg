@@ -5,9 +5,28 @@ function removeComment(id){
 
 function mapCommentForm(data,id){
     //comment edit
+    console.log(data)
     var cmtBlock = $(".comments-list").find("#"+id+"-comment");
  	var cmtForm = replaceStrTmpl(formTmpl,data);
-	cmtBlock.hide().append(cmtForm);
+	cmtBlock.hide().after(cmtForm);
+}
+
+function getComment(id){
+    $.ajax({
+	    url:"/get-comment",
+	    type:"post",
+	    dataType:"json",
+	    data:"id="+id,
+	    error:function(obj){
+	        getAlert(obj.responseText,"error");
+	    },
+	    success:function(data){
+	        if(data.success){
+                $("div[id$='-comment-form']").hide();
+		        mapCommentForm($.parseJSON(data.data),id);
+	        }
+	    }
+    });
 }
 
 function getCommentForm(sel,entityId,id){
@@ -17,7 +36,7 @@ function getCommentForm(sel,entityId,id){
     if(!id){
 	    data = {
 	        "entity":"comment",
-	        "entity-id":entityId,
+	        "entityId":entityId,
 	        "id":id,
 	        "text":"",
 	        "pack":"cmt"
@@ -47,24 +66,12 @@ function placeSavedComment(data){
 	        $("#new-comment-form").find("form").trigger('reset');
 	    }
     } else {
-	    $(".comments-list").find("#"+data['entity-id']+"-comment").replaceWith(commentBlock);
+        $("#"+data['id']+"-comment-form").hide();
+        var commentBlock = replaceStrTmpl(blockTmpl,data);
+	    $(".comments-list").find("#"+data['id']+"-comment").find(".comment-data-text").html(data.text);
+	    $(".comments-list").find("#"+data['id']+"-comment").fadeIn();
+        $("#new-comment-form").fadeIn();
     }
-}
-function getComment(entity,id){
-    $.ajax({
-	    url:"/get-comment",
-	    type:"post",
-	    dataType:"json",
-	    data:"comment-id="+id+"&entity="+entity,
-	    error:function(obj){
-	        getAlert(obj.responseText,"error");
-	    },
-	    success:function(data){
-	        if(data.success){
-		        mapCommentForm(data,id);
-	        }
-	    }
-    });
 }
 
 function cancelEdit(id){
@@ -141,7 +148,7 @@ $(function(){
     $(".edit-cmt").find('a').click(function(){
         var selId = $(this).attr('id');
         var id = selId.substring(selId.lastIndexOf('-')+1,selId.length);
-        getCommentForm(id);
+        getComment(id);
         return false;
     });
     $(".del-cmt").find('a').click(function(){

@@ -19,7 +19,6 @@
   ((entity      :entity)     ;; may be other comment entity
    (entity-id   :entity-id)
    (timestamp   :timestamp)
-   (votes       :votes)
    (author      :author)
    (text        :text))
   (:public :hidden)
@@ -81,6 +80,10 @@
 ;; (make-tree (cons (get-comment 2) 2))
 ;; (make-tree (cons (get-comment 3) 3))
 
+(defun find-all-comments (entity entity-id)
+  (loop :for root :in (get-roots entity entity-id) :collect
+     (make-tree root)))
+
 (defun traverse-tree (comments-list root &optional (level 0))
   (let ((id (find-comment (car (getf root :parent)))))
     (setf comments-list
@@ -92,16 +95,12 @@
 			 :timestamp (timestamp (car (getf root :parent)))
 			 :entityId (entity-id (car (getf root :parent)))
 			 :entity (entity (car (getf root :parent)))
-			 :voting (append (list
-                              :id id
-                              :entity "comment"
-                              :pack "cmt"
-                              :vote 1
-                              :voted (vot::check-if-voted
-                                      :author (author (car (getf root :parent)))
-                                      :entity 'comment
-                                      :entity-id id)
-                              (vot::vote-summary 'comment id)))
+			 :voting (append (list :id id :entity "comment" :pack "cmt" :vote 1
+                                   :voted (vot::check-if-voted
+                                           :author (author (car (getf root :parent)))
+                                           :entity 'comment
+                                           :entity-id id))
+                             (vot::vote-summary 'comment id))
 			 :level level))))
     ;;  (format t "~%level: ~A: ~A"         level          (bprint (text (car (getf root :parent)))))
     (unless (null (getf root :childs))
@@ -111,8 +110,6 @@
 	       (traverse-tree comments-list child level))))
     comments-list))
 
-(defun get-comments-by-author (&key author entity (id nil))
-  (find-comment)
 
 (defun entity-comments (entity entity-id)
   (let ((comments-list))
@@ -120,3 +117,16 @@
        (setf comments-list
 	     (traverse-tree comments-list root)))
     comments-list))
+
+(defun get-comment-data (id)
+  (let ((comment (get-comment id)))
+    (if comment
+        (list
+         :id id
+         :text (text comment)
+         :author (author comment)
+         :timestamp (timestamp comment)
+         :pack (string-downcase (package-name (symbol-package (entity comment))))
+         :entity (string-downcase (entity comment))
+         :entity-id (entity-id comment))
+        nil)))

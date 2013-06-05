@@ -64,13 +64,24 @@
 
 (restas:define-route one-look ("/look/:id")
   (tpl:root (list :left (tpl:left)
-                  :right  (let ((look (ily:get-look (parse-integer id))))
+                  :right  (let ((look (ily:get-look (parse-integer id)))
+                                (user (if usr::*current-user*
+                                          (usr::find-user usr::*current-user*)
+                                          0)))
                             (if (null look)
                                 "No such data"
                                 (tpl:lookview (list
                                                :id id
                                                :pic (ily::pic look)
-					       :voting (append (list :id id :entity "look" :pack "ily" :vote 1)
+					       :voting (append (list
+                                            :id id
+                                            :entity "look"
+                                            :pack "ily"
+                                            :vote 1
+                                            :voted (vot::check-if-voted
+                                                    :author user
+                                                    :entity 'ily::look
+                                                    :entity-id (parse-integer id)))
                                            (vot::vote-summary 'ily::look (parse-integer id)))
                            ;; TODO :vote may differ for simple users and stylist, etc.
                            ;; :title (ily::title look)
@@ -79,11 +90,9 @@
 							    :entid id
 							    :pack "ily"
 							    :comments (cmt::entity-comments 'ily::look (parse-integer id))
-							    :currentuser (if usr::*current-user*
-									     (usr::find-user usr::*current-user*)
-									     0))
-                                               :timestamp (ily::timestamp look)
-                                               :goods (ily::goods look)))))
+							    :currentuser user)
+                           :timestamp (ily::timestamp look)
+                           :goods (ily::goods look)))))
                   :enterform (if (null usr:*current-user*)
                                  (tpl:enterform)
                                  nil)
@@ -190,9 +199,13 @@
                      :timestamp timestamp)
                   (setf id new-id)
                   (setf msg "успешно"))
-                (let ((comment (cmt::find-comment id)))
+                (let ((comment (cmt::get-comment id)))
                   (setf (cmt::text comment) text)
-                  (setf timestamp (cmt::timestamp comment))))
+                  (setf timestamp (cmt::timestamp comment))
+                  (setf author (cmt::author comment))
+                  (setf entity-id (cmt::entity-id comment))
+                  (setf entity (string-downcase (symbol-name (cmt::entity comment))))
+                  ))
             (setf result 1)))
       (json:encode-json-alist-to-string (list
                                          (cons "success" result)
@@ -234,10 +247,15 @@
 
 (restas:define-route get-comment ("/get-comment" :method :post)
   (let ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal)))
-    (let* ((id  (parse-integer (gethash "id" data))))
+    (let* ((id  (parse-integer (gethash "id" data)))
+           (cmt-data (cmt::get-comment-data id))
+           (result 0))
+      (when cmt-data
+          (setf result 1))
       (json:encode-json-alist-to-string (list
-                                         (cons "success" 1)
-                                         (cons "text" (cmt::text (cmt::get-comment id))))))))
+                                         (cons "success" result)
+                                         (cons "data" (json:encode-json-plist-to-string
+                                                       cmt-data)))))))
 
 ;; plan file pages
 
