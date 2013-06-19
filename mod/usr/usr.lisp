@@ -24,7 +24,6 @@
 
 (init-table)
 
-(defparamenter table 'users)
 (print (macroexpand-1
 '(define-entity user "Автомат пользователя"
   ((email        :email)

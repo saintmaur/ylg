@@ -26,3 +26,25 @@
          (with-connection ,db-spec
            (unless (table-exists-p ,table)
              (execute (dao-table-definition ',class-name))))))))
+
+(defun make-clause-list (priv-rel args)
+  (let ((clause "") (c 1))
+    (loop for i in args
+       if (and (keywordp i)
+                 (getf args i)
+                 (not (keywordp (getf args i))))
+         do
+         (setf clause (concatenate 'string
+                                   clause
+                                   (unless (or
+                                            (= c 1)
+                                            (keywordp (getf args i)))
+                                     " and ")
+                                   (symbol-name i)
+                                   " " (symbol-name priv-rel)
+                                   " \'" (getf args i) "\' "))
+       end
+       do
+         (incf c))
+    (print clause)))
+

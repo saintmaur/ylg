@@ -59,14 +59,15 @@
 (defmacro define-entity (name desc &rest tail)
   (let ( (inc            (intern (concatenate 'string "INC-"    (symbol-name name) "-ID")))
         (incf-inc       (intern (concatenate 'string "INCF-"    (symbol-name name) "-ID")))
-        (init-inc       (intern (concatenate 'string "INIT-"    (symbol-name name) "-ID")))
-        (container      (intern (concatenate 'string "*"        (symbol-name name) "*")))
-        (count-entity   (intern (concatenate 'string "COUNT-"   (symbol-name name))))
-        (make-entity    (intern (concatenate 'string "MAKE-"    (symbol-name name))))
-        (del-entity     (intern (concatenate 'string "DEL-"     (symbol-name name))))
-        (all-entity     (intern (concatenate 'string "ALL-"     (symbol-name name))))
-        (get-entity     (intern (concatenate 'string "GET-"     (symbol-name name))))
-        (find-entity    (intern (concatenate 'string "FIND-"    (symbol-name name)))))
+         (init-inc       (intern (concatenate 'string "INIT-"    (symbol-name name) "-ID")))
+         (container      (intern (concatenate 'string "*"        (symbol-name name) "*")))
+         (count-entity   (intern (concatenate 'string "COUNT-"   (symbol-name name))))
+         (make-entity    (intern (concatenate 'string "MAKE-"    (symbol-name name))))
+         (del-entity     (intern (concatenate 'string "DEL-"     (symbol-name name))))
+         (all-entity     (intern (concatenate 'string "ALL-"     (symbol-name name))))
+         (get-entity     (intern (concatenate 'string "GET-"     (symbol-name name))))
+         (find-entity    (intern (concatenate 'string "FIND-"    (symbol-name name))))
+         (table          (intern (concatenate 'string (symbol-name name) "S"))))
     `(let ((,inc 0))
        ;; incrementor
        (defun ,incf-inc ()
@@ -95,18 +96,16 @@
        ;;         (unless (table-exists-p table-name)
        ;;           (execute (dao-table-definition table-name)))))
        ;; make-entity
+
        (defun ,make-entity (&rest initargs)
          (with-connection ylg::*db-spec*
-           (let* ((d-class ',(intern (string-upcase (concatenate 'string (symbol-name name) "s"))))
-                   (rec (select-dao d-class
-                                    (append '(and)
-                                            (loop for i in initargs
-                                               when (and (keywordp i) '(getf initargs i) )
-                                               :collect '(:= i (getf initargs i)))))))
-             (if rec
-                 (id (cond ((listp rec ) (car rec)
-                            (equal d-class (type-of rec)) rec)))
-                 (id (make-dao d-class initargs)))))
+           ;(select-dao 'usr::users (db-init::make-clause-list ':= '(:d "f" :r "ee" :fs :df)))
+            ;(select-dao 'usr::users ,(db-init::make-clause-list ':= '(:d "f" :r "ee" :fs :df))))
+            (let ((rec (select-dao ',table (db-init::make-clause-list '= initargs)))))
+            (if rec
+                (id (car rec))
+                (id (make-dao ',table initargs)))
+            )
 ;;          (let ((id (,incf-inc)))
             ;; todo: duplicate by id
             ;; todo: duplicate by fields
@@ -126,7 +125,7 @@
          (let ((rec))
          (when (typep var 'integer)
            (with-connection ylg::*db-spec*
-             (setf rec (select-dao (intern table (sybmol-package ,name)) :id var)))
+             (setf rec (select-dao ',table (:= :id var))))
            ;; (multiple-value-bind (hash-val present-p)
            ;;     (gethash var ,container)
            ;;   (unless present-p
