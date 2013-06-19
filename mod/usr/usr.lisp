@@ -24,8 +24,8 @@
 
 (init-table)
 
-(print (macroexpand-1
-'(define-entity user "Автомат пользователя"
+;(print (macroexpand-1
+(define-automat user "Автомат пользователя"
   ((email        :email)
    (password     :password)
    (new-password :new-password))
@@ -34,7 +34,7 @@
    (:unlogged     :logged       :none)       ;; Залогиниться
    (:unlogged     :link-sended  :none)  ;; Забыл пароль - пошлем линк
    (:link-sended  :logged       :enter)))     ;; Залогиниться
-))
+;))
 (defun none ())
 
 (defun generate-password ()

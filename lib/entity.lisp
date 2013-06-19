@@ -99,7 +99,7 @@
 
        (defun ,make-entity (&rest initargs)
          (with-connection ylg::*db-spec*
-           (select-dao 'usr::users (db-init::make-clause-list :and ':= '(:email "test"))))
+           (select-dao 'usr::users (db-init::make-clause-list :and ':= '(:email "test" :id 1))))
             ;(select-dao 'usr::users ,(db-init::make-clause-list ':= '(:d "f" :r "ee" :fs :df))))
             (let ((rec (select-dao ',table (db-init::make-clause-list '= initargs)))))
             (if rec
