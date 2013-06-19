@@ -98,9 +98,13 @@
        ;; make-entity
 
        (defun ,make-entity (&rest initargs)
+         (print (type-of (db-init::make-clause-list :and ':= '(:email "test" :id 1))))
+         (print (type-of (:AND (:= :EMAIL "test") (:= :ID 1))))
          (with-connection ylg::*db-spec*
            (select-dao 'usr::users (db-init::make-clause-list :and ':= '(:email "test" :id 1))))
-            ;(select-dao 'usr::users ,(db-init::make-clause-list ':= '(:d "f" :r "ee" :fs :df))))
+
+           ;(select-dao 'usr::users (:AND (:= :EMAIL "test") (:= :ID 1))))
+                                        ;(select-dao 'usr::users ,(db-init::make-clause-list ':= '(:d "f" :r "ee" :fs :df))))
             (let ((rec (select-dao ',table (db-init::make-clause-list '= initargs)))))
             (if rec
                 (id (car rec))
