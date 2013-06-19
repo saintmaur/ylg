@@ -57,7 +57,7 @@
 ;; define-entity
 
 (defmacro define-entity (name desc &rest tail)
-  (let ((inc            (intern (concatenate 'string "INC-"     (symbol-name name) "-ID")))
+  (let ( (inc            (intern (concatenate 'string "INC-"    (symbol-name name) "-ID")))
         (incf-inc       (intern (concatenate 'string "INCF-"    (symbol-name name) "-ID")))
         (init-inc       (intern (concatenate 'string "INIT-"    (symbol-name name) "-ID")))
         (container      (intern (concatenate 'string "*"        (symbol-name name) "*")))
@@ -90,16 +90,32 @@
                        :accessor (car x)
                        ))
                   (car tail)))
+       ;; ,(let ((table-name (intern (string-upcase name))))
+       ;;       (with-connection ylg::*db-spec*
+       ;;         (unless (table-exists-p table-name)
+       ;;           (execute (dao-table-definition table-name)))))
        ;; make-entity
        (defun ,make-entity (&rest initargs)
-         (let ((id (,incf-inc)))
-           ;; todo: duplicate by id
-           ;; todo: duplicate by fields
-           (values
-            (setf (gethash id ,container)
-                  (apply #'make-instance
-                         (list* ',name initargs)))
-            id)))
+         (with-connection ylg::*db-spec*
+           (let* ((d-class ',(intern (string-upcase (concatenate 'string (symbol-name name) "s"))))
+                   (rec (select-dao d-class
+                                    (append '(and)
+                                            (loop for i in initargs
+                                               when (and (keywordp i) '(getf initargs i) )
+                                               :collect '(:= i (getf initargs i)))))))
+             (if rec
+                 (id (cond ((listp rec ) (car rec)
+                            (equal d-class (type-of rec)) rec)))
+                 (id (make-dao d-class initargs)))))
+;;          (let ((id (,incf-inc)))
+            ;; todo: duplicate by id
+            ;; todo: duplicate by fields
+            ;; (values
+            ;;  (setf (gethash id ,container)
+            ;;        (apply #'make-instance
+            ;;               (list* ',name initargs)))
+            ;;  id)))
+         )
        (defun ,del-entity (id)
          (remhash id ,container))
        (defun ,all-entity ()
@@ -107,15 +123,19 @@
            (cons v k)))
        ;; get-entity (by id, typesafe, not-present safe)
        (defun ,get-entity (var)
+         (let ((rec))
          (when (typep var 'integer)
-           (multiple-value-bind (hash-val present-p)
-               (gethash var ,container)
-             (unless present-p
-               (err 'not-present))
-             (setf var hash-val)))
+           (with-connection ylg::*db-spec*
+             (setf rec (select-dao (intern table (sybmol-package ,name)) :id var)))
+           ;; (multiple-value-bind (hash-val present-p)
+           ;;     (gethash var ,container)
+           ;;   (unless present-p
+           ;;     (err 'not-present))
+           ;;   (setf var hash-val))
+           )
          (unless (typep var ',name)
            (err 'param-user-type-error))
-         var)
+         rec))
        ;; find-entity - поиск айдишника по объекту
        (defmethod ,find-entity ((obj ,name))
          (do-hash (,container)
@@ -129,6 +149,7 @@
                            (push x rs)))
                    (,all-entity))
            (reverse rs)))
+       ;; update value
        )))
 
 

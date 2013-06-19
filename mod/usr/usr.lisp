@@ -13,17 +13,29 @@
 (in-package #:usr)
 
 (defparameter *current-user* nil)
+;;(print (macroexpand-1
+(db-init::init-table-class
+ ((id :col-type serial :initarg id :accessor id)
+  (email :col-type varchar :initarg :email :accessor email)
+  (password :col-type varchar :initarg :password :accessor passwd)
+  (name :col-type (cl::or db-null varchar) :initarg :name :accessor name)
+  (surname :col-type (cl::or db-null varchar) :initarg :surname :accessor surname))
+ :table "users")
 
-(define-automat user "Автомат пользователя"
+(init-table)
+
+(defparamenter table 'users)
+(print (macroexpand-1
+'(define-entity user "Автомат пользователя"
   ((email        :email)
    (password     :password)
-   (new-password :password))
+   (new-password :new-password))
   (:logged :unlogged :link-sended)
   ((:logged       :unlogged     :logoff)      ;; Обнулить сессию
    (:unlogged     :logged       :none)       ;; Залогиниться
    (:unlogged     :link-sended  :none)  ;; Забыл пароль - пошлем линк
    (:link-sended  :logged       :enter)))     ;; Залогиниться
-
+))
 (defun none ())
 
 (defun generate-password ()
@@ -34,7 +46,7 @@
   ;; Если есть уже такой email - возвращать nil
   (when (get-account email)
     (return-from registration nil))
-  (make-user :email email :password (generate-password) :state :logged))
+  (make-user :email "qwer" :password (generate-password) :state :logged))
 
 (defun delete-account (email)
   ;; TODO: Проверять права, если проверка не прошла - сигнализировать err-permission

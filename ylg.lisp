@@ -36,4 +36,10 @@
 (defun path (relative)
   (merge-pathnames relative *basedir*))
 
+(defvar *db-name* "ylg_new")
+(defvar *db-user* "ylg")
+(defvar *db-pass* "6mEfBjyLrSzlE")
+(defvar *db-serv* "localhost")
+(defvar *db-spec* (list "ylg_new" "ylg" "6mEfBjyLrSzlE" "localhost"))
+
 (closure-template:compile-template :common-lisp-backend (path "tpl/tpl.htm"))

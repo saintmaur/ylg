@@ -20,152 +20,70 @@
   </head>{\n}
   <body>{\n}
     <div id="wrap">{\n}
-      <div id="head-wrap">{\n}
-	    <div id="head">{\n}
-	      <div id="enter-link-cont">{$auth | noAutoescape}</div>{\n}
-	      <div id="logo">YLG Logo</div>{\n}
-	    </div>{\n}
-      </div>{\n}
       <div id="content-wrap">{\n}
-        {$left  | noAutoescape} {\n}
-	    <div id="content">
-          {$right | noAutoescape} {\n}
-	    </div>
-        <div style="clear:both"></div> {\n}
-      </div>{\n}
+          <div id="content">
+            <div id="head-wrap">{\n}
+	          <div id="head">{\n}
+	            <div id="enter-link-cont">{$auth | noAutoescape}</div>{\n}
+	          </div>{\n}
+            </div>{\n}
+            {$right | noAutoescape} {\n}
+          </div>
+          {$left  | noAutoescape} {\n}
+      </div>
+
+      <div style="clear:both"></div> {\n}
     </div>{\n}
-    {$enterform | noAutoescape} {\n}
-    <div id="alert-popup">
-	  <div id="alert-body"></div>
-    </div>
-  </body>{\n}
+  </div>{\n}
+  <div id="alert-popup">
+	<div id="alert-body"></div>
+  </div>
+</body>{\n}
 </html>{\n}
 {/template}
 
 
 {template authnotlogged}
-<a href="#" id="btn-login">войти</a> |
-<a href="#" id="btn-register">регистрация</a>
+<a href="#" id="btn-login">вход</a><span class="auth-links-sep">|</span><a href="#" id="btn-register">регистрация</a>
 {/template}
 
 {template authlogged}
-<a href="#" id="account-page">{$username}</a> |
-<a href="#" id="btn-logoff">выйти</a>
+<a href="#" id="account-page">{$username}</a><span class="auth-links-sep">|</span><a href="#" id="btn-logoff">выйти</a>
 {/template}
 
 
 
 {template left}
 <div id="left-sidebar"> {\n}
+  <div id="logo"></div>{\n}
+  <div class="dash-line"></div>
   <div id="left-sidebar-menu"> {\n}
     <ul> {\n}
       <li><a href="/looks">Как я вам?!</a></li> {\n}
-      <ul> {\n}
+      /*<ul> {\n}
         <li> {\n}
           <a href="#edit-look-form-cont" class="call-upload-form">загрузить фотографию</a>{\n}
-        </li> {\n}
-      </ul> {\n}
+        </li> {\n
+      </ul> {\n}*/
       <li><a href="/choices">Надо брать?!</a></li> {\n}
     </ul> {\n}
   </div> {\n}
+  <div class="dash-line"></div>
+  <div style="clear:both"></div>
 </div> {\n}
-{call lookeditform /}
+{call enterform /}
 {/template}
 
 
-{template right}
-<div id="content"> {\n}
-  <form style="display:none" id="file-upload-form" action="/file" method="POST" enctype="multipart/form-data">{\n}
-    <input type="file" name="file" value="" />{\n}
-    <input type="submit" />{\n}
-  </form>
-  <div class="floated-items"> {\n}
-    <div class="floated-item"> {\n}
-      <div class="item-img"> {\n}
-        <img src="" width="200" height="250"/> {\n}
-      </div> {\n}
-      <div class="item-data"> {\n}
-        some data {\n}
-      </div> {\n}
-    </div> {\n}
-    <div class="floated-item"> {\n}
-      <div class="item-img"> {\n}
-        <img src="" width="200" height="250"/> {\n}
-      </div> {\n}
-      <div class="item-data"> {\n}
-        some data {\n}
-      </div> {\n}
-    </div> {\n}
-    <div class="floated-item"> {\n}
-      <div class="item-img"> {\n}
-        <img src="" width="200" {\n}
-             height="250"/> {\n}
-      </div> {\n}
-      <div class="item-data"> {\n}
-        some data {\n}
-      </div> {\n}
-    </div> {\n}
-    <div class="floated-item"> {\n}
-      <div class="item-img"> {\n}
-        <img src="" width="200" {\n}
-             height="250"/> {\n}
-      </div> {\n}
-      <div class="item-data"> {\n}
-        some data {\n}
-      </div> {\n}
-    </div> {\n}
-    <div class="floated-item"> {\n}
-      <div class="item-img"> {\n}
-        <img src="" width="200" {\n}
-             height="250"/> {\n}
-      </div> {\n}
-      <div class="item-data"> {\n}
-        some data {\n}
-      </div> {\n}
-    </div> {\n}
-    <div class="floated-item"> {\n}
-      <div class="item-img"> {\n}
-        <img src="" {\n}
-             width="200" {\n}
-             height="250"/> {\n}
-      </div> {\n}
-      <div class="item-data"> {\n}
-        some data {\n}
-      </div> {\n}
-    </div> {\n}
-    <div class="floated-item"> {\n}
-      <div class="item-img"> {\n}
-        <img src="" {\n}
-             width="200" {\n}
-             height="250"/> {\n}
-      </div> {\n}
-      <div class="item-data"> {\n}
-        some data {\n}
-      </div> {\n}
-    </div> {\n}
-    <div class="floated-item"> {\n}
-      <div class="item-img"> {\n}
-        <img src="" {\n}
-             width="200" {\n}
-             height="250"/> {\n}
-      </div> {\n}
-      <div class="item-data"> {\n}
-        some {\n}
-        data {\n}
-      </div> {\n}
-    </div> {\n}
-    <div class="floated-item"> {\n}
-      <div class="item-img"> {\n}
-        <img src="" {\n}
-             width="200" {\n}
-             height="250"/> {\n}
-      </div> {\n}
-      <div class="item-data"> {\n}
-        some {\n}
-        data {\n}
-      </div> {\n}
-    </div> {\n}
-  </div> {\n}
+  {template lookslist}
+  <div>
+    <div class="floated-items"> {\n}
+      {foreach $look in $looks}
+      {call look data="$look" /}
+      {ifempty}
+      {/foreach}
+    </div>
+  </div>
   {/template}
 
   {template look}
@@ -347,16 +265,6 @@
 <div style="clear:both;"></div>
 {/template}
 
-{template lookslist}
-<div class="floated-items"> {\n}
-  {foreach $look in $looks}
-  {call look data="$look" /}
-  {ifempty}
-  {/foreach}
-</div>
-{/template}
-
-
 {template lookview}
 <div class="look-wrap">
   <div class="look-data">
@@ -508,7 +416,7 @@
 	    <input id="btn-form-login-submit" name="btn-form-login-submit" type="button" value="log in" /> {\n}
 	  </div> {\n}
 	  <div class="form-line"> {\n}
-	    <input id="btn-send-login" name="btn-send-login" type="button" value="забыл пароль" /> {\n}
+	    /*<input id="btn-send-login" name="btn-send-login" type="button" value="забыл пароль" /> {\n}*/
 	  </div> {\n}
 	</form> {\n}
   </div> {\n}

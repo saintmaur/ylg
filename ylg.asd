@@ -11,6 +11,7 @@
                  #:postmodern)
   :serial       t
   :components   ((:file "ylg")
+                 (:file "db")
                  (:static-file "tpl/tpl.htm")
                  (:module "lib"
                           :serial t

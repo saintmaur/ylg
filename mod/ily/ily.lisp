@@ -18,14 +18,20 @@
   ((timestamp   :timestamp)
    (target      :target)
    (goods       :goods)
-   (votes       :votes)
-   (preview     :pic)
-   (pic         :pic)
-   (comments    :comments))
+   (photo         :photo))
   (:draft :public :archived)
   ((:draft   :public    :publish-look)
    (:public  :archived  :archive-look)))
 
+(db-init::init-table-class
+ ((id :col-type serial :initarg id :accessor id)
+  (user-id :col-type integer :initarg user-id :accessor user-id :foreign-key (users id))
+  (target :col-type text :initarg :target :accessor target)
+  (goods :col-type text :initarg :goods :accessor goods)
+  (timestamp :col-type timestamp :initarg :timestamp :accessor timestamp))
+ :table "look")
+
+(init-table)
 
 (defun show-look-list (looks)
   (tpl:lookslist (list :looks (mapcar #'(lambda (look-pair)
@@ -34,21 +40,18 @@
                                             (list :id id
                                                   :timestamp (ily::timestamp look)
                                                   :target (ily::target look)
-                                                  :votes (ily::votes look)
-                                                  :preview (ily::preview look)
+                                                  :photo (ily::photo look)
                                                   )))
                                       looks))))
-
-
-(defun vote-look (look-id voting &optional (current-user usr:*current-user*))
-  (let ((vote (vot:make-vote :entity-id look-id
-                             :entity 'look
-                             :user-id (usr::find-user (usr::get-user current-user))
-                             :voting voting))
-        (look (get-look look-id)))
-    (setf (votes look)
-          (append (votes look)
-                  (list (vot:find-vote vote))))))
+;; (defun vote-look (look-id voting &optional (current-user usr:*current-user*))
+;;   (let ((vote (vot:make-vote :entity-id look-id
+;;                              :entity 'look
+;;                              :user-id (usr::find-user (usr::get-user current-user))
+;;                              :voting voting))
+;;         (look (get-look look-id)))
+;;     (setf (votes look)
+;;           (append (votes look)
+;;                   (list (vot:find-vote vote))))))
 
 
 ;;(vote-look 1 1 3)
@@ -100,38 +103,26 @@
 (make-look :timestamp (get-universal-time)
            :target '("club")
            :goods  '("shoes" "hat")
-           :votes  nil
-           :preview "1x.jpg"
-           :pic "1.jpg"
-           :comments 'comments
+           :photo "1.jpg"
            :state :draft)
 
 
 (make-look :timestamp (get-universal-time)
            :target '("club2")
-           :goods  '("shoes2" "hat2")
-           :votes  nil
-           :preview "2x.jpg"
-           :pic "2.jpg"
-           :comments 'comments
+           :goods  '(("shoes2" "brand" "shop") ("hat2"))
+           :photo "2.jpg"
            :state :draft)
 
 (make-look :timestamp (get-universal-time)
            :target '("club2")
-           :goods  '("shoes2" "hat2")
-           :votes  nil
-           :preview "3x.jpg"
-           :pic "3.jpg"
-           :comments 'comments
+           :goods  '(("shoes2" "brand" "shop") ("hat2"))
+           :photo "3.jpg"
            :state :draft)
 
 (make-look :timestamp (get-universal-time)
            :target '("club2")
-           :goods  '("shoes2" "hat2")
-           :votes  nil
-           :preview "4x.jpg"
-           :pic "4.jpg"
-           :comments 'comments
+           :goods  '(("shoes2" "brand" "shop") ("hat2"))
+           :photo "4.jpg"
            :state :draft)
 
 (assert (equal 'look (type-of (get-look 1))))

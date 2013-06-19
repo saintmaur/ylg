@@ -25,7 +25,7 @@
 
 (restas:define-route main ("/")
   (tpl:root (list :left (tpl:left)
-                  :right (tpl:right)
+                  :right (ily:show-look-list (ily:find-look #'(lambda (x)                                                                (equal (ily::state (car x)) :public))))
                   :enterform (tpl:enterform)
                   :auth (if (null usr:*current-user*)
                             (tpl:authnotlogged)
@@ -72,7 +72,7 @@
                                 "No such data"
                                 (tpl:lookview (list
                                                :id id
-                                               :pic (ily::pic look)
+                                               :pic (ily::photo look)
 					       :voting (append (list
                                             :id id
                                             :entity "look"
