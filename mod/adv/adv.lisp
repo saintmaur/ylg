@@ -13,11 +13,12 @@
 (in-package #:adv)
 
 (define-automat choice "Автомат choice-а"
-  ((timestamp :timestamp)
-   (target    :target)
-   (goods     :goods)
-   (votes     :votes)
-   (comments  :comments))
+  ((id          serial)
+   (timestamp   (or timestamp (get-universal-time)))
+   (user_id     integer)
+   (target      integer)
+   (goods       varchar)
+   (photo       integer))
   (:draft :public :archived)
   ((:draft   :public    :publish-choice)
    (:public  :archived  :archive-choice)))

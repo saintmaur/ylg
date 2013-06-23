@@ -27,16 +27,11 @@
            (unless (table-exists-p ,table)
              (execute (dao-table-definition ',class-name))))))))
 
-(defun make-clause-list (common-rel priv-rel args)
-  ;; (append (list common-rel)
-  ;;         (loop for i in args when (and (keywordp i)
-  ;;                                       (getf args i)
-  ;;                                       (not (keywordp (getf args i))))
-  ;;            :collect `(,priv-rel  ,i ,(getf args i))))
-  #'(lambda()
-      (funcall common-rel
-           (loop for i in args when (and (keywordp i)
-                                         (getf args i)
-                                         (not (keywordp (getf args i))))
-              :collect `(,priv-rel  ,i ,(getf args i)))))
+(defun make-clause-list (args)
+  (loop for i in args
+     when (and (keywordp i)
+               (getf args i)
+               (not (keywordp (getf args i))))
+     :collect `(,i ,(getf args i)))
+
   )

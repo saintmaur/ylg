@@ -15,23 +15,18 @@
 ;(closure-template:compile-template :common-lisp-backend (ylg:path "mod/ily/tpl.htm"))
 
 (define-automat look "Автомат look-а"
-  ((timestamp   :timestamp)
-   (target      :target)
-   (goods       :goods)
-   (photo         :photo))
+  ((id          serial)
+   (timestamp   timestamp)
+   (state       varchar)
+   (user_id     integer)
+   (target      varchar)
+   (goods       varchar)
+   (photo       integer))
   (:draft :public :archived)
   ((:draft   :public    :publish-look)
    (:public  :archived  :archive-look)))
 
-(db-init::init-table-class
- ((id :col-type serial :initarg id :accessor id)
-  (user-id :col-type integer :initarg user-id :accessor user-id :foreign-key (users id))
-  (target :col-type text :initarg :target :accessor target)
-  (goods :col-type text :initarg :goods :accessor goods)
-  (timestamp :col-type timestamp :initarg :timestamp :accessor timestamp))
- :table "look")
-
-(init-table)
+(make-table)
 
 (defun show-look-list (looks)
   (tpl:lookslist (list :looks (mapcar #'(lambda (look-pair)
@@ -99,6 +94,7 @@
 ;; и опционально добавляет данные (перечисленные в разделе "Данные").
 ;; Look создается в состоянии draft
 ;; TODO: фотографию при загрузке можно редактировать фильтрами (js)
+
 ;; TODO: добавить крон на время голосования
 (make-look :timestamp (get-universal-time)
            :target '("club")

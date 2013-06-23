@@ -67,7 +67,7 @@
          (all-entity     (intern (concatenate 'string "ALL-"     (symbol-name name))))
          (get-entity     (intern (concatenate 'string "GET-"     (symbol-name name))))
          (find-entity    (intern (concatenate 'string "FIND-"    (symbol-name name))))
-         (table          (intern (concatenate 'string (symbol-name name) "S"))))
+         (table          (intern (symbol-name name) )))
     `(let ((,inc 0))
        ;; incrementor
        (defun ,incf-inc ()
@@ -85,31 +85,36 @@
          ,(mapcar #'(lambda (x)
                       (list
                        (car x)
-                       ;; :col-type (cadr x)
-                       :initarg (intern (symbol-name (car x)) :keyword)
-                       :initform (caddr x)
+                       :col-type (cadr x)
+                       :initarg (intern (symbol-name (car x)) )
                        :accessor (car x)
                        ))
-                  (car tail)))
-       ;; ,(let ((table-name (intern (string-upcase name))))
+                  (car tail))
+         (:metaclass dao-class)
+         (:table-name ,table)
+         (:key id))
+       ;; ,(let ((table-name (intern (string-upcase (symbol-name name)))))
        ;;       (with-connection ylg::*db-spec*
        ;;         (unless (table-exists-p table-name)
        ;;           (execute (dao-table-definition table-name)))))
        ;; make-entity
+       (defun ,(intern "MAKE-TABLE") ()
+         (with-connection ylg::*db-spec*
+           (unless (table-exists-p ',table)
+             (execute (dao-table-definition ',table)))))
 
        (defun ,make-entity (&rest initargs)
-         (print (type-of (db-init::make-clause-list :and ':= '(:email "test" :id 1))))
-         (print (type-of (:AND (:= :EMAIL "test") (:= :ID 1))))
          (with-connection ylg::*db-spec*
-           (select-dao 'usr::users (db-init::make-clause-list :and ':= '(:email "test" :id 1))))
-
-           ;(select-dao 'usr::users (:AND (:= :EMAIL "test") (:= :ID 1))))
+           (apply #'make-dao
+                  (list* ',table initargs))
+))
+                                        ;(select-dao 'usr::users (:AND (:= :EMAIL "test") (:= :ID 1))))
                                         ;(select-dao 'usr::users ,(db-init::make-clause-list ':= '(:d "f" :r "ee" :fs :df))))
-            (let ((rec (select-dao ',table (db-init::make-clause-list '= initargs)))))
-            (if rec
-                (id (car rec))
-                (id (make-dao ',table initargs)))
-            )
+    ;; (let ((rec (select-dao ',table (db-init::make-clause-list '= initargs)))))
+    ;; (if rec
+    ;;     (id (car rec))
+    ;;     (id (make-dao ',table initargs)))
+
 ;;          (let ((id (,incf-inc)))
             ;; todo: duplicate by id
             ;; todo: duplicate by fields
@@ -118,7 +123,7 @@
             ;;        (apply #'make-instance
             ;;               (list* ',name initargs)))
             ;;  id)))
-         )
+
        (defun ,del-entity (id)
          (remhash id ,container))
        (defun ,all-entity ()
@@ -160,7 +165,11 @@
   (let ((package (symbol-package name)))
   `(progn
      (define-entity ,name ,desc
-       ,(list* `(,(intern "STATE" package) :state) (car tail)))
+       ,;;(list*
+         (car tail)
+         ;;`(,(intern "STATE" package) varchar)
+         ;;)
+     )
      ,(let ((all-states (cadr tail)))
            `(progn
               ,@(loop :for (from-state to-state event) :in (caddr tail) :collect

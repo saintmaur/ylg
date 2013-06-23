@@ -13,12 +13,13 @@
 (in-package #:pht)
 
 (define-automat pic "Автомат картинки"
-  ((pictype        :pictype)
-   (uploadfilename :filename)
-   (pathnamefile   :pathname)
-   (namefile       :namefile)
-   (timestamp      :timestamp)
-   (user           :user))
+  ((id             serial)
+   (pictype        varchar)
+   (uploadfilename varchar)
+   (pathnamefile   varchar)
+   (namefile       varchar)
+   (timestamp      timestamp)
+   (user_id        integer))
   ((:uploaded     :deleted      :delpic)))
 
 (defun generate-filename ()
@@ -40,4 +41,4 @@
                 :pathnamefile outfilepath
                 :namefile output-filename
                 :timestamp (get-universal-time)
-                :user usr:*current-user*))))
+                :user_id (usr::id usr:*current-user*)))))
