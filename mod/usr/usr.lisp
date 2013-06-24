@@ -82,7 +82,7 @@
   (setf *current-user* nil)
   t)
 
-(find-usr 'email "seymour" 'pass "sdfg")
+(find-usr 'email "seymour" 'password "sdfg")
 ;(select-dao 'usr (:and (type-of '(:= 'email "seymouur")))
 ;; Tests
 ;; Регистрация пользователя_1 — успешно

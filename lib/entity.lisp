@@ -150,11 +150,15 @@
            ;; (apply #'make-dao
            ;;        (list* ',table args))
            ;; ))
-           (let ((test (db-init::make-clause-list ''and '= args)))
+           (query
+            (:select '* :from 'usr
+                     :where (sql-compile (:AND (:= 'EMAIL "seymour") (:= 'PASSWORD "sdfg"))))))
+           (let ((test (db-init::make-clause-list ':and ':= args)))
+             ;(print (db-init::make-clause-list ':and ':= args))
              (query
               (:select '* :from ',table
-                       :where test)))
-           ))
+                       :where (sql-compile test)))
+             )))
 ;       (CL-POSTGRES:TO-SQL-STRING (sql (:email "seymour")))
 ;(apply #'get-dao (list* 'USR :EMAIL "seymouur"))
 

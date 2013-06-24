@@ -29,7 +29,22 @@
 
 (defun make-clause-list (glob-rel rel args)
   (append (list glob-rel) (loop for i in args
-     when (and (keywordp i)
-               (getf args i)
-               (not (keywordp (getf args i))))
-     :collect `(,rel ,i ,(getf args i)))))
+                             when (and (symbolp i)
+                                       (getf args i)
+                                       (not (symbolp (getf args i))))
+                             :collect (list rel i (getf args i)))))
+
+(defun query-dao-fun (type query)
+  (query-dao 'type
+             query))
+(defun find-entity (type &rest args)
+  (with-connection ylg::*db-spec*
+    (apply #'query-dao-fun
+           (list*
+            (list 'type)
+            (list :select :* :from type
+                     :where (make-clause-list ':and ':= args))))))
+    ;; (query-dao type
+    ;;             args)))
+
+(find-entity 'usr::usr :email "seymouur")
