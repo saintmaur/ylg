@@ -108,13 +108,6 @@
            (apply #'make-dao
                   (list* ',table initargs))
 ))
-                                        ;(select-dao 'usr::users (:AND (:= :EMAIL "test") (:= :ID 1))))
-                                        ;(select-dao 'usr::users ,(db-init::make-clause-list ':= '(:d "f" :r "ee" :fs :df))))
-    ;; (let ((rec (select-dao ',table (db-init::make-clause-list '= initargs)))))
-    ;; (if rec
-    ;;     (id (car rec))
-    ;;     (id (make-dao ',table initargs)))
-
 ;;          (let ((id (,incf-inc)))
             ;; todo: duplicate by id
             ;; todo: duplicate by fields
@@ -125,7 +118,9 @@
             ;;  id)))
 
        (defun ,del-entity (id)
-         (remhash id ,container))
+         (with-connection ylg::*db-spec*
+           (delete-dao (get-dao ',table :id id))))
+       ;;(remhash id ,container))
        (defun ,all-entity ()
          (do-hash-collect (,container)
            (cons v k)))
@@ -145,18 +140,32 @@
            (err 'param-user-type-error))
          rec))
        ;; find-entity - поиск айдишника по объекту
-       (defmethod ,find-entity ((obj ,name))
-         (do-hash (,container)
-           (when (equal v obj)
-             (return k))))
+       ;; (defmethod ,find-entity ((obj ,name))
+       ;;   (do-hash (,container)
+       ;;     (when (equal v obj)
+       ;;       (return k))))
+
+       (defun ,find-entity (&rest args)
+         (with-connection ylg::*db-spec*
+           ;; (apply #'make-dao
+           ;;        (list* ',table args))
+           ;; ))
+           (let ((test (db-init::make-clause-list ''and '= args)))
+             (query
+              (:select '* :from ',table
+                       :where test)))
+           ))
+;       (CL-POSTGRES:TO-SQL-STRING (sql (:email "seymour")))
+;(apply #'get-dao (list* 'USR :EMAIL "seymouur"))
+
        ;; find-entity - поиск объекта по содержимому его полей
-       (defmethod ,find-entity ((func function))
-         (let ((rs))
-           (mapcar #'(lambda (x)
-                       (if (funcall func x)
-                           (push x rs)))
-                   (,all-entity))
-           (reverse rs)))
+       ;; (defmethod ,find-entity ((func function))
+       ;;   (let ((rs))
+       ;;     (mapcar #'(lambda (x)
+       ;;                 (if (funcall func x)
+       ;;                     (push x rs)))
+       ;;             (,all-entity))
+       ;;     (reverse rs)))
        ;; update value
        )))
 

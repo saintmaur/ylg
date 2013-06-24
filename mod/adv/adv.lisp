@@ -14,7 +14,7 @@
 
 (define-automat choice "Автомат choice-а"
   ((id          serial)
-   (timestamp   (or timestamp (get-universal-time)))
+   (timestamp   timestamp)
    (user_id     integer)
    (target      integer)
    (goods       varchar)
@@ -23,6 +23,7 @@
   ((:draft   :public    :publish-choice)
    (:public  :archived  :archive-choice)))
 
+(make-table)
 ;; (votes (get-choice 1))
 
 ;; (all-choice)
@@ -67,21 +68,21 @@
 ;; Choice создается в состоянии draft
 ;; TODO: фотографию при загрузке можно редактировать фильтрами (js)
 ;; TODO: добавить крон на время голосования
-(make-choice :timestamp (get-universal-time)
-           :target '("club")
-           :goods  '("shoes" "hat")
-           :votes  'votes1
-           :comments 'comments
-           :state :draft)
+;; (make-choice :timestamp (get-universal-time)
+;;            :target '("club")
+;;            :goods  '("shoes" "hat")
+;;            :votes  'votes1
+;;            :comments 'comments
+;;            :state :draft)
 
-(make-choice :timestamp (get-universal-time)
-           :target '("club2")
-           :goods  '("shoes2" "hat2")
-           :votes  'votes2
-           :comments 'comments
-           :state :draft)
+;; (make-choice :timestamp (get-universal-time)
+;;            :target '("club2")
+;;            :goods  '("shoes2" "hat2")
+;;            :votes  'votes2
+;;            :comments 'comments
+;;            :state :draft)
 
-(assert (equal 'choice (type-of (get-choice 1))))
+;; (assert (equal 'choice (type-of (get-choice 1))))
 
 ;; ;; (опционально) Owner редактирует choice, добавляя, удаляя или изменяя данные и фотографии.
 
@@ -97,9 +98,9 @@
   "публикация choice-a owner-ом"
   (print 'pub))
 
-(takt (get-choice 1) :public :publish-choice)
+;; (takt (get-choice 1) :public :publish-choice)
 
-(assert (equal :public (state (get-choice 1))))
+;; (assert (equal :public (state (get-choice 1))))
 
 
 ;; Голосование
@@ -109,9 +110,9 @@
 (defun archive-choice ()
   (print 'arch))
 
-(takt (get-choice 1) :archived :archive-choice)
+;; (takt (get-choice 1) :archived :archive-choice)
 
-(assert (equal :archived (state (get-choice 1))))
+;; (assert (equal :archived (state (get-choice 1))))
 
 ;; ;; Удаление choice-а
 ;; (del-choice 1)

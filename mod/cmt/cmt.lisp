@@ -16,11 +16,11 @@
 ;(closure-template:compile-template :common-lisp-backend (ylg:path "mod/cmt/tpl.htm"))
 
 (define-automat comment "Автомат комментария"
-  ((entity      :entity)     ;; may be other comment entity
-   (entity-id   :entity-id)
-   (timestamp   :timestamp)
-   (author      :author)
-   (text        :text))
+  ((entity      varchar)     ;; may be other comment entity
+   (entity-id   integer)
+   (timestamp   timestamp)
+   (author      integer)
+   (text        text))
   (:public :hidden)
   ((:public  :hidden    :hide-comment)
    (:hidden  :public    :unhide-comment)))

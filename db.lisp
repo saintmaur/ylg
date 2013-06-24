@@ -27,11 +27,9 @@
            (unless (table-exists-p ,table)
              (execute (dao-table-definition ',class-name))))))))
 
-(defun make-clause-list (args)
-  (loop for i in args
+(defun make-clause-list (glob-rel rel args)
+  (append (list glob-rel) (loop for i in args
      when (and (keywordp i)
                (getf args i)
                (not (keywordp (getf args i))))
-     :collect `(,i ,(getf args i)))
-
-  )
+     :collect `(,rel ,i ,(getf args i)))))

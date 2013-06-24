@@ -15,7 +15,7 @@
 ;; (closure-template:compile-template :common-lisp-backend (ylg:path "mod/vot/tpl.htm"))
 
 (define-entity vote ()
-  ((id         integer)
+  ((id         serial)
    (user-id    integer)
    (entity     varchar)
    (entity-id  integer)

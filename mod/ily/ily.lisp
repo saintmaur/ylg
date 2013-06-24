@@ -38,24 +38,6 @@
                                                   :photo (ily::photo look)
                                                   )))
                                       looks))))
-;; (defun vote-look (look-id voting &optional (current-user usr:*current-user*))
-;;   (let ((vote (vot:make-vote :entity-id look-id
-;;                              :entity 'look
-;;                              :user-id (usr::find-user (usr::get-user current-user))
-;;                              :voting voting))
-;;         (look (get-look look-id)))
-;;     (setf (votes look)
-;;           (append (votes look)
-;;                   (list (vot:find-vote vote))))))
-
-
-;;(vote-look 1 1 3)
-
-;;(vot::vote-summary 'ily::look 1)
-;; (votes (get-look 1))
-;; (vot:all-vote)
-;; (vot:entity-id (vot:get-vote 3))
-;; (vot:entity-id (vot::get-vote 2))
 
 
 ;; (defun show-create ()
@@ -96,32 +78,32 @@
 ;; TODO: фотографию при загрузке можно редактировать фильтрами (js)
 
 ;; TODO: добавить крон на время голосования
-(make-look :timestamp (get-universal-time)
-           :target '("club")
-           :goods  '("shoes" "hat")
-           :photo "1.jpg"
-           :state :draft)
+;; (make-look :timestamp (get-universal-time)
+;;            :target '("club")
+;;            :goods  '("shoes" "hat")
+;;            :photo "1.jpg"
+;;            :state :draft)
 
 
-(make-look :timestamp (get-universal-time)
-           :target '("club2")
-           :goods  '(("shoes2" "brand" "shop") ("hat2"))
-           :photo "2.jpg"
-           :state :draft)
+;; (make-look :timestamp (get-universal-time)
+;;            :target '("club2")
+;;            :goods  '(("shoes2" "brand" "shop") ("hat2"))
+;;            :photo "2.jpg"
+;;            :state :draft)
 
-(make-look :timestamp (get-universal-time)
-           :target '("club2")
-           :goods  '(("shoes2" "brand" "shop") ("hat2"))
-           :photo "3.jpg"
-           :state :draft)
+;; (make-look :timestamp (get-universal-time)
+;;            :target '("club2")
+;;            :goods  '(("shoes2" "brand" "shop") ("hat2"))
+;;            :photo "3.jpg"
+;;            :state :draft)
 
-(make-look :timestamp (get-universal-time)
-           :target '("club2")
-           :goods  '(("shoes2" "brand" "shop") ("hat2"))
-           :photo "4.jpg"
-           :state :draft)
+;; (make-look :timestamp (get-universal-time)
+;;            :target '("club2")
+;;            :goods  '(("shoes2" "brand" "shop") ("hat2"))
+;;            :photo "4.jpg"
+;;            :state :draft)
 
-(assert (equal 'look (type-of (get-look 1))))
+;; (assert (equal 'look (type-of (get-look 1))))
 
 ;; ;; (опционально) Owner редактирует look, добавляя, удаляя или изменяя данные и фотографии.
 
@@ -137,14 +119,14 @@
   "публикация look-a owner-ом"
   (print 'pub))
 
-(takt (get-look 1) :public :publish-look)
-(takt (get-look 2) :public :publish-look)
-(takt (get-look 3) :public :publish-look)
-(takt (get-look 4) :public :publish-look)
+;; (takt (get-look 1) :public :publish-look)
+;; (takt (get-look 2) :public :publish-look)
+;; (takt (get-look 3) :public :publish-look)
+;; (takt (get-look 4) :public :publish-look)
 
 
 
-(assert (equal :public (state (get-look 1))))
+;; (assert (equal :public (state (get-look 1))))
 
 
 ;; Голосование
@@ -154,9 +136,9 @@
 (defun archive-look ()
   (print 'arch))
 
-(takt (get-look 1) :archived :archive-look)
+;; (takt (get-look 1) :archived :archive-look)
 
-(assert (equal :archived (state (get-look 1))))
+;; (assert (equal :archived (state (get-look 1))))
 
 ;; ;; Удаление look-а
 ;; (del-look 1)
