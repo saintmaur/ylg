@@ -28,7 +28,7 @@
   (let ((pic (first (apply #'find-pic args))))
     (concatenate 'string (pathnamefile pic) (pictype pic))))
 
-(get-pic
+;; (get-pic
 
 (defun upload (input-pathname input-filename input-format)
   (awhen (probe-file input-pathname)
