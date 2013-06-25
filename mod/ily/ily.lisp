@@ -16,12 +16,13 @@
 
 (define-automat look "Автомат look-а"
   ((id          serial)
-   (timestamp   timestamp)
+   (timestamp   integer)
    (state       varchar)
    (user_id     integer)
    (target      varchar)
    (goods       varchar)
-   (photo       integer))
+   (photo       integer)
+   (status      integer))
   (:draft :public :archived)
   ((:draft   :public    :publish-look)
    (:public  :archived  :archive-look)))

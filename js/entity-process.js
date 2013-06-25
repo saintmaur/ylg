@@ -25,9 +25,10 @@ function getCloItem(id){
 
 function getLook(id){
     $.ajax({
-	    url:"#",
+	    url:"/get-look",
 	    dataType:"json",
 	    method:"post",
+        data:"id="+id,
 	    error:function(obj){
 	        //alert(obj.responseText);
 	    },
@@ -47,32 +48,18 @@ function getLook(id){
     });
 }
 
-function publishLook(id){
+function saveLook(data){
     $.ajax({
-	    url:"#",
+	    url:"/save-look",
 	    dataType:"json",
 	    method:"post",
+        data:data,
 	    error:function(obj){
 	        getAlert(obj.responseText,'error');
 	    },
 	    success:function(data){
 	        $.fancybox.close();
-	        $('#look-'+id).find('.edit-look-link-cont').remove();
-	    }
-    });
-}
-
-function saveLook(id){
-    $.ajax({
-	    url:"#",
-	    dataType:"json",
-	    method:"post",
-	    error:function(obj){
-	        getAlert(obj.responseText,'error');
-	    },
-	    success:function(data){
-	        $.fancybox.close();
-	        document.location.reload(true);
+	        document.location.href = "/look/"+data.id;
 	    }
     });
 }
@@ -110,8 +97,20 @@ function getCloLineForm(id){
 }
 
 function addCloLine(data){
+    var obj = {};
+    if(typeof data == "string"){
+        var pairs = data.split("&");
+        for(var i in pairs){
+            pair = pairs[i].split("=");
+            obj[pair[0]] = obj[pair[1]]
+        }
+    } else if (typeof data == "object") {
+        obj = data;
+    } else {
+        return;
+    }
     var tmpl = '<li><span class="category">=>category<=</span><ul><li><span class="clo-list-capt">бренд:</span>&nbsp;<a href="#">=>brand<=</a></li><li><span class="clo-list-capt">магазин:</span>&nbsp;<a href="#">=>shop<=</a></li></ul></li>';
-    $("#clo-items-list").prepend(replaceStrTmpl(tmpl,data));
+    $("#clo-items-list").prepend(replaceStrTmpl(tmpl,obj));
 }
 
 function editCloLine(data){
@@ -185,10 +184,12 @@ $(function(){
 			        ajaxUploadIframe.remove();
 			        var data = jQuery.parseJSON(response);
 			        //TODO: error handling
-			        $("#edit-look-form-photo").find('img').attr('src',data['photo']);
+			        //
 			        $.fancybox({
 			            href:"#edit-look-form-cont"
 			        });
+                    $("#edit-look-form-photo").find('img').attr('src',data['photo']);
+                    $("#edit-look-form-photo").find('img').attr('src',data['photo']);
 		        });
 		    });
 		    input.click();
@@ -202,29 +203,33 @@ $(function(){
 	    getCloLineForm(0);
 	    return false;
     });
-    $('.cancel').click(function(){
+    $('.cancel-clo').click(function(){
 	    cancelEdit("clo-item-form");
 	    return false;
     });
     $('.save-data').click(function(){
 	    cloId = $('#clo-item-form').find('input[name="clo-item-id"]');
-	    $.ajax({
-	        url:"",
-	        data:'look-id='+$('#edit-look-form-cont').find('input[name="id"]')+'&'+$('#clo-item-form').find('input').serialize(),
-	        dataType:"json",
-	        method:"post",
-	        error:function(obj){
-		        alert(obj.responseText);
-	        },
-	        success:function(data){
-		        if(cloId){
-		            editCloLine(data);
-		        } else {
-		            addCloLine(data);
-		        }
-		        cancelEdit("clo-item-form");
-	        }
-	    });
+        addCloLine($('#clo-item-form').find('input').serialize());
 	    return false;
     });
+    $("#custom-reason-switch").click(function (){
+        if($(this).is(':checked')){
+            $("#reason").hide();
+            $("#custom-reason-wrap").show();
+        } else {
+            $("#reason").show();
+            $("#custom-reason-wrap").hide();
+            $("#custom-reason").val("");
+        }
+    });
+    $("#save-button").click(function (){
+        saveLook($('#entity-edit-form').serialize()+"&status=0");
+        return false;
+    });
+
+    $("#publish-button").click(function (){
+        saveLook($('#entity-edit-form').serialize()+"&status=1");
+        return false;
+    });
+
 });

@@ -105,9 +105,8 @@
 
        (defun ,make-entity (&rest initargs)
          (with-connection ylg::*db-spec*
-           (apply #'make-dao
-                  (list* ',table initargs))
-))
+          (apply #'make-dao
+                  (list* ',table initargs))))
 ;;          (let ((id (,incf-inc)))
             ;; todo: duplicate by id
             ;; todo: duplicate by fields
@@ -119,23 +118,17 @@
 
        (defun ,del-entity (id)
          (with-connection ylg::*db-spec*
-           (delete-dao (get-dao ',table :id id))))
+           (query-dao ',table (:delete :from ',table :where (:= :id id)))))
        ;;(remhash id ,container))
        (defun ,all-entity ()
-         (do-hash-collect (,container)
-           (cons v k)))
+         (with-connection ylg::*db-spec*
+           (select-dao ',table)))
        ;; get-entity (by id, typesafe, not-present safe)
        (defun ,get-entity (var)
          (let ((rec))
          (when (typep var 'integer)
            (with-connection ylg::*db-spec*
-             (setf rec (select-dao ',table (:= :id var))))
-           ;; (multiple-value-bind (hash-val present-p)
-           ;;     (gethash var ,container)
-           ;;   (unless present-p
-           ;;     (err 'not-present))
-           ;;   (setf var hash-val))
-           )
+             (setf rec (select-dao ',table (:= :id var)))))
          (unless (typep var ',name)
            (err 'param-user-type-error))
          rec))
@@ -147,42 +140,18 @@
 
        (defun ,find-entity (&rest args)
          (with-connection ylg::*db-spec*
-           ;; (apply #'make-dao
-           ;;        (list* ',table args))
-           ;; ))
-           (query
-            (:select '* :from 'usr
-                     :where (sql-compile (:AND (:= 'EMAIL "seymour") (:= 'PASSWORD "sdfg"))))))
-           (let ((test (db-init::make-clause-list ':and ':= args)))
-             ;(print (db-init::make-clause-list ':and ':= args))
-             (query
-              (:select '* :from ',table
-                       :where (sql-compile test)))
-             )))
-;       (CL-POSTGRES:TO-SQL-STRING (sql (:email "seymour")))
-;(apply #'get-dao (list* 'USR :EMAIL "seymouur"))
-
-       ;; find-entity - поиск объекта по содержимому его полей
-       ;; (defmethod ,find-entity ((func function))
-       ;;   (let ((rs))
-       ;;     (mapcar #'(lambda (x)
-       ;;                 (if (funcall func x)
-       ;;                     (push x rs)))
-       ;;             (,all-entity))
-       ;;     (reverse rs)))
-       ;; update value
+           (query-dao
+            ',table
+            (sql-compile
+             (list :select :* :from ',table
+                   :where (db-init::make-clause-list ':and ':= args))))))
        )))
 
 
 (defmacro define-automat (name desc &rest tail)
   (let ((package (symbol-package name)))
   `(progn
-     (define-entity ,name ,desc
-       ,;;(list*
-         (car tail)
-         ;;`(,(intern "STATE" package) varchar)
-         ;;)
-     )
+     (define-entity ,name ,desc ,(car tail))
      ,(let ((all-states (cadr tail)))
            `(progn
               ,@(loop :for (from-state to-state event) :in (caddr tail) :collect

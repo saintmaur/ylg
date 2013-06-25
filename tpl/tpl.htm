@@ -29,7 +29,7 @@
             </div>{\n}
             {$right | noAutoescape} {\n}
           </div>
-          {$left  | noAutoescape} {\n}
+          {$left | noAutoescape} {\n}
       </div>
 
       <div style="clear:both"></div> {\n}
@@ -48,7 +48,9 @@
 {/template}
 
 {template authlogged}
-<a href="#" id="account-page">{$username}</a><span class="auth-links-sep">|</span><a href="#" id="btn-logoff">выйти</a>
+<a href="#" id="account-page">{$username}</a> ({$password})
+<a href="#edit-look-form-cont" class="call-upload-form">загрузить фотографию</a>{\n}
+<span class="auth-links-sep">|</span><a href="#" id="btn-logoff">выйти</a>
 {/template}
 
 
@@ -83,6 +85,7 @@
       {ifempty}
       {/foreach}
     </div>
+    {call lookeditform /}
   </div>
   {/template}
 
@@ -298,9 +301,10 @@
 {template lookeditform}
 <div style="display:none">
   <div id="edit-look-form-cont">
-	<form action="#">
-	  <input type="hidden" name="look-photo" value="" />
-	  <input type="hidden" name="id" value="" />
+	<form action="#" id="entity-edit-form">
+	  <input type="hidden" name="photo" id="photo" value="" />
+	  <input type="hidden" name="id" id="id" ="" />
+      <input type="hidden" name="goods" id="goods" ="" />
 	  <div id="edit-look-form-wrap">
 	    <div id="edit-look-form-photo-wrap">
 	      <div id="edit-look-form-photo">
@@ -318,35 +322,42 @@
 	    <div id="edit-look-form-clothes">
 	      <h2>ВЫБЕРИТЕ НУЖНОЕ</h2>
 	      <h3>Куда пойдем?</h3>
-	      <select name="look-whereto" size="5" multiple="multiple">
-		    <option value="1">на работу</option>
-		    <option value="2">домой</option>
-		    <option value="3">на работу</option>
-		    <option value="4">домой</option>
-		    <option value="5">домой</option>
-		    <option value="6">на работу</option>
-		    <option value="7">на работу</option>
-		    <option value="8">на работу</option>
+	      <select name="reason" size="5" id="reason">
+            {foreach $target in $targets}
+            {call targetopt data="$target" /}
+            {/foreach}
 	      </select>
+          <div>
+            <input id="custom-reason-switch" type="checkbox" name="custom-reason-switch" /> <label style="padding-bottom:3px" for="custom-reason-switch">свой повод</label>
+            <div id="custom-reason-wrap" style="display:none">
+              <input type="text" name="custom-reason" id="custom-reason" />
+            </div>
+          </div>
 	      <div id="clo-select">
 		    <a href="#"><span class="greyed">+</span>&nbsp;добавить предмет гардероба</a>
 	      </div>
 	      <div id="clo-item-form" style="display:none">
 		    <input type="hidden" name="clo-item-id" value="" />
-		    <div class="form-line-narr"><span class="title">Категория:</span>&nbsp;<div class="data"><input type="text" name="category" /></div><div style="clear:both"></div></div>
+		    <div class="form-line-narr">
+              <span class="title">Категория:</span>&nbsp;
+              <div class="data">
+                <input type="text" name="category" />
+              </div>
+              <div style="clear:both"></div>
+            </div>
 		    <div class="form-line-narr"><span class="title">Бренд:</span>&nbsp;<div class="data"><input type="text" name="brand" /></div><div style="clear:both"></div></div>
 		    <div class="form-line-narr"><span class="title">Магазин:</span>&nbsp;<div class="data"><input type="text" name="shop" /></div><div style="clear:both"></div></div>
-		    <div class="form-line-narr"><span class="title" style="text-align:right"><a href="#" class="cancel">отменить</a></span>&nbsp;<div class="data"><input type="button" name="save-0" class="save-data" value="сохранить" /></div><div style="clear:both"></div></div>
+		    <div class="form-line-narr"><span class="title" style="text-align:right"><a href="#" class="cancel-clo">отменить</a></span>&nbsp;<div class="data"><input type="button" name="save-0" class="save-data" value="сохранить" /></div><div style="clear:both"></div></div>
 	      </div>
 	      <ul id="clo-items-list"></ul>
 	    </div>
 	    <div style="clear:both"></div>
 	    <div id="look-edit-actions-wrap">
 	      <div id="look-edit-actions">
-		    <div id="save-button">
+		    <div id="save-button-wrap">
 		      <input type="button" id="save-button" value="Сохранить"/>
 		    </div>
-		    <div id="publish-button">
+		    <div id="publish-button-wrap">
 		      <input type="button" id="publish-button" value="Опубликовать" />
 		    </div>
 	      </div>
@@ -359,6 +370,9 @@
 </div>
 {/template}
 
+{template targetopt}
+<option value="{$id}">{$name}</option>
+{/template}
 {template choice}
 <div class="floated-item"> {\n}
   <div class="item-img"> {\n}

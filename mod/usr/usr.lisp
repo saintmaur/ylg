@@ -14,15 +14,6 @@
 
 (defparameter *current-user* nil)
 ;;(print (macroexpand-1
-;; (db-init::init-table-class
-;;  ((id :col-type serial :initarg id :accessor id)
-;;   (email :col-type varchar :initarg :email :accessor email)
-;;   (password :col-type varchar :initarg :password :accessor passwd)
-;;   (name :col-type (cl::or db-null varchar) :initarg :name :accessor name)
-;;   (surname :col-type (cl::or db-null varchar) :initarg :surname :accessor surname))
-;;  :table "users")
-
-;;(print (macroexpand-1
 (define-automat usr "Автомат пользователя"
   ((id           serial)
    (email        varchar)
@@ -44,70 +35,61 @@
 
  (defun registration (email)
   ;; TODO: Проверяеть email на валидность, если не валиден - сигнализировать err-param
-  ;; Если есть уже такой email - возвращать nil
   (when (get-account email)
     (return-from registration nil))
   (setf *current-user* (make-usr 'email email 'password (generate-password))))
 
-
 (defun delete-account (email)
   ;; TODO: Проверять права, если проверка не прошла - сигнализировать err-permission
-  (let ((match (find-usr #'(lambda (x) (equal (email (car x)) email)))))
-    (if (null match)
+  (multiple-value-bind (match count) (find-usr :email email)
+    (if (= count 0)
         nil
         (prog1 t
-          (mapcar #'(lambda (x)
-                      (del-usr (cdr x)))
-                  match)))))
+          (del-usr (id (first match)))))))
 
 (defun get-account (email)
-  (caar (find-usr #'(lambda (x)
-                       (equal (email (car x)) email)))))
+  (first (find-usr :email email)))
 
 (defun all-accounts ()
   (all-usr))
 
 (defun enter (login password)
-  (let ((account (get-account login)))
-    (if (null account)
+  (multiple-value-bind (account cnt) (find-usr :email login)
+    (if (= cnt 0)
         nil
         (when
-            (or (string= password (password account)))
-          (setf (password account) password)
-          (setf *current-user* account)
+            (or (string= password (password (first account))))
+          (setf *current-user* (first account))
           t))))
-
 
 (defun logoff ()
   (setf *current-user* nil)
   t)
 
-(find-usr 'email "seymour" 'password "sdfg")
-;(select-dao 'usr (:and (type-of '(:= 'email "seymouur")))
 ;; Tests
 ;; Регистрация пользователя_1 — успешно
-;; (assert (equal 'user (type-of (registration "user_1@example.tld"))))
+;; (assert (equal 'usr (type-of (registration "user_1@example.tld"))))
 
-;; ;; Регистрация пользователя_2 — успешно
-;; (assert (equal 'user (type-of (registration "user_2@example.tld"))))
+;; ;; ;; Регистрация пользователя_2 — успешно
+;; (assert (equal 'usr (type-of (registration "user_2@example.tld"))))
 
-;; ;; Регистрация пользователя_3 — успешно
-;; (assert (equal 'user (type-of (registration "user_3@example.tld"))))
+;; ;; ;; Регистрация пользователя_3 — успешно
+;; (assert (equal 'usr (type-of (registration "user_3@example.tld"))))
 
-;; ;; Регистрация пользователя_4 — успешно
-;; (assert (equal 'user (type-of (registration "user_4@example.tld"))))
+;; ;; ;; Регистрация пользователя_4 — успешно
+;; (assert (equal 'usr (type-of (registration "user_4@example.tld"))))
 
-;; ;; Попытка регистрации пользователя_2 (повторная) — неуспешно
-;; ;(assert (equal nil (registration "user_2@example.tld")))
+;; ;; ;; Попытка регистрации пользователя_2 (повторная) — неуспешно
+;; (assert (equal nil (registration "user_2@example.tld")))
 
-;; ;; Удаление аккунта пользователя_2 — успешно
+;; ;; ;; Удаление аккунта пользователя_2 — успешно
 ;; (assert (equal t (delete-account "user_2@example.tld")))
 
-;; ;; Удаление аккунта пользователя_1 — успешно
-;; (assert (equal t (delete-account "user_1@example.tld")))
+;; ;; ;; Удаление аккунта пользователя_1 — успешно
+;; ;; (assert (equal t (delete-account "user_1@example.tld")))
 
-;; ;; Попытка регистрации пользователя_2 (повторная после удаления) — успешно
-;; (assert (equal 'user (type-of (registration "user_2@example.tld"))))
+;; ;; ;; Попытка регистрации пользователя_2 (повторная после удаления) — успешно
+;; ;; (assert (equal 'user (type-of (registration "user_2@example.tld"))))
 
 ;; ;; Получение аккаунта пользователя_3 — успешно
 ;; (assert (equal 'user (type-of (get-account "user_3@example.tld"))))

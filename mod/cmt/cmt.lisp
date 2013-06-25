@@ -18,7 +18,7 @@
 (define-automat comment "Автомат комментария"
   ((entity      varchar)     ;; may be other comment entity
    (entity-id   integer)
-   (timestamp   timestamp)
+   (timestamp   integer)
    (author      integer)
    (text        text))
   (:public :hidden)
