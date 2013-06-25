@@ -38,7 +38,7 @@
       (let ((pic (pht:upload path-name file-name (pathname-type (merge-pathnames path-name file-name)))))
         (json:encode-json-to-string (list
                                      (cons "photo" (concatenate 'string "/pic/" (pht::namefile pic)))
-                                     (cons "id" pht::id pic)))))))
+                                     (cons "id" (pht::id pic))))))))
 
 (restas:define-route get-look ("/get-look" :method :post)
   (let ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal)))
