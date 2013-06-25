@@ -8,7 +8,6 @@ SET client_min_messages = warning;
 -- TOC entry 3314 (class 1262 OID 60082)
 -- Name: ylgdev; Type: DATABASE; Schema: -; Owner: postgres
 --
-
 CREATE DATABASE ylg_new WITH OWNER ylg ENCODING = 'UTF8';
 
 \connect ylg_new
