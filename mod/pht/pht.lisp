@@ -11,19 +11,24 @@
   (:export :upload))
 
 (in-package #:pht)
-
 (define-automat pic "Автомат картинки"
-  ((pictype        :pictype)
-   (uploadfilename :filename)
-   (pathnamefile   :pathname)
-   (namefile       :namefile)
-   (timestamp      :timestamp)
-   (user           :user))
+  ((id             serial)
+   (pictype        varchar)
+   (pathnamefile   varchar)
+   (namefile       varchar)
+   (timestamp      integer))
   ((:uploaded     :deleted      :delpic)))
+
+(make-table)
 
 (defun generate-filename ()
   (symbol-name (gensym "FILE-")))
 
+(defun get-pic-path (&rest args)
+  (let ((pic (first (apply #'find-pic args))))
+    (concatenate 'string (pathnamefile pic) (pictype pic))))
+
+(get-pic
 
 (defun upload (input-pathname input-filename input-format)
   (awhen (probe-file input-pathname)
@@ -35,9 +40,7 @@
             (loop for pos = (read-sequence buf input-stream)
                while (plusp pos)
                do (write-sequence buf output-stream :end pos)))))
-      (make-pic :pictype input-format
-                :uploadfilename input-filename
-                :pathnamefile outfilepath
-                :namefile output-filename
-                :timestamp (get-universal-time)
-                :user usr:*current-user*))))
+      (make-pic 'pictype input-format
+                'pathnamefile outfilepath
+                'namefile output-filename
+                'timestamp (get-internal-real-time)))))

@@ -15,23 +15,19 @@
 ;(closure-template:compile-template :common-lisp-backend (ylg:path "mod/ily/tpl.htm"))
 
 (define-automat look "Автомат look-а"
-  ((timestamp   :timestamp)
-   (target      :target)
-   (goods       :goods)
-   (photo         :photo))
+  ((id          serial)
+   (timestamp   integer)
+   (state       varchar)
+   (user_id     integer)
+   (target      varchar)
+   (goods       varchar)
+   (photo       integer)
+   (status      integer))
   (:draft :public :archived)
   ((:draft   :public    :publish-look)
    (:public  :archived  :archive-look)))
 
-(db-init::init-table-class
- ((id :col-type serial :initarg id :accessor id)
-  (user-id :col-type integer :initarg user-id :accessor user-id :foreign-key (users id))
-  (target :col-type text :initarg :target :accessor target)
-  (goods :col-type text :initarg :goods :accessor goods)
-  (timestamp :col-type timestamp :initarg :timestamp :accessor timestamp))
- :table "look")
-
-(init-table)
+(make-table)
 
 (defun show-look-list (looks)
   (tpl:lookslist (list :looks (mapcar #'(lambda (look-pair)
@@ -43,24 +39,6 @@
                                                   :photo (ily::photo look)
                                                   )))
                                       looks))))
-;; (defun vote-look (look-id voting &optional (current-user usr:*current-user*))
-;;   (let ((vote (vot:make-vote :entity-id look-id
-;;                              :entity 'look
-;;                              :user-id (usr::find-user (usr::get-user current-user))
-;;                              :voting voting))
-;;         (look (get-look look-id)))
-;;     (setf (votes look)
-;;           (append (votes look)
-;;                   (list (vot:find-vote vote))))))
-
-
-;;(vote-look 1 1 3)
-
-;;(vot::vote-summary 'ily::look 1)
-;; (votes (get-look 1))
-;; (vot:all-vote)
-;; (vot:entity-id (vot:get-vote 3))
-;; (vot:entity-id (vot::get-vote 2))
 
 
 ;; (defun show-create ()
@@ -99,33 +77,34 @@
 ;; и опционально добавляет данные (перечисленные в разделе "Данные").
 ;; Look создается в состоянии draft
 ;; TODO: фотографию при загрузке можно редактировать фильтрами (js)
+
 ;; TODO: добавить крон на время голосования
-(make-look :timestamp (get-universal-time)
-           :target '("club")
-           :goods  '("shoes" "hat")
-           :photo "1.jpg"
-           :state :draft)
+;; (make-look :timestamp (get-universal-time)
+;;            :target '("club")
+;;            :goods  '("shoes" "hat")
+;;            :photo "1.jpg"
+;;            :state :draft)
 
 
-(make-look :timestamp (get-universal-time)
-           :target '("club2")
-           :goods  '(("shoes2" "brand" "shop") ("hat2"))
-           :photo "2.jpg"
-           :state :draft)
+;; (make-look :timestamp (get-universal-time)
+;;            :target '("club2")
+;;            :goods  '(("shoes2" "brand" "shop") ("hat2"))
+;;            :photo "2.jpg"
+;;            :state :draft)
 
-(make-look :timestamp (get-universal-time)
-           :target '("club2")
-           :goods  '(("shoes2" "brand" "shop") ("hat2"))
-           :photo "3.jpg"
-           :state :draft)
+;; (make-look :timestamp (get-universal-time)
+;;            :target '("club2")
+;;            :goods  '(("shoes2" "brand" "shop") ("hat2"))
+;;            :photo "3.jpg"
+;;            :state :draft)
 
-(make-look :timestamp (get-universal-time)
-           :target '("club2")
-           :goods  '(("shoes2" "brand" "shop") ("hat2"))
-           :photo "4.jpg"
-           :state :draft)
+;; (make-look :timestamp (get-universal-time)
+;;            :target '("club2")
+;;            :goods  '(("shoes2" "brand" "shop") ("hat2"))
+;;            :photo "4.jpg"
+;;            :state :draft)
 
-(assert (equal 'look (type-of (get-look 1))))
+;; (assert (equal 'look (type-of (get-look 1))))
 
 ;; ;; (опционально) Owner редактирует look, добавляя, удаляя или изменяя данные и фотографии.
 
@@ -141,14 +120,14 @@
   "публикация look-a owner-ом"
   (print 'pub))
 
-(takt (get-look 1) :public :publish-look)
-(takt (get-look 2) :public :publish-look)
-(takt (get-look 3) :public :publish-look)
-(takt (get-look 4) :public :publish-look)
+;; (takt (get-look 1) :public :publish-look)
+;; (takt (get-look 2) :public :publish-look)
+;; (takt (get-look 3) :public :publish-look)
+;; (takt (get-look 4) :public :publish-look)
 
 
 
-(assert (equal :public (state (get-look 1))))
+;; (assert (equal :public (state (get-look 1))))
 
 
 ;; Голосование
@@ -158,9 +137,9 @@
 (defun archive-look ()
   (print 'arch))
 
-(takt (get-look 1) :archived :archive-look)
+;; (takt (get-look 1) :archived :archive-look)
 
-(assert (equal :archived (state (get-look 1))))
+;; (assert (equal :archived (state (get-look 1))))
 
 ;; ;; Удаление look-а
 ;; (del-look 1)

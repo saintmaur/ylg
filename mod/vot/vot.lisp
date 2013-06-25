@@ -15,11 +15,13 @@
 ;; (closure-template:compile-template :common-lisp-backend (ylg:path "mod/vot/tpl.htm"))
 
 (define-entity vote ()
-  ((user-id    :user-id)
-   (entity     :entity)
-   (entity-id  :entity-id)
-   (voting     :voting)))
+  ((id         serial)
+   (user-id    integer)
+   (entity     varchar)
+   (entity-id  integer)
+   (voting     integer)))
 
+(make-table)
 ;; (vote-look 1 'like 3)
 ;; (votes (get-look 1))
 ;; (entity-id (get-vote 2))

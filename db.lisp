@@ -13,24 +13,11 @@
 (in-package #:db-init)
 
 
-(defmacro init-table-class (fields-list &key (key 'id) (db-spec 'ylg::*db-spec*) table)
-  (let ((class-name (intern (string-upcase table)))
-        (pkey (intern (string-upcase key)))
-        (func (intern (string-upcase (concatenate 'string "init-table")))))
-    `(progn
-       (defclass ,class-name ()
-         ,fields-list
-         (:metaclass dao-class)
-         (:key ,pkey))
-       (defun ,func ()
-         (with-connection ,db-spec
-           (unless (table-exists-p ,table)
-             (execute (dao-table-definition ',class-name))))))))
+(defun make-clause-list (glob-rel rel args)
+  (append (list glob-rel) (loop for i in args
+                             when (and (symbolp i)
+                                       (getf args i)
+                                       (not (symbolp (getf args i))))
+                             :collect (list rel i (getf args i)))))
 
-(defun make-clause-list (common-rel priv-rel args)
-  (append (list common-rel)
-          (loop for i in args when (and (keywordp i)
-                                        (getf args i)
-                                        (not (keywordp (getf args i))))
-             :collect `(,priv-rel  ,i ,(getf args i))))
-  )
+;(usr::email (first (find-entity 'usr::usr :email "seymouur")))

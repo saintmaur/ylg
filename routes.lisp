@@ -25,30 +25,31 @@
 
 (restas:define-route main ("/")
   (tpl:root (list :left (tpl:left)
-                  :right (ily:show-look-list (ily:find-look #'(lambda (x)                                                                (equal (ily::state (car x)) :public))))
+                  :right (ily:find-look :status 1)
                   :enterform (tpl:enterform)
                   :auth (if (null usr:*current-user*)
                             (tpl:authnotlogged)
-                            (tpl:authlogged (list :username (usr:email usr:*current-user*)))))))
-
-
-
+                            (tpl:authlogged (list :username (usr:email usr:*current-user*) :password (usr:password usr:*current-user*)))))))
 
 (restas:define-route file ("/file" :method :post)
   (awhen (hunchentoot:post-parameter "file")
-    (destructuring-bind (pathname filename format)
+    (destructuring-bind (path-name file-name file-type)
         it
-      (let ((pic (pht:upload pathname filename format)))
-        (format nil "uploaded ~A at ~A (time: ~A)"
-                (pht::uploadfilename pic)
-                (pht::pathnamefile pic)
-                (pht::timestamp pic))
-        (json:encode-json-to-string (list (cons "photo" (concatenate 'string "/pic/" (pht::namefile pic)))))
-        ;; "{photo : pic/1.jpg}"
-        )
-      ;; "{\"photo\" : \"pic/1.jpg\"}"
-      )))
+      (let ((pic (pht:upload path-name file-name (pathname-type (merge-pathnames path-name file-name)))))
+        (json:encode-json-to-string (list
+                                     (cons "photo" (concatenate 'string "/pic/" (pht::namefile pic)))
+                                     (cons "id" pht::id pic)))))))
 
+(restas:define-route get-look ("/get-look" :method :post)
+  (let ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal)))
+    (let* ((id (gethash "id" data))
+           (look (first (ily::find-look :id id))))
+      (json:encode-json-to-string (list
+                                   (cons "id" (ily::id look))
+                                   (cons "photo" (pht::get-pic-path (ily::photo look)))
+                                   (cons "goods" (ily::goods look))
+                                   (cons "user-id" (ily::user-id look))
+                                   (cons "timestamp" (ily::timestamp look)))))))
 
 (restas:define-route looks ("/looks")
   (tpl:root (list :left  (tpl:left)
@@ -62,17 +63,19 @@
                             (tpl:authnotlogged)
                             (tpl:authlogged (list :username (usr:email usr:*current-user*)))))))
 
+
+
 (restas:define-route one-look ("/look/:id")
   (tpl:root (list :left (tpl:left)
-                  :right  (let ((look (ily:get-look (parse-integer id)))
+                  :right  (let ((look (first (ily:find-look :id id)))
                                 (user (if usr::*current-user*
-                                          (usr::find-user usr::*current-user*)
+                                          (usr::id usr::*current-user*)
                                           0)))
                             (if (null look)
                                 "No such data"
                                 (tpl:lookview (list
                                                :id id
-                                               :pic (ily::photo look)
+                                               :pic (pht::get-pic-path (ily::photo look))
 					       :voting (append (list
                                             :id id
                                             :entity "look"
