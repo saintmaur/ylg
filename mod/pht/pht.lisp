@@ -19,8 +19,6 @@
    (timestamp      integer))
   ((:uploaded     :deleted      :delpic)))
 
-(make-table)
-
 (defun generate-filename ()
   (symbol-name (gensym "FILE-")))
 

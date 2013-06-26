@@ -16,7 +16,8 @@
 ;(closure-template:compile-template :common-lisp-backend (ylg:path "mod/cmt/tpl.htm"))
 
 (define-automat comment "Автомат комментария"
-  ((entity      varchar)     ;; may be other comment entity
+  ((id          serial)
+   (entity      varchar)     ;; may be other comment entity
    (entity-id   integer)
    (timestamp   integer)
    (author      integer)

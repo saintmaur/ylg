@@ -27,7 +27,7 @@
    (:link-sended  :logged       :enter))
   )     ;; Залогиниться
 ;;))
-(make-table)
+
 (defun none ())
 
 (defun generate-password ()

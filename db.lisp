@@ -19,5 +19,3 @@
                                        (getf args i)
                                        (not (symbolp (getf args i))))
                              :collect (list rel i (getf args i)))))
-
-;(usr::email (first (find-entity 'usr::usr :email "seymouur")))
