@@ -23,7 +23,6 @@
   ((:draft   :public    :publish-choice)
    (:public  :archived  :archive-choice)))
 
-(make-table)
 ;; (votes (get-choice 1))
 
 ;; (all-choice)

@@ -1,13 +1,13 @@
 var globData;
-function cancelEdit(id){
+function cancelEditClo(id){
 	var form = $("#"+id);
-	var formEl = form.find('form');
 	form.fadeOut();
 	setTimeout(function(){
-	    formEl.trigger( 'reset' );;
 	    form.css('top','auto');
+        form.find('input[type="text"]').each(function(){
+            $(this).val("");
+        });
 	},"1000");
-
 };
 function getCloItem(id){
     $.ajax({
@@ -52,7 +52,7 @@ function saveLook(data){
     $.ajax({
 	    url:"/save-look",
 	    dataType:"json",
-	    method:"post",
+	    type:"post",
         data:data,
 	    error:function(obj){
 	        getAlert(obj.responseText,'error');
@@ -65,17 +65,7 @@ function saveLook(data){
 }
 
 function delCloItem(id){
-    $.ajax({
-	    url:"#",
-	    dataType:"json",
-	    type:"post",
-	    error:function(obj){
-	        getAlert(obj.responseText,'error');
-	    },
-	    success:function(data){
-	        $('#item-'+id).remove();
-	    }
-    });
+    $("li#clo-"+id).remove();
 }
 
 function getCloLineForm(id){
@@ -102,14 +92,14 @@ function addCloLine(data){
         var pairs = data.split("&");
         for(var i in pairs){
             pair = pairs[i].split("=");
-            obj[pair[0]] = obj[pair[1]]
+            obj[pair[0]] = pair[1]
         }
     } else if (typeof data == "object") {
         obj = data;
     } else {
         return;
     }
-    var tmpl = '<li><span class="category">=>category<=</span><ul><li><span class="clo-list-capt">бренд:</span>&nbsp;<a href="#">=>brand<=</a></li><li><span class="clo-list-capt">магазин:</span>&nbsp;<a href="#">=>shop<=</a></li></ul></li>';
+    var tmpl = '<li class="clo-item" id="clo-'+($(".clo-item").size()+1)+'"><span class="category"><input type="text" name="category[]" value="=>category<=" /></span><ul><li><span class="clo-list-capt">бренд:</span>&nbsp;<input type="text" name="brand[]" value="=>brand<=" /></li><li><span class="clo-list-capt">магазин:</span>&nbsp;<input type="text" name="shop[]" value="=>shop<=" /></li></ul><div style="text-align:right"><a href="#" onclick="delCloItem(\''+($(".clo-item").size()+1)+'\')">удалить</a></div></li>';
     $("#clo-items-list").prepend(replaceStrTmpl(tmpl,obj));
 }
 
@@ -165,6 +155,9 @@ function updVotes(pack,entity,id,sel){
 }
 
 $(function(){
+    $.fancybox({
+		href:"#edit-look-form-cont"
+	});
 	$('a.call-upload-form').click(function(){
 	    if(!$("#__ajaxUploadIFRAME").size()){
 		    ajaxUploadIframe = $('<iframe src="/js/form.html" id="__ajaxUploadIFRAME" name="__ajaxUploadIFRAME"></iframe>').attr('style','style="width:0px;height:0px;border:1px solid #fff;display:none"').hide();
@@ -204,12 +197,13 @@ $(function(){
 	    return false;
     });
     $('.cancel-clo').click(function(){
-	    cancelEdit("clo-item-form");
+	    cancelEditClo("clo-item-form");
 	    return false;
     });
-    $('.save-data').click(function(){
+    $('.save-clo-data').click(function(){
 	    cloId = $('#clo-item-form').find('input[name="clo-item-id"]');
         addCloLine($('#clo-item-form').find('input').serialize());
+        cancelEditClo("clo-item-form");
 	    return false;
     });
     $("#custom-reason-switch").click(function (){

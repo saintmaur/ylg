@@ -152,6 +152,8 @@
   (let ((package (symbol-package name)))
   `(progn
      (define-entity ,name ,desc ,(car tail))
+     ;create the table if doesn't exist
+     (,(intern "MAKE-TABLE"))
      ,(let ((all-states (cadr tail)))
            `(progn
               ,@(loop :for (from-state to-state event) :in (caddr tail) :collect

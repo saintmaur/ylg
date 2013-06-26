@@ -27,8 +27,6 @@
   ((:draft   :public    :publish-look)
    (:public  :archived  :archive-look)))
 
-(make-table)
-
 (defun show-look-list (looks)
   (tpl:lookslist (list :looks (mapcar #'(lambda (look-pair)
                                           (let ((look (car look-pair))

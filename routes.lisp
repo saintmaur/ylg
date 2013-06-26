@@ -176,6 +176,27 @@
                             (tpl:authnotlogged)
                             (tpl:authlogged (list :username (usr:email usr:*current-user*)))))))
 
+(restas:define-route save-look ("/save-look" :method :post)
+  (let* ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal))
+         (id (gethash "id" data))
+         (custom-reason (gethash "custom-reason" data))
+         (reason (gethash "reason" data)))
+    (if (not (equal custom-reason ""))
+        (with-connection ylg::*db-spec*
+          (setf reason
+                (progn
+                  (query (:insert-into 'reasons :set 'name custom-reason))
+                  (query (:select :id :from 'reasons :where (:= 'name custom-reason)) :single)))))
+    (if (equal id "")
+        (progn
+          (ily::make-look
+           'timestamp (get-universal-time)
+           'status (gethash "status" data)
+           'user_id (usr::id usr::*current-user*)
+           'target reason
+           'photo (gethash "photo" data)
+           'goods ""
+           )))))
 
 
 (restas:define-route save-comment ("/save-comment" :method :post)

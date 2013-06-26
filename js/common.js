@@ -1,3 +1,20 @@
+function simpleJSON2string(obj){
+    if(typeof obj == "string")
+        return obj;
+    if(typeof JSON.stringify == "function"){
+        return JSON.stringify(obj);
+    } else {
+        var str = "";
+        for(var i in obj){
+            if(typeof obj[i] != "object"){
+                str += i+"="+obj[i]+"&";
+            } else {
+                //str += simpleJSON2string(obj[i])
+            }
+        }
+        return str;
+    }
+}
 function replaceStrTmpl(str,data){
     if(str != "undefined" && str != null){
 	for(i in data){
