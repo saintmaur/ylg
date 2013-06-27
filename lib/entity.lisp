@@ -137,6 +137,9 @@
        ;;   (do-hash (,container)
        ;;     (when (equal v obj)
        ;;       (return k))))
+       (defun ,show-entity (filter)
+         (let ((fields (table-description ',table)))
+           ))
 
        (defun ,find-entity (&rest args)
          (with-connection ylg::*db-spec*

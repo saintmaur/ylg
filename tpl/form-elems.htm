@@ -1,0 +1,22 @@
+// -*- mode: closure-template-html; fill-column: 160 -*-
+
+{namespace tpl}
+
+{template single}
+<input
+   {foreach $attr in $attrs}
+   {print $attr}
+   /*{if index($i)%2 == 0}
+   {$attr}
+   {else}
+   = "{$attr}"
+   {/if}*/
+   {/foreach} />
+{/template}
+
+{template double}
+<{$tag} {foreach $attr in $attrs}{if index($attr) % 2 ==
+        0}{$attr}{else}="{$attr}"{/if}{/foreach}>
+{$text}
+</{$tag}>
+{/template}

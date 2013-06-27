@@ -43,3 +43,4 @@
 (defvar *db-spec* (list "ylg_new" "ylg" "6mEfBjyLrSzlE" "localhost"))
 
 (closure-template:compile-template :common-lisp-backend (path "tpl/tpl.htm"))
+(closure-template:compile-template :common-lisp-backend (path "tpl/form-elems.htm"))
