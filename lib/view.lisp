@@ -10,13 +10,12 @@
                           :class-name))
 (in-package #:view)
 
-(defun render-elem (&key (paired nil) (tag "") (text "") (attrs ()))
-  (let ((*injected-data* '(:attrs attrs)))
-      (if (null paired)
-          (tpl:single (list :attrs attrs))
-          (if (null text)
-              ""
-              (tpl:double (list :tag tag :text text :attrs attrs))))))
+(defun render-elem (&key (paired nil) (tag "") (text "") (selected "0") (attrs ()))
+  (if (null paired)
+      (tpl:single (list :selected selected :attrs attrs))
+      (if (null text)
+          ""
+          (tpl:double (list :tag tag :text text :selected selected :attrs attrs)))))
 
 ;; (render-elem :attrs (list :name "name"))
 

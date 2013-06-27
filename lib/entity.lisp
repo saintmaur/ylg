@@ -63,6 +63,7 @@
          (container      (intern (concatenate 'string "*"        (symbol-name name) "*")))
          (count-entity   (intern (concatenate 'string "COUNT-"   (symbol-name name))))
          (make-entity    (intern (concatenate 'string "MAKE-"    (symbol-name name))))
+         (show-entity    (intern (concatenate 'string "SHOW-"    (symbol-name name))))
          (del-entity     (intern (concatenate 'string "DEL-"     (symbol-name name))))
          (all-entity     (intern (concatenate 'string "ALL-"     (symbol-name name))))
          (get-entity     (intern (concatenate 'string "GET-"     (symbol-name name))))
@@ -139,7 +140,8 @@
        ;;       (return k))))
        (defun ,show-entity (filter)
          (let ((fields (table-description ',table)))
-           ))
+           (format nil
+                   (view::render-elem :args (fields)))))
 
        (defun ,find-entity (&rest args)
          (with-connection ylg::*db-spec*
