@@ -31,5 +31,6 @@
   (view::render-elem :attrs (list :name "photo" :value id)))
 
 (defun show-goods (goods-str)
+  ;;распарсить строку - о ужас!
   )
 (show-reason 1)
