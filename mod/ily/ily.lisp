@@ -27,7 +27,6 @@
    (:public  :archived  :archive-look)))
 ;;))
 
-;; (show-look '(:id "1") '('timestamp))
 (defun show-look-list (looks)
   (tpl:lookslist (list :looks (mapcar #'(lambda (look-pair)
                                           (let ((look (car look-pair))
