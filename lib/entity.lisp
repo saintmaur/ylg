@@ -94,10 +94,6 @@
          (:metaclass dao-class)
          (:table-name ,table)
          (:key id))
-       ;; ,(let ((table-name (intern (string-upcase (symbol-name name)))))
-       ;;       (with-connection ylg::*db-spec*
-       ;;         (unless (table-exists-p table-name)
-       ;;           (execute (dao-table-definition table-name)))))
        ;; make-entity
        (defun ,(intern "MAKE-TABLE") ()
          (with-connection ylg::*db-spec*
@@ -142,7 +138,7 @@
          (with-connection ylg::*db-spec*
            (let ((fields
                   (mapcar #'(lambda (x)
-                              (when (not (find (car x) filter))
+                              (unless (find (car x) filter)
                                 (car x)))
                           (table-description ',table))))
              (apply #'format
@@ -151,7 +147,6 @@
                     (loop for field in fields :collect
                          (let ((func-name (intern (concatenate 'string "SHOW-" (string-upcase field))))
                                (field-sym (intern field :keyword)))
-                           (error (type-of (values field-sym)))
                            (list (values func-name) (getf ids (values field-sym))))))))))
 
        (defun ,find-entity (&rest args)
@@ -160,8 +155,7 @@
             ',table
             (sql-compile
              (list :select :* :from ',table
-                   :where (db-init::make-clause-list ':and ':= args))))))
-       )))
+                   :where (db-init::make-clause-list ':and ':= args)))))))))
 
 
 (defmacro define-automat (name desc &rest tail)
