@@ -132,8 +132,7 @@
   (let ((package (symbol-package name)))
   `(progn
      (define-entity ,name ,desc ,(car tail))
-     ;create the table if doesn't exist
-     (,(intern "MAKE-TABLE"))
+     (,(intern (concatenate 'string "MAKE-"  (symbol-name name) "-TABLE")))
      ,(let ((all-states (cadr tail)))
            `(progn
               ,@(loop :for (from-state to-state event) :in (caddr tail) :collect
@@ -147,4 +146,5 @@
                           (prog1 (,(intern (symbol-name event) *package*))
                             (setf (,(intern "STATE" package) obj) ,to-state)))))
               (defmethod ,(intern "TAKT" package) ((obj ,name) new-state event)
-                (,(intern "TRANS" package) obj (,(intern "STATE" package) obj) new-state event)))))))
+                (,(intern "TRANS" package) obj (,(intern "STATE" package) obj) new-state event))))
+     )))
