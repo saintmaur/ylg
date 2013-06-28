@@ -60,12 +60,12 @@
   (let ((*package* (symbol-package name)))
     (let ((make-entity-table  (intern (concatenate 'string "MAKE-"     (symbol-name name) "-TABLE")))
           (make-entity        (intern (concatenate 'string "MAKE-"     (symbol-name name))))
-          (to-html-entity     (intern (concatenate 'string "TO-HTML-"  (symbol-name name))))
           (del-entity         (intern (concatenate 'string "DEL-"      (symbol-name name))))
           (all-entity         (intern (concatenate 'string "ALL-"      (symbol-name name))))
           (get-entity         (intern (concatenate 'string "GET-"      (symbol-name name))))
           (find-entity        (intern (concatenate 'string "FIND-"     (symbol-name name))))
-          (table              (intern (symbol-name name))))
+          (table              (intern (symbol-name name)))
+          (to-html            (intern "TO-HTML")))
       `(progn
          ;; class
          (defclass ,name ()
@@ -113,7 +113,7 @@
                          (list :select :* :from ',table
                                :where (db-init::make-clause-list ':and ':= args))))))
          ;; show-entity
-         (defmethod ,to-html-entity ((obj ,name) &optional &key filter)
+         (defmethod ,to-html ((obj ,name) &optional &key filter)
            (with-connection ylg::*db-spec*
              (concatenate 'string
                           ,@(loop :for (fld-name fld-type) :in (car tail) :collect
