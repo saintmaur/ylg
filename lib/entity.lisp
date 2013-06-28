@@ -57,111 +57,75 @@
 ;; define-entity
 
 (defmacro define-entity (name desc &rest tail)
-  (let ( (inc            (intern (concatenate 'string "INC-"    (symbol-name name) "-ID")))
-        (incf-inc       (intern (concatenate 'string "INCF-"    (symbol-name name) "-ID")))
-         (init-inc       (intern (concatenate 'string "INIT-"    (symbol-name name) "-ID")))
-         (container      (intern (concatenate 'string "*"        (symbol-name name) "*")))
-         (count-entity   (intern (concatenate 'string "COUNT-"   (symbol-name name))))
-         (make-entity    (intern (concatenate 'string "MAKE-"    (symbol-name name))))
-         (show-entity    (intern (concatenate 'string "SHOW-"    (symbol-name name))))
-         (del-entity     (intern (concatenate 'string "DEL-"     (symbol-name name))))
-         (all-entity     (intern (concatenate 'string "ALL-"     (symbol-name name))))
-         (get-entity     (intern (concatenate 'string "GET-"     (symbol-name name))))
-         (find-entity    (intern (concatenate 'string "FIND-"    (symbol-name name))))
-         (table          (intern (symbol-name name) )))
-    `(let ((,inc 0))
-       ;; incrementor
-       (defun ,incf-inc ()
-         (incf ,inc))
-       ;; incrementor init
-       (defun ,init-inc (init-value)
-         (setf ,inc init-value))
-       ;; container
-       (defparameter ,container (make-hash-table :test #'equal))
-       ;; container counter
-       (defun ,count-entity ()
-         (hash-table-count ,container))
+  (let ((make-entity-table  (intern (concatenate 'string "MAKE-"  (symbol-name name) "-TABLE")))
+        (make-entity        (intern (concatenate 'string "MAKE-"  (symbol-name name))))
+        (show-entity        (intern (concatenate 'string "SHOW-"  (symbol-name name))))
+        (del-entity         (intern (concatenate 'string "DEL-"   (symbol-name name))))
+        (all-entity         (intern (concatenate 'string "ALL-"   (symbol-name name))))
+        (get-entity         (intern (concatenate 'string "GET-"   (symbol-name name))))
+        (find-entity        (intern (concatenate 'string "FIND-"  (symbol-name name))))
+        (table              (intern (symbol-name name))))
+    `(progn
        ;; class
        (defclass ,name ()
          ,(mapcar #'(lambda (x)
                       (list
                        (car x)
                        :col-type (cadr x)
-                       :initarg (intern (symbol-name (car x)) )
-                       :accessor (car x)
-                       ))
+                       :initarg  (intern (symbol-name (car x)))
+                       :accessor (car x)))
                   (car tail))
          (:metaclass dao-class)
          (:table-name ,table)
          (:key id))
-       ;; ,(let ((table-name (intern (string-upcase (symbol-name name)))))
-       ;;       (with-connection ylg::*db-spec*
-       ;;         (unless (table-exists-p table-name)
-       ;;           (execute (dao-table-definition table-name)))))
-       ;; make-entity
-       (defun ,(intern "MAKE-TABLE") ()
+       ;; make-entity-table
+       (defun ,make-entity-table ()
          (with-connection ylg::*db-spec*
            (unless (table-exists-p ',table)
              (execute (dao-table-definition ',table)))))
-
+       ;; make-entity
        (defun ,make-entity (&rest initargs)
          (with-connection ylg::*db-spec*
-          (apply #'make-dao
-                  (list* ',table initargs))))
-;;          (let ((id (,incf-inc)))
-            ;; todo: duplicate by id
-            ;; todo: duplicate by fields
-            ;; (values
-            ;;  (setf (gethash id ,container)
-            ;;        (apply #'make-instance
-            ;;               (list* ',name initargs)))
-            ;;  id)))
-
+           (apply #'make-dao (list* ',table initargs))))
+       ;; del-entity
        (defun ,del-entity (id)
          (with-connection ylg::*db-spec*
            (query-dao ',table (:delete :from ',table :where (:= :id id)))))
-       ;;(remhash id ,container))
+       ;; all-entity
        (defun ,all-entity ()
          (with-connection ylg::*db-spec*
            (select-dao ',table)))
        ;; get-entity (by id, typesafe, not-present safe)
        (defun ,get-entity (var)
          (let ((rec))
-         (when (typep var 'integer)
-           (with-connection ylg::*db-spec*
-             (setf rec (select-dao ',table (:= :id var)))))
-         (unless (typep var ',name)
-           (err 'param-user-type-error))
-         rec))
-       ;; find-entity - поиск айдишника по объекту
-       ;; (defmethod ,find-entity ((obj ,name))
-       ;;   (do-hash (,container)
-       ;;     (when (equal v obj)
-       ;;       (return k))))
+           (when (typep var 'integer)
+             (with-connection ylg::*db-spec*
+               (setf rec (select-dao ',table (:= :id var)))))
+           (unless (typep var ',name)
+             (err 'param-user-type-error))
+           rec))
+       ;; find-entity
+       (defun ,find-entity (&rest args)
+         (with-connection ylg::*db-spec*
+           (query-dao ',table
+                      (sql-compile
+                       (list :select :* :from ',table
+                             :where (db-init::make-clause-list ':and ':= args))))))
+       ;; show-entity
        (defun ,show-entity (&optional ids filter)
          (with-connection ylg::*db-spec*
-           (let ((fields
-                  (mapcar #'(lambda (x)
-                              (when (not (find (car x) filter))
-                                (car x)))
-                          (table-description ',table))))
+           (let ((fields (mapcar #'(lambda (x)
+                                     (when (not (find (car x) filter))
+                                       (car x)))
+                                 (table-description ',table))))
              (apply #'format
                     (list*
                      nil
-                    (loop for field in fields :collect
-                         (let ((func-name (intern (concatenate 'string "SHOW-" (string-upcase field))))
-                               (field-sym (intern field :keyword)))
-                           (error (type-of (values field-sym)))
-                           (list (values func-name) (getf ids (values field-sym))))))))))
-
-       (defun ,find-entity (&rest args)
-         (with-connection ylg::*db-spec*
-           (query-dao
-            ',table
-            (sql-compile
-             (list :select :* :from ',table
-                   :where (db-init::make-clause-list ':and ':= args))))))
-       )))
+                     (loop for field in fields :collect
+                          (let ((func-name (intern (concatenate 'string "SHOW-" (string-upcase field))))
+                                (field-sym (intern field :keyword)))
+                            (error (type-of (values field-sym)))
+                            (list (values func-name) (getf ids (values field-sym)))))))))))))
 
 
 (defmacro define-automat (name desc &rest tail)
