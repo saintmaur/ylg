@@ -115,9 +115,9 @@
        (defun ,show-entity (&optional ids filter)
          (with-connection ylg::*db-spec*
            (let ((fields (mapcar #'(lambda (x)
-                                     (when (not (find (car x) filter))
+                                     (unless (find (car x) filter)
                                        (car x)))
-                                 (table-description ',table))))
+                                 (car tail))))
              (apply #'format
                     (list*
                      nil
