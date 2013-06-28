@@ -115,17 +115,17 @@
        (defun ,show-entity (&optional ids filter)
          (with-connection ylg::*db-spec*
            (let ((fields (mapcar #'(lambda (x)
-                                     (unless (find (car x) filter)
+                                     (when (not (find (car x) filter))
                                        (car x)))
-                                 (car tail))))
+                                 (car ,table))))
              (apply #'format
                     (list*
                      nil
                      (loop for field in fields :collect
                           (let ((func-name (intern (concatenate 'string "SHOW-" (string-upcase field))))
                                 (field-sym (intern field :keyword)))
-                            (error (type-of (values field-sym)))
                             (list (values func-name) (getf ids (values field-sym)))))))))))))
+
 
 
 (defmacro define-automat (name desc &rest tail)
