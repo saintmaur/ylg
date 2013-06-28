@@ -121,11 +121,11 @@
              (apply #'format
                     (list*
                      nil
-                     (loop for field in fields :collect
-                          (let ((func-name (intern (concatenate 'string "SHOW-" (string-upcase field))))
-                                (field-sym (intern field :keyword)))
-                            (error (type-of (values field-sym)))
-                            (list (values func-name) (getf ids (values field-sym)))))))))))))
+                     ,(loop for field in fields :collect
+                           (let ((func-name (intern (concatenate 'string "SHOW-" (string-upcase field))))
+                                 (field-sym (intern field :keyword)))
+                             (error (type-of (values field-sym)))
+                             (list (values func-name) (getf ids (values field-sym)))))))))))))
 
 
 (defmacro define-automat (name desc &rest tail)
