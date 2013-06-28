@@ -23,12 +23,12 @@
 (defun show-id (&optional id)
   (if (null id)
       (setf id ""))
-  (view::render-elem :attrs (list :name "id" :value id)))
+  (view::render-elem :attrs (list :name "id" :value id :type "hidden")))
 
 (defun show-photo (&optional id)
   (if (null id)
       (setf id ""))
-  (view::render-elem :attrs (list :name "photo" :value id)))
+  (view::render-elem :attrs (list :name "photo" :value id :type "hidden")))
 
 (defun show-goods (goods-str)
   ;;распарсить строку - о ужас!

@@ -138,10 +138,21 @@
        ;;   (do-hash (,container)
        ;;     (when (equal v obj)
        ;;       (return k))))
-       (defun ,show-entity (filter)
-         (let ((fields (table-description ',table)))
-           (format nil
-                   (view::render-elem :args (fields)))))
+       (defun ,show-entity (&optional ids filter)
+         (with-connection ylg::*db-spec*
+           (let ((fields
+                  (mapcar #'(lambda (x)
+                              (when (not (find (car x) filter))
+                                (car x)))
+                          (table-description ',table))))
+             (apply #'format
+                    (list*
+                     nil
+                    (loop for field in fields :collect
+                         (let ((func-name (intern (concatenate 'string "SHOW-" (string-upcase field))))
+                               (field-sym (intern field :keyword)))
+                           (error (type-of (values field-sym)))
+                           (list (values func-name) (getf ids (values field-sym))))))))))
 
        (defun ,find-entity (&rest args)
          (with-connection ylg::*db-spec*
