@@ -57,94 +57,95 @@
 ;; define-entity
 
 (defmacro define-entity (name desc &rest tail)
-  (let ((make-entity-table  (intern (concatenate 'string "MAKE-"  (symbol-name name) "-TABLE")))
-        (make-entity        (intern (concatenate 'string "MAKE-"  (symbol-name name))))
-        (show-entity        (intern (concatenate 'string "SHOW-"  (symbol-name name))))
-        (del-entity         (intern (concatenate 'string "DEL-"   (symbol-name name))))
-        (all-entity         (intern (concatenate 'string "ALL-"   (symbol-name name))))
-        (get-entity         (intern (concatenate 'string "GET-"   (symbol-name name))))
-        (find-entity        (intern (concatenate 'string "FIND-"  (symbol-name name))))
-        (table              (intern (symbol-name name))))
-    `(progn
-       ;; class
-       (defclass ,name ()
-         ,(mapcar #'(lambda (x)
-                      (list
-                       (car x)
-                       :col-type (cadr x)
-                       :initarg  (intern (symbol-name (car x)))
-                       :accessor (car x)))
-                  (car tail))
-         (:metaclass dao-class)
-         (:table-name ,table)
-         (:key id))
-       ;; make-entity-table
-       (defun ,make-entity-table ()
-         (with-connection ylg::*db-spec*
-           (unless (table-exists-p ',table)
-             (execute (dao-table-definition ',table)))))
-       ;; make-entity
-       (defun ,make-entity (&rest initargs)
-         (with-connection ylg::*db-spec*
-           (apply #'make-dao (list* ',table initargs))))
-       ;; del-entity
-       (defun ,del-entity (id)
-         (with-connection ylg::*db-spec*
-           (query-dao ',table (:delete :from ',table :where (:= :id id)))))
-       ;; all-entity
-       (defun ,all-entity ()
-         (with-connection ylg::*db-spec*
-           (select-dao ',table)))
-       ;; get-entity (by id, typesafe, not-present safe)
-       (defun ,get-entity (var)
-         (let ((rec))
-           (when (typep var 'integer)
-             (with-connection ylg::*db-spec*
-               (setf rec (select-dao ',table (:= :id var)))))
-           (unless (typep var ',name)
-             (err 'param-user-type-error))
-           rec))
-       ;; find-entity
-       (defun ,find-entity (&rest args)
-         (with-connection ylg::*db-spec*
-           (query-dao ',table
-                      (sql-compile
-                       (list :select :* :from ',table
-                             :where (db-init::make-clause-list ':and ':= args))))))
-       ;; show-entity
-       (defun ,show-entity (&optional ids filter)
-         (with-connection ylg::*db-spec*
-           (let ((fields (mapcar #'(lambda (x)
-                                     (unless (find (car x) filter)
-                                       (car x)))
-                                 (car tail))))
-             (apply #'format
-                    (list*
-                     nil
-                     ,(loop for field in fields :collect
-                           (let ((func-name (intern (concatenate 'string "SHOW-" (string-upcase field))))
-                                 (field-sym (intern field :keyword)))
-                             (error (type-of (values field-sym)))
-                             (list (values func-name) (getf ids (values field-sym)))))))))))))
+  (let ((*package* (symbol-package name)))
+    (let ((make-entity-table  (intern (concatenate 'string "MAKE-"     (symbol-name name) "-TABLE")))
+          (make-entity        (intern (concatenate 'string "MAKE-"     (symbol-name name))))
+          (to-html-entity     (intern (concatenate 'string "TO-HTML-"  (symbol-name name))))
+          (del-entity         (intern (concatenate 'string "DEL-"      (symbol-name name))))
+          (all-entity         (intern (concatenate 'string "ALL-"      (symbol-name name))))
+          (get-entity         (intern (concatenate 'string "GET-"      (symbol-name name))))
+          (find-entity        (intern (concatenate 'string "FIND-"     (symbol-name name))))
+          (table              (intern (symbol-name name))))
+      `(progn
+         ;; class
+         (defclass ,name ()
+           ,(mapcar #'(lambda (x)
+                        (list
+                         (car x)
+                         :col-type (cadr x)
+                         :initarg  (intern (symbol-name (car x)))
+                         :accessor (car x)))
+                    (car tail))
+           (:metaclass dao-class)
+           (:table-name ,table)
+           (:key id))
+         ;; make-entity-table
+         (defun ,make-entity-table ()
+           (with-connection ylg::*db-spec*
+             (unless (table-exists-p ',table)
+               (execute (dao-table-definition ',table)))))
+         ;; make-entity
+         (defun ,make-entity (&rest initargs)
+           (with-connection ylg::*db-spec*
+             (apply #'make-dao (list* ',table initargs)))) ;; TODO: спроси меня про квотирование "@,"
+         ;; del-entity
+         (defun ,del-entity (id)
+           (with-connection ylg::*db-spec*
+             (query-dao ',table (:delete :from ',table :where (:= :id id)))))
+         ;; all-entity
+         (defun ,all-entity ()
+           (with-connection ylg::*db-spec*
+             (select-dao ',table)))
+         ;; get-entity (by id, typesafe, not-present safe)
+         (defun ,get-entity (var)
+           (let ((rec))
+             (when (typep var 'integer)
+               (with-connection ylg::*db-spec*
+                 (setf rec (select-dao ',table (:= :id var)))))
+             (unless (typep var ',name)
+               (err 'param-user-type-error))
+             rec))
+         ;; find-entity
+         (defun ,find-entity (&rest args)
+           (with-connection ylg::*db-spec*
+             (query-dao ',table
+                        (sql-compile
+                         (list :select :* :from ',table
+                               :where (db-init::make-clause-list ':and ':= args))))))
+         ;; show-entity
+         (defmethod ,to-html-entity ((obj ,name) &optional &key filter)
+           (with-connection ylg::*db-spec*
+             (concatenate 'string
+                          ,@(loop :for (fld-name fld-type) :in (car tail) :collect
+                               (list
+                                (intern (concatenate 'string "SHOW-FLD-"
+                                                     (if (symbolp fld-type)
+                                                         (symbol-name fld-type)
+                                                         "NONE")))
+                                (list fld-name 'obj))))))))))
 
 
 (defmacro define-automat (name desc &rest tail)
   (let ((package (symbol-package name)))
-  `(progn
-     (define-entity ,name ,desc ,(car tail))
-     (,(intern (concatenate 'string "MAKE-"  (symbol-name name) "-TABLE")))
-     ,(let ((all-states (cadr tail)))
-           `(progn
-              ,@(loop :for (from-state to-state event) :in (caddr tail) :collect
-                   (if (or (null (find from-state all-states))
-                           (null (find to-state all-states)))
-                       (err (format nil "unknown state: ~A -> ~A" from-state to-state))
-                       `(defmethod ,(intern "TRANS" package) ((obj ,name)
-                                                              (from-state (eql ,from-state))
-                                                              (to-state (eql ,to-state))
-                                                              (event (eql ,event)))
-                          (prog1 (,(intern (symbol-name event) *package*))
-                            (setf (,(intern "STATE" package) obj) ,to-state)))))
-              (defmethod ,(intern "TAKT" package) ((obj ,name) new-state event)
-                (,(intern "TRANS" package) obj (,(intern "STATE" package) obj) new-state event))))
-     )))
+    (let ((state (intern "STATE" package))
+          (trans (intern "TRANS" package))
+          (takt  (intern "TAKT" package))
+          (make-table (intern (concatenate 'string "MAKE-"  (symbol-name name) "-TABLE"))))
+      `(progn
+         (define-entity ,name ,desc ,(car tail))
+         (,make-table)
+         ,(let ((all-states (cadr tail)))
+               `(progn
+                  ,@(loop :for (from-state to-state event) :in (caddr tail) :collect
+                       (if (or (null (find from-state all-states))
+                               (null (find to-state all-states)))
+                           (err (format nil "unknown state: ~A -> ~A" from-state to-state))
+                           `(defmethod ,trans ((obj ,name)
+                                               (from-state (eql ,from-state))
+                                               (to-state (eql ,to-state))
+                                               (event (eql ,event)))
+                              (prog1 (,(intern (symbol-name event) *package*))
+                                (setf (,state obj) ,to-state)))))
+                  (defmethod ,takt ((obj ,name) new-state event)
+                    (,trans obj (,state obj) new-state event))))
+         ))))

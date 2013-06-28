@@ -13,7 +13,7 @@
 (in-package #:usr)
 
 (defparameter *current-user* nil)
-;;(print (macroexpand-1
+
 (define-automat usr "Автомат пользователя"
   ((id           serial)
    (email        varchar)
@@ -25,15 +25,24 @@
    (:unlogged     :logged       :none)       ;; Залогиниться
    (:unlogged     :link-sended  :none)  ;; Забыл пароль - пошлем линк
    (:link-sended  :logged       :enter))
-  )     ;; Залогиниться
-;;))
+  )
+
+;; (print
+;;  (macroexpand-1
+;;   '(DEFINE-ENTITY USR "Автомат пользователя"
+;;     ((ID SERIAL)
+;;      (EMAIL VARCHAR)
+;;      (PASSWORD VARCHAR)
+;;      (NAME (OR DB-NULL VARCHAR))
+;;      (SURNAME (OR DB-NULL VARCHAR))))))
+
 
 (defun none ())
 
 (defun generate-password ()
   (symbol-name (gensym "PASSWORD-")))
 
- (defun registration (email)
+(defun registration (email)
   ;; TODO: Проверяеть email на валидность, если не валиден - сигнализировать err-param
   (when (get-account email)
     (return-from registration nil))
