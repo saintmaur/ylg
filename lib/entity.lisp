@@ -87,7 +87,7 @@
          ;; make-entity
          (defun ,make-entity (&rest initargs)
            (with-connection ylg::*db-spec*
-             (apply #'make-dao (list* ',table initargs)))) ;; TODO: спроси меня про квотирование "@,"
+             (apply #'make-dao (list* ',table initargs))))
          ;; del-entity
          (defun ,del-entity (id)
            (with-connection ylg::*db-spec*
@@ -121,7 +121,10 @@
                                 (intern (concatenate 'string "SHOW-FLD-"
                                                      (if (symbolp fld-type)
                                                          (symbol-name fld-type)
-                                                         "NONE")))
+                                                         (format nil "~{~A~^-~}"
+                                                                 (mapcar #'(lambda (x)
+                                                                             (symbol-name x))
+                                                                         fld-type)))))
                                 (list fld-name 'obj))))))))))
 
 
@@ -147,5 +150,4 @@
                               (prog1 (,(intern (symbol-name event) *package*))
                                 (setf (,state obj) ,to-state)))))
                   (defmethod ,takt ((obj ,name) new-state event)
-                    (,trans obj (,state obj) new-state event))))
-         ))))
+                    (,trans obj (,state obj) new-state event))))))))
