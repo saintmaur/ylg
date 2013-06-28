@@ -63,6 +63,7 @@
          (container      (intern (concatenate 'string "*"        (symbol-name name) "*")))
          (count-entity   (intern (concatenate 'string "COUNT-"   (symbol-name name))))
          (make-entity    (intern (concatenate 'string "MAKE-"    (symbol-name name))))
+         (show-entity    (intern (concatenate 'string "SHOW-"    (symbol-name name))))
          (del-entity     (intern (concatenate 'string "DEL-"     (symbol-name name))))
          (all-entity     (intern (concatenate 'string "ALL-"     (symbol-name name))))
          (get-entity     (intern (concatenate 'string "GET-"     (symbol-name name))))
@@ -137,6 +138,21 @@
        ;;   (do-hash (,container)
        ;;     (when (equal v obj)
        ;;       (return k))))
+       (defun ,show-entity (&optional ids filter)
+         (with-connection ylg::*db-spec*
+           (let ((fields
+                  (mapcar #'(lambda (x)
+                              (when (not (find (car x) filter))
+                                (car x)))
+                          (table-description ',table))))
+             (apply #'format
+                    (list*
+                     nil
+                    (loop for field in fields :collect
+                         (let ((func-name (intern (concatenate 'string "SHOW-" (string-upcase field))))
+                               (field-sym (intern field :keyword)))
+                           (error (type-of (values field-sym)))
+                           (list (values func-name) (getf ids (values field-sym))))))))))
 
        (defun ,find-entity (&rest args)
          (with-connection ylg::*db-spec*

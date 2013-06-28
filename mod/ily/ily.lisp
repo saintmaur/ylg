@@ -13,20 +13,21 @@
 (in-package #:ily)
 
 ;(closure-template:compile-template :common-lisp-backend (ylg:path "mod/ily/tpl.htm"))
-
+;;(print (macroexpand-1
 (define-automat look "Автомат look-а"
   ((id          serial)
    (timestamp   integer)
-   (state       varchar)
    (user_id     integer)
-   (target      varchar)
+   (reason      varchar)
    (goods       varchar)
    (photo       integer)
    (status      integer))
   (:draft :public :archived)
   ((:draft   :public    :publish-look)
    (:public  :archived  :archive-look)))
+;;))
 
+(show-look '(:id "1") '('timestamp))
 (defun show-look-list (looks)
   (tpl:lookslist (list :looks (mapcar #'(lambda (look-pair)
                                           (let ((look (car look-pair))

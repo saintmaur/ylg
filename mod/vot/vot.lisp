@@ -21,11 +21,6 @@
    (entity-id  integer)
    (voting     integer)))
 
-;; (vote-look 1 'like 3)
-;; (votes (get-look 1))
-;; (entity-id (get-vote 2))
-;; (entity-id (get-vote 2))
-
 (defun check-if-voted (&key author entity entity-id)
   (if (and (first (vot::find-vote :user-id author
                                   :entity entity

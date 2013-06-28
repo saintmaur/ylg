@@ -17,7 +17,8 @@
                           :serial t
                           :pathname "lib"
                           :components ((:file "entity")
-                                       (:file "datetime")))
+                                       (:file "datetime")
+                                       (:file "view")))
                  (:module "usr"
                           :serial t
                           :pathname "mod/usr"
