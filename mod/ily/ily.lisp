@@ -27,7 +27,11 @@
    (:public  :archived  :archive-look)))
 ;;))
 
+<<<<<<< HEAD
 ;(show-look)
+=======
+;; (show-look '(:id "1") '('timestamp))
+>>>>>>> a6f2268d76bfb2a7470a09a1006d9d64245b0e8c
 (defun show-look-list (looks)
   (tpl:lookslist (list :looks (mapcar #'(lambda (look-pair)
                                           (let ((look (car look-pair))

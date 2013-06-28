@@ -14,8 +14,13 @@
 
 
 (defun make-clause-list (glob-rel rel args)
-  (append (list glob-rel) (loop for i in args
-                             when (and (symbolp i)
-                                       (getf args i)
-                                       (not (symbolp (getf args i))))
-                             :collect (list rel i (getf args i)))))
+  (append (list glob-rel)
+          (loop
+             :for i
+             :in args
+             :when (and (symbolp i)
+                       (getf args i)
+                       (not (symbolp (getf args i))))
+             :collect (list rel i (getf args i)))))
+
+(make-clause-list ':and ':= (list 'id 1 'name "name"))
