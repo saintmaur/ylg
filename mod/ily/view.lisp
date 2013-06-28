@@ -33,4 +33,4 @@
 (defun show-goods (goods-str)
   ;;распарсить строку - о ужас!
   )
-;;(show-reason 1)
+(show-reasons 1)
