@@ -13,7 +13,7 @@
 (in-package #:usr)
 
 (defparameter *current-user* nil)
-;;(print (macroexpand-1
+
 (define-automat usr "Автомат пользователя"
   ((id           serial)
    (email        varchar)
@@ -25,15 +25,54 @@
    (:unlogged     :logged       :none)       ;; Залогиниться
    (:unlogged     :link-sended  :none)  ;; Забыл пароль - пошлем линк
    (:link-sended  :logged       :enter))
-  )     ;; Залогиниться
-;;))
+  )
+
+;; (print
+;;  (macroexpand-1
+;;   '(DEFINE-ENTITY USR "Автомат пользователя"
+;;     ((ID SERIAL)
+;;      (EMAIL VARCHAR)
+;;      (PASSWORD VARCHAR)
+;;      (NAME (OR DB-NULL VARCHAR))
+;;      (SURNAME (OR DB-NULL VARCHAR))))))
+
+(defun SHOW-FLD-VARCHAR (x)
+  (format nil "~%varchar: ~A" x))
+
+(defun SHOW-FLD-OR-DB-NULL-VARCHAR (x)
+  (format nil "~%null-or-varchar: ~A" x))
+
+(defun SHOW-FLD-SERIAL (x)
+  (format nil "~%serial: A" x))
+
+;; Test
+;; (to-html (car (all-usr)))
+
+
+;; (DEFMETHOD TO-HTML ((LIB::OBJ USR) &OPTIONAL &KEY LIB::FILTER)
+;;   (WITH-CONNECTION YLG::*DB-SPEC*
+;;     (CONCATENATE 'STRING (SHOW-FLD-SERIAL (ID LIB::OBJ))
+;;                  (SHOW-FLD-VARCHAR (EMAIL LIB::OBJ))
+;;                  (SHOW-FLD-VARCHAR (PASSWORD LIB::OBJ))
+;;                  (SHOW-FLD-OR-DB-NULL-VARCHAR (NAME LIB::OBJ))
+;;                  (SHOW-FLD-OR-DB-NULL-VARCHAR (SURNAME LIB::OBJ)))))
+
+
+
+;; (defun show-fld-none (name lib::obj))
+
+;; (show-fld-serial (usr::id lib::obj))
+
+;; (show-fld-varchar (usr:email lib::obj))
+
+
 
 (defun none ())
 
 (defun generate-password ()
   (symbol-name (gensym "PASSWORD-")))
 
- (defun registration (email)
+(defun registration (email)
   ;; TODO: Проверяеть email на валидность, если не валиден - сигнализировать err-param
   (when (get-account email)
     (return-from registration nil))
