@@ -12,8 +12,6 @@
 
 (in-package #:ily)
 
-;(closure-template:compile-template :common-lisp-backend (ylg:path "mod/ily/tpl.htm"))
-;;(print (macroexpand-1
 (define-automat look "Автомат look-а"
   ((id          serial)
    (timestamp   integer)
@@ -25,7 +23,21 @@
   (:draft :public :archived)
   ((:draft   :public    :publish-look)
    (:public  :archived  :archive-look)))
-;;))
+
+                                        ;(closure-template:compile-template :common-lisp-backend (ylg:path "mod/ily/tpl.htm"))
+(print (macroexpand-1
+'(define-entity look "Автомат look-а"
+  ((id          serial)
+   (timestamp   integer)
+   (user_id     integer)
+   (reason      varchar)
+   (goods       varchar)
+   (photo       integer)
+   (status      integer))
+  (:draft :public :archived)
+  ((:draft   :public    :publish-look)
+   (:public  :archived  :archive-look)))
+))
 
 (defun show-look-list (looks)
   (tpl:lookslist (list :looks (mapcar #'(lambda (look-pair)
@@ -157,3 +169,26 @@
 ;; Попытка голосовать за лук не в том состоянии
 
 ;; Комментирование look-а
+(defun SHOW-FLD-SERIAL (name value)
+  (format nil (view::render-elem :paired nil :attrs (list :type "hidden" :name name :value value))))
+
+(defun SHOW-FLD-VARCHAR (name value)
+  (format nil (view::render-elem :paired nil :attrs (list :type "text" :name name :value value))))
+
+(defun SHOW-FLD-LIST (name value)
+  )
+
+
+;; (defun SHOW-FLD-SERIALIZED (name value)
+;;   (let ((data (make-hash-table :size (+ (count #'| value) 1)))
+;;     (loop for i = 0 then (1+ j)
+;;        as j = (position #'& value :start i)
+;;        collect
+;;          (let ((right (subseq (subseq value i j)
+;;                               (+ (position #'= (subseq value i j)) 1)))
+;;                (left (subseq (subseq value i j)
+;;                              i (position #'= (subseq value i j)))))
+;;            (setf (gethash (intern (string-upcase left)) data) right)
+;;            data)
+;;        while j)
+;;     data)

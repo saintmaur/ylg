@@ -46,7 +46,7 @@
   (format nil "~%serial: A" x))
 
 ;; Test
-;; (to-html (car (all-usr)))
+(to-html (car (all-usr)))
 
 
 ;; (DEFMETHOD TO-HTML ((LIB::OBJ USR) &OPTIONAL &KEY LIB::FILTER)
