@@ -11,6 +11,7 @@ CREATE DATABASE ylg_new WITH OWNER ylg ENCODING = 'UTF8';
 CREATE TABLE reasons (
     id serial NOT NULL,
     name character varying,
+    public smallint default 0,
     constraint reasons_pkey primary key (id)
 );
 

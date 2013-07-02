@@ -16,7 +16,7 @@
   ((id          serial)
    (timestamp   integer)
    (user_id     integer)
-   (reason      varchar)
+   (reason      integer)
    (goods       varchar)
    (photo       integer)
    (status      integer))
@@ -169,26 +169,3 @@
 ;; Попытка голосовать за лук не в том состоянии
 
 ;; Комментирование look-а
-(defun SHOW-FLD-SERIAL (name value)
-  (format nil (view::render-elem :paired nil :attrs (list :type "hidden" :name name :value value))))
-
-(defun SHOW-FLD-VARCHAR (name value)
-  (format nil (view::render-elem :paired nil :attrs (list :type "text" :name name :value value))))
-
-(defun SHOW-FLD-LIST (name value)
-  )
-
-
-;; (defun SHOW-FLD-SERIALIZED (name value)
-;;   (let ((data (make-hash-table :size (+ (count #'| value) 1)))
-;;     (loop for i = 0 then (1+ j)
-;;        as j = (position #'& value :start i)
-;;        collect
-;;          (let ((right (subseq (subseq value i j)
-;;                               (+ (position #'= (subseq value i j)) 1)))
-;;                (left (subseq (subseq value i j)
-;;                              i (position #'= (subseq value i j)))))
-;;            (setf (gethash (intern (string-upcase left)) data) right)
-;;            data)
-;;        while j)
-;;     data)

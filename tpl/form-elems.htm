@@ -14,3 +14,28 @@
 {$text}
 </{$tag}>
 {/template}
+
+{template fldlist}
+<input name="clo-count" id="clo-count" value="{$clocount}" type="hidden" />
+<ul id="clo-items-list">
+  {foreach $item in $list}
+  {call fldlistitem data="$item" /}
+  {/foreach}
+</ul>
+{/template}
+
+{template fldlistitem}
+<li id="{$id}">
+  <span class="category"><input type="text" name="category" value="{$category}" /></span>
+  <ul>
+    <li class="brand">
+      <span class="clo-list-capt">бренд:</span>&nbsp;<input type="text" name="brand" value="{$brand}" /></li>
+    <li class="shop">
+      <span class="clo-list-capt">магазин:</span>&nbsp;<input type="text" name="shop" value="{$shop}" /></li>
+  </ul>
+  <div class="eddel-block">
+    <a href="#" onclick="delCloItem({$id})" class="del">удалить</a>
+  </div>
+</li>
+
+{/template}

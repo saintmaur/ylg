@@ -49,11 +49,21 @@ function getLook(id){
 }
 
 function saveLook(data){
+    var goods="";
+    var targetArr = ["category","brand","shop"];
+    console.log(data);
+    for(var i in data){
+        if(targetArr.indexOf(i)>-1){
+            console.log(i);
+            goods += i + "=" + data[i] + "&";
+        }
+    }
+return;
     $.ajax({
 	    url:"/save-look",
 	    dataType:"json",
 	    type:"post",
-        data:data,
+        data:data+"&goods"+goods,
 	    error:function(obj){
 	        getAlert(obj.responseText,'error');
 	    },
@@ -65,7 +75,8 @@ function saveLook(data){
 }
 
 function delCloItem(id){
-    $("li#clo-"+id).remove();
+    $("li#"+id).remove();
+    $("input#clo-count").val(parseInt($("input#clo-count").val())-1);
 }
 
 function getCloLineForm(id){
@@ -99,8 +110,9 @@ function addCloLine(data){
     } else {
         return;
     }
-    var tmpl = '<li class="clo-item" id="clo-'+($(".clo-item").size()+1)+'"><span class="category"><input type="text" name="category[]" value="=>category<=" /></span><ul><li><span class="clo-list-capt">бренд:</span>&nbsp;<input type="text" name="brand[]" value="=>brand<=" /></li><li><span class="clo-list-capt">магазин:</span>&nbsp;<input type="text" name="shop[]" value="=>shop<=" /></li></ul><div style="text-align:right"><a href="#" onclick="delCloItem(\''+($(".clo-item").size()+1)+'\')">удалить</a></div></li>';
+    var tmpl = '<li class="clo-item" id="clo-'+($(".clo-item").size()+1)+'"><span class="category"><input type="text" name="category-'+($(".clo-item").size()+1)+'" value="=>category<=" /></span><ul><li><span class="clo-list-capt">бренд:</span>&nbsp;<input type="text" name="brand-'+($(".clo-item").size()+1)+'" value="=>brand<=" /></li><li><span class="clo-list-capt">магазин:</span>&nbsp;<input type="text" name="shop-'+($(".clo-item").size()+1)+'" value="=>shop<=" /></li></ul><div style="text-align:right"><a href="#" onclick="delCloItem(\'clo-'+($(".clo-item").size()+1)+'\')">удалить</a></div></li>';
     $("#clo-items-list").prepend(replaceStrTmpl(tmpl,obj));
+    $("input#clo-count").val(parseInt($("input#clo-count").val())+1);
 }
 
 function editCloLine(data){

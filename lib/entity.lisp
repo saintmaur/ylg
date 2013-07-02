@@ -88,6 +88,13 @@
          (defun ,make-entity (&rest initargs)
            (with-connection ylg::*db-spec*
              (apply #'make-dao (list* ',table initargs))))
+
+         ;;update entity
+         (defmethod setf ((obj ,name) &optional args)
+           (loop for x in args
+                (setf ((car x) obj) (cdr x)))
+           (save-dao obj))
+
          ;; del-entity
          (defun ,del-entity (id)
            (with-connection ylg::*db-spec*

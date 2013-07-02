@@ -180,23 +180,39 @@
   (let* ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal))
          (id (gethash "id" data))
          (custom-reason (gethash "custom-reason" data))
-         (reason (gethash "reason" data)))
+         (reason (gethash "reason" data))
+         (goods "")
+         (clo-count (parse-integer (gethash "clo-count" data))))
+    (loop for i from 1 to clo-count
+       do
+         (concatenate 'string goods "category="
+                      (gethash (concatenate 'string "category-" (write-to-string i)) data) "&")
+         (concatenate 'string goods "brand="
+                        (gethash (concatenate 'string "brand-" (write-to-string i)) data) "&")
+         (concatenate 'string goods "shop="
+                      (gethash (concatenate 'string "shop-" (write-to-string i)) data)
+                      (unless (= i clo-count) "|")))
     (if (not (equal custom-reason ""))
         (with-connection ylg::*db-spec*
           (setf reason
-                (progn
-                  (query (:insert-into 'reasons :set 'name custom-reason))
-                  (query (:select :id :from 'reasons :where (:= 'name custom-reason)) :single)))))
+                (or (query (:select :id :from 'reasons :where (:= 'name custom-reason)) :single)
+                    (progn
+                      (query (:insert-into 'reasons :set 'name custom-reason))
+                      (query (:select :id :from 'reasons :where (:= 'name custom-reason)) :single))))))
     (if (equal id "")
         (progn
           (ily::make-look
            'timestamp (get-universal-time)
            'status (gethash "status" data)
            'user_id (usr::id usr::*current-user*)
-           'target reason
+           'reason reason
            'photo (gethash "photo" data)
-           'goods ""
-           )))))
+           'goods goods))
+        (with-connection ylg::*db-spec*
+          (ily::setf (get-dao 'look id) (list
+                                         ('reason reason)
+                                         '(photo photo)
+                                         '(goods goods)))))))
 
 
 (restas:define-route save-comment ("/save-comment" :method :post)
