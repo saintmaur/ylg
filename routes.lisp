@@ -59,6 +59,7 @@
                   :enterform (if (null usr:*current-user*)
                                  (tpl:enterform)
                                  nil)
+                  :form (ily::show-look-form)
                   :auth (if (null usr:*current-user*)
                             (tpl:authnotlogged)
                             (tpl:authlogged (list :username (usr:email usr:*current-user*)))))))
@@ -112,9 +113,9 @@
       (if (and
            usr:*current-user*
            (vot::make-vote
-            :entity (find-symbol (string-upcase entity) (find-package (string-upcase pack)))
+            :entity (string-upcase entity)
             :entity-id entity-id
-            :user-id (usr::find-user usr:*current-user*)
+            :user-id (usr::id usr:*current-user*)
             :voting vote))
           ;; "ok"
           (json:encode-json-to-string (list
@@ -182,6 +183,7 @@
          (custom-reason (gethash "custom-reason" data))
          (reason (gethash "reason" data))
          (goods "")
+         (photo (gethash "photo" data))
          (clo-count (parse-integer (gethash "clo-count" data))))
     (loop for i from 1 to clo-count
        do
@@ -202,17 +204,18 @@
     (if (equal id "")
         (progn
           (ily::make-look
-           'timestamp (get-universal-time)
-           'status (gethash "status" data)
-           'user_id (usr::id usr::*current-user*)
-           'reason reason
-           'photo (gethash "photo" data)
-           'goods goods))
+           :timestamp (get-universal-time)
+           :status (gethash "status" data)
+           :user_id (usr::id usr::*current-user*)
+           :reason reason
+           :photo photo
+           :goods goods))
         (with-connection ylg::*db-spec*
-          (ily::setf (get-dao 'look id) (list
-                                         ('reason reason)
-                                         '(photo photo)
-                                         '(goods goods)))))))
+          (ily::upd-look (get-dao 'look id)
+                         (list
+                          :reason reason
+                          :photo photo
+                          :goods goods))))))
 
 
 (restas:define-route save-comment ("/save-comment" :method :post)
@@ -239,13 +242,10 @@
                      :timestamp timestamp)
                   (setf id new-id)
                   (setf msg "успешно"))
-                (let ((comment (cmt::get-comment id)))
-                  (setf (cmt::text comment) text)
-                  (setf timestamp (cmt::timestamp comment))
-                  (setf author (cmt::author comment))
-                  (setf entity-id (cmt::entity-id comment))
-                  (setf entity (string-downcase (symbol-name (cmt::entity comment))))
-                  ))
+                (let ((comment (cmt::find-comment :id id)))
+                   (cmt::upd-cmt (get-dao 'comment id)
+                                 (list
+                                  (:text text)))))
             (setf result 1)))
       (json:encode-json-alist-to-string (list
                                          (cons "success" result)

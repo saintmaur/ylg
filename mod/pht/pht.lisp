@@ -15,8 +15,7 @@
   ((id             serial)
    (pictype        varchar)
    (pathnamefile   varchar)
-   (namefile       varchar)
-   (timestamp      integer))
+   (namefile       varchar))
   ((:uploaded     :deleted      :delpic)))
 
 (defun generate-filename ()
@@ -38,5 +37,4 @@
                do (write-sequence buf output-stream :end pos)))))
       (make-pic 'pictype input-format
                 'pathnamefile outfilepath
-                'namefile output-filename
-                'timestamp (get-internal-real-time)))))
+                'namefile output-filename))))

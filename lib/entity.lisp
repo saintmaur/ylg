@@ -60,6 +60,7 @@
   (let ((*package* (symbol-package name)))
     (let ((make-entity-table  (intern (concatenate 'string "MAKE-"     (symbol-name name) "-TABLE")))
           (make-entity        (intern (concatenate 'string "MAKE-"     (symbol-name name))))
+          (upd-entity         (intern (concatenate 'string "UPD-"      (symbol-name name))))
           (del-entity         (intern (concatenate 'string "DEL-"      (symbol-name name))))
           (all-entity         (intern (concatenate 'string "ALL-"      (symbol-name name))))
           (get-entity         (intern (concatenate 'string "GET-"      (symbol-name name))))
@@ -73,12 +74,12 @@
                         (list
                          (car x)
                          :col-type (cadr x)
-                         :initarg  (intern (symbol-name (car x)))
+                         :initarg  (intern (symbol-name (car x)) :keyword)
                          :accessor (car x)))
                     (car tail))
            (:metaclass dao-class)
            (:table-name ,table)
-           (:key id))
+           (:keys ,(caaar tail)))
          ;; make-entity-table
          (defun ,make-entity-table ()
            (with-connection ylg::*db-spec*
@@ -90,10 +91,13 @@
              (apply #'make-dao (list* ',table initargs))))
 
          ;;update entity
-         (defmethod setf ((obj ,name) &optional args)
-           (loop for x in args
-                (setf ((car x) obj) (cdr x)))
-           (save-dao obj))
+         (defmethod ,upd-entity ((obj ,name) &optional args)
+           (progn
+             ,@(loop for accessor in (car tail) :collect
+                    `(setf (,(car accessor) obj)
+                          (or (getf args ,(intern (symbol-name (car accessor)) :keyword))
+                              (,(car accessor) obj))))
+             (save-dao obj)))
 
          ;; del-entity
          (defun ,del-entity (id)

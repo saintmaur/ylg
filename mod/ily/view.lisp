@@ -3,8 +3,6 @@
 (defun SHOW-FLD-SERIAL (name &optional value)
   (format nil (view::render-elem :paired nil :attrs (list :type "hidden" :name name :value value))))
 
-(show-fld-serial "id")
-
 (defun SHOW-FLD-VARCHAR (name &optional value)
   (format nil (view::render-elem :paired nil :attrs (list :type "text" :name name :value value))))
 
@@ -67,5 +65,3 @@
       (setf id ""))
   (view::render-elem :attrs (list :name "photo" :value id :type "hidden")))
 
-(defun GET-SERIALIZED (value)
-  )

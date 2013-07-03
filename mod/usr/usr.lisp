@@ -27,14 +27,18 @@
    (:link-sended  :logged       :enter))
   )
 
-;; (print
-;;  (macroexpand-1
-;;   '(DEFINE-ENTITY USR "Автомат пользователя"
-;;     ((ID SERIAL)
-;;      (EMAIL VARCHAR)
-;;      (PASSWORD VARCHAR)
-;;      (NAME (OR DB-NULL VARCHAR))
-;;      (SURNAME (OR DB-NULL VARCHAR))))))
+(print
+ (macroexpand-1
+  '(DEFINE-ENTITY USR "Автомат пользователя"
+    ((ID SERIAL)
+     (EMAIL VARCHAR)
+     (PASSWORD VARCHAR)
+     (NAME (OR DB-NULL VARCHAR))
+     (SURNAME (OR DB-NULL VARCHAR))))))
+
+(with-connection ylg::*db-spec*
+  (upd-usr (get-dao 'usr 1)
+           (list :name "name" :surname "surname")))
 
 (defun SHOW-FLD-VARCHAR (x)
   (format nil "~%varchar: ~A" x))
@@ -46,26 +50,8 @@
   (format nil "~%serial: A" x))
 
 ;; Test
-(to-html (car (all-usr)))
-
-
-;; (DEFMETHOD TO-HTML ((LIB::OBJ USR) &OPTIONAL &KEY LIB::FILTER)
-;;   (WITH-CONNECTION YLG::*DB-SPEC*
-;;     (CONCATENATE 'STRING (SHOW-FLD-SERIAL (ID LIB::OBJ))
-;;                  (SHOW-FLD-VARCHAR (EMAIL LIB::OBJ))
-;;                  (SHOW-FLD-VARCHAR (PASSWORD LIB::OBJ))
-;;                  (SHOW-FLD-OR-DB-NULL-VARCHAR (NAME LIB::OBJ))
-;;                  (SHOW-FLD-OR-DB-NULL-VARCHAR (SURNAME LIB::OBJ)))))
-
-
-
-;; (defun show-fld-none (name lib::obj))
-
-;; (show-fld-serial (usr::id lib::obj))
-
-;; (show-fld-varchar (usr:email lib::obj))
-
-
+;(to-html (car (all-usr)))
+;; (make-usr 'email "test" 'password "111")
 
 (defun none ())
 
@@ -76,7 +62,7 @@
   ;; TODO: Проверяеть email на валидность, если не валиден - сигнализировать err-param
   (when (get-account email)
     (return-from registration nil))
-  (setf *current-user* (make-usr 'email email 'password (generate-password))))
+  (setf *current-user* (make-usr :email email :password (generate-password))))
 
 (defun delete-account (email)
   ;; TODO: Проверять права, если проверка не прошла - сигнализировать err-permission
@@ -155,3 +141,15 @@
 ;; ;; Попытка логина пользователя_3 с неправильным паролем — неуспешно
 ;; Попытка логина пользователя_3 с новым паролем — успешно
 ;; Попытка логина пользователя_2 со старым паролем — успешно
+
+
+;; (defclass country ()
+;;     ((name :col-type string :initarg :name
+;;                     :reader country-name)
+;;         (inhabitants :col-type integer :initarg :inhabitants
+;;                                      :accessor country-inhabitants)
+;;         (sovereign :col-type (or db-null string) :initarg :sovereign
+;;                                  :accessor country-sovereign))
+;;     (:metaclass dao-class)
+;;       (:keys name))
+
