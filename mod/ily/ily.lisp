@@ -51,7 +51,6 @@
                                                 ))
                                       looks))))
 
-
 ;; (defun show-create ()
 ;;   "ook"
 ;;   t)

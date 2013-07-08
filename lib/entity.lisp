@@ -113,8 +113,8 @@
              (when (typep var 'integer)
                (with-connection ylg::*db-spec*
                  (setf rec (select-dao ',table (:= :id var)))))
-             (unless (typep var ',name)
-               (err 'param-user-type-error))
+             ;; (unless (typep var ',name)
+             ;;   (err 'param-user-type-error))
              rec))
          ;; find-entity
          (defun ,find-entity (&rest args)

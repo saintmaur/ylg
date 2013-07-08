@@ -75,7 +75,7 @@
                                   (multiple-value-bind (form goods) (ily::show-fld-text (ily::goods look))
                                     (tpl:lookview (list
                                                    :id id
-                                                   :pic (pht::get-pic-path (ily::photo look))
+                                                   :pic (pht::get-pic-path :id (ily::photo look))
                                                    :voting (append (list
                                                                     :id id
                                                                     :entity "look"
@@ -101,7 +101,7 @@
                                            nil)
                             :auth (if (null usr:*current-user*)
                                       (tpl:authnotlogged)
-                                      (tpl:authlogged (list :username (usr:email usr:*current-user*))))))))
+                                      (tpl:authlogged (list :username (usr:email usr:*current-user*)))))))
 
   (restas:define-route vote ("/vote" :method :post)
     (let ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal)))
