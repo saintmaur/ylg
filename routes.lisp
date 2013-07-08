@@ -79,7 +79,6 @@
                                                    :voting (append (list
                                                                     :id id
                                                                     :entity "look"
-                                                                    :pack "ily"
                                                                     :vote 1
                                                                     :voted (vot::check-if-voted
                                                                             :author user
@@ -238,7 +237,6 @@
            (msg "")
            (result 0)
            (entity (gethash "entity" data))
-           (pack (gethash "pack" data))
            (timestamp (get-universal-time)))
       (if (equal 0 author)
           (setf msg "Необходимо авторизоваться!")
@@ -249,14 +247,13 @@
                      :text text
                      :author author
                      :entity-id entity-id
-                     :entity (find-symbol (string-upcase entity) (find-package (string-upcase pack)))
+                     :entity (string-upcase entity)
                      :timestamp timestamp)
                   (setf id new-id)
                   (setf msg "успешно"))
-                (let ((comment (cmt::find-comment :id id)))
-                   (cmt::upd-cmt (get-dao 'comment id)
-                                 (list
-                                  (:text text)))))
+                (cmt::upd-comment (first (cmt::get-comment id))
+                                  (list
+                                   :text text)))
             (setf result 1)))
       (json:encode-json-alist-to-string (list
                                          (cons "success" result)
@@ -266,35 +263,34 @@
                                                            (list
                                                             (cons "text" text)
                                                             (cons "timestamp" timestamp)
-                                                            (cons "author" (usr::email (usr::get-user author)))
+                                                            (cons "author" (usr::email (first (usr::get-usr author))))
                                                             (cons "id" id)
                                                             (cons "entity-id" entity-id)
                                                             (cons "vote" 1)
-                                                            (cons "pack" pack)
                                                             (cons "entity" entity)
-                                                            (cons "sum" (getf (vot::vote-summary (find-symbol (string-upcase entity) (find-package (string-upcase pack))) id) :sum))
-                                                            (cons "like" (getf (vot::vote-summary (find-symbol (string-upcase entity) (find-package (string-upcase pack))) id) :like))
-                                                            (cons "dislike" (getf (vot::vote-summary (find-symbol (string-upcase entity) (find-package (string-upcase pack))) id) :dislike))))
+                                                            (cons "sum" (getf (vot::vote-summary (string-upcase entity) id) :sum))
+                                                            (cons "like" (getf (vot::vote-summary (string-upcase entity) id) :like))
+                                                            (cons "dislike" (getf (vot::vote-summary (string-upcase entity) id) :dislike))))
                                                           ())))))))
 
 (restas:define-route del-comment ("/del-comment" :method :post)
   (let ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal)))
     (let* ((id  (parse-integer (gethash "id" data)))
-           (author  (cmt::author (cmt::get-comment id)))
+           (author  (cmt::author (first (cmt::get-comment id))))
            (msg "")
            (result (if (and
-                        (equal author (usr::find-user usr::*current-user*))
+                        usr::*current-user*
+                        (equal author (usr::id usr::*current-user*))
                         (cmt::del-comment id))
                        (progn
                          (setf msg "успешно")
                          1)
                        (progn
-                         (setf msg "Ошибка доступа. Скорей всего..")
+                         (setf msg "Ошибка доступа.")
                          0))))
       (json:encode-json-alist-to-string (list
                                          (cons "success" result)
                                          (cons "msg" msg))))))
-
 
 (restas:define-route get-comment ("/get-comment" :method :post)
   (let ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal)))

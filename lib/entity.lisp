@@ -102,7 +102,7 @@
          ;; del-entity
          (defun ,del-entity (id)
            (with-connection ylg::*db-spec*
-             (query-dao ',table (:delete :from ',table :where (:= :id id)))))
+             (delete-dao (get-dao ',table id))))
          ;; all-entity
          (defun ,all-entity ()
            (with-connection ylg::*db-spec*

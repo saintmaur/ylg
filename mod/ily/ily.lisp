@@ -46,8 +46,8 @@
   (tpl:lookslist (list :looks (mapcar #'(lambda (look)
                                           (list :id (ily::id look)
                                                 :timestamp (ily::timestamp look)
-                                                :target (ily::reason look)
-                                                :photo (ily::photo look)
+                                                :reason (ily::reason look)
+                                                :photo (pht::get-pic-path :id (ily::photo look))
                                                 ))
                                       looks))))
 

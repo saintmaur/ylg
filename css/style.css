@@ -189,6 +189,10 @@ a:focus {
     width:100%;
 }
 
+.look-wrap {
+    padding: 0 20px;
+}
+
 .look-photo,.choice-photo1,.choice-photo2 {
     float:left;
 

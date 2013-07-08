@@ -95,9 +95,12 @@ function delComment(id){
 	        getAlert(obj.responseText,"error");
 	    },
 	    success:function(data){
+            console.log(data)
 	        if(data.success){
 		        removeComment(id);
-	        }
+	        } else {
+                getAlert(data.msg,"error");
+            }
 	    }
     });
 }

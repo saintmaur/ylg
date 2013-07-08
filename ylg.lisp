@@ -33,6 +33,9 @@
 (defparameter *basedir*
   (asdf:component-pathname (asdf:find-system '#:ylg)))
 
+(defvar *pic-dir*
+  "/pic/")
+
 (defun path (relative)
   (merge-pathnames relative *basedir*))
 

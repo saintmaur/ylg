@@ -36,14 +36,16 @@
         (like 0)
         (dislike 0))
     (mapcar #'(lambda (x)
-                (if (equal 1 (vot::voting (car x)))
+                (if (equal 1 (vot::voting x))
                     (incf like)
                     (incf dislike))
-                (setf sum (+ sum (vot::voting (vot::get-vote (car x))))))
+                (setf sum (+ sum (vot::voting x))))
             objects)
     (list :like like :dislike dislike :sum sum)))
 
-;(getf (vote-summary 'ily::look 4) :sum)
+;; (find-vote :entity 'ily::look :entity-id 1)
+
+;; (getf (vote-summary 'ily::look 1) :sum)
 
 ;; ;; (let ((entity ...)
 ;; ;;       (entitu-id ..))
