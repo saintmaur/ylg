@@ -30,7 +30,7 @@
 ;(show-fld-list "reason" 1)
 ;(show-fld-serialized 1)
 
-(defun SHOW-FLD-SERIALIZED (value)
+(defun SHOW-FLD-TEXT (value)
   (let* ((counter 0)
          (result
           (loop for i = 0 then (1+ j)
@@ -48,20 +48,23 @@
                                                               0 (position #\= pair)))
                                                 (right (subseq pair
                                                                (1+ (position #\= pair)))))
-                                           (list (intern (string-upcase left) :keyword) right))
-                                         (list :id (concatenate
+                                           (list (intern (string-upcase left) :keyword) right))))
+                    while l)
+                 (setf temp (append temp (list :id (concatenate
                                                     'string
                                                     "'clo-"
-                                                    (write-to-string counter) "'"))))
-                    while l)
+                                                    (write-to-string counter) "'")
+                                               :num (write-to-string counter))))
                  temp)
              while j)))
-    (tpl::fldlist (list :list result :clocount counter))))
+    (values
+     (tpl::fldlist (list :list result :clocount counter))
+     result)))
 
-(show-fld-serialized "category=cat1&brand=bra1&shop=sho1|category=cat2&brand=bra2&shop=sho2")
+;;(show-fld-serialized "category=cat1&brand=bra1&shop=sho1|category=cat2&brand=bra2&shop=sho2")
 
-(defun show-photo (&optional id)
-  (if (null id)
-      (setf id ""))
-  (view::render-elem :attrs (list :name "photo" :value id :type "hidden")))
+(defun show-fld-integer (name &optional value)
+  (view::render-elem :attrs (list :name name :value value :type "hidden")))
 
+(defun parse-serialized (&rest seps)
+  )

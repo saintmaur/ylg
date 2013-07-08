@@ -53,7 +53,6 @@
        when pos do (write-string replacement out)
        while pos)))
 
-
 ;; define-entity
 
 (defmacro define-entity (name desc &rest tail)
@@ -97,7 +96,8 @@
                     `(setf (,(car accessor) obj)
                           (or (getf args ,(intern (symbol-name (car accessor)) :keyword))
                               (,(car accessor) obj))))
-             (save-dao obj)))
+             (with-connection ylg::*db-spec*
+               (update-dao obj))))
 
          ;; del-entity
          (defun ,del-entity (id)
@@ -127,16 +127,21 @@
          (defmethod ,to-html ((obj ,name) &optional &key filter)
            (with-connection ylg::*db-spec*
              (concatenate 'string
+                          "<form id='"
+                          ,(string-downcase (symbol-name name))
+                          "-form'>"
                           ,@(loop :for (fld-name fld-type) :in (car tail) :collect
                                (list
-                                (intern (concatenate 'string "SHOW-FLD-"
+                                (intern (concatenate 'string
+                                                     "SHOW-FLD-"
                                                      (if (symbolp fld-type)
                                                          (symbol-name fld-type)
                                                          (format nil "~{~A~^-~}"
                                                                  (mapcar #'(lambda (x)
                                                                              (symbol-name x))
                                                                          fld-type)))))
-                                (list fld-name 'obj))))))))))
+                                (list fld-name 'obj)))
+                          "</form>")))))))
 
 (defmacro define-automat (name desc &rest tail)
   (let ((package (symbol-package name)))

@@ -19,7 +19,7 @@
   ((id          serial)
    (entity      varchar)     ;; may be other comment entity
    (entity-id   integer)
-   (timestamp   integer)
+   (timestamp   bigint)
    (author      integer)
    (text        text))
   (:public :hidden)

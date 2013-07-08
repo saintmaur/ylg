@@ -36,6 +36,7 @@
                           :serial t
                           :pathname "mod/ily"
                           :components ((:file "ily")
+                                       (:file "view")
                                        (:static-file "tpl.htm")))
                  (:module "adv"
                           :serial t

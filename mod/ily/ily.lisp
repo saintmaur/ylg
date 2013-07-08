@@ -14,10 +14,10 @@
 
 (define-automat look "Автомат look-а"
   ((id          serial)
-   (timestamp   integer)
+   (timestamp   bigint)
    (user_id     integer)
    (reason      integer)
-   (goods       varchar)
+   (goods       text)
    (photo       integer)
    (status      integer))
   (:draft :public :archived)
@@ -25,29 +25,30 @@
    (:public  :archived  :archive-look)))
 
                                         ;(closure-template:compile-template :common-lisp-backend (ylg:path "mod/ily/tpl.htm"))
-(print (macroexpand-1
-'(define-entity look "Автомат look-а"
-  ((id          serial)
-   (timestamp   integer)
-   (user_id     integer)
-   (reason      varchar)
-   (goods       varchar)
-   (photo       integer)
-   (status      integer))
-  (:draft :public :archived)
-  ((:draft   :public    :publish-look)
-   (:public  :archived  :archive-look)))
-))
+;; (print (macroexpand-1
+;; '(define-entity look "Автомат look-а"
+;;   ((id          serial)
+;;    (timestamp   integer)
+;;    (user_id     integer)
+;;    (reason      varchar)
+;;    (goods       varchar)
+;;    (photo       integer)
+;;    (status      integer))
+;;   (:draft :public :archived)
+;;   ((:draft   :public    :publish-look)
+;;    (:public  :archived  :archive-look)))
+;; ))
 
+;; (make-look :reason 2 :user_id 1 :goods "." :photo 2 :status 1 :timestamp 1)
+;; (upd-look (first (find-look :id 7)) (list :goods
+;;                                  "category=cat1&brand=bra1&shop=sho1|category=cat2&brand=bra2&shop=sho2"))
 (defun show-look-list (looks)
-  (tpl:lookslist (list :looks (mapcar #'(lambda (look-pair)
-                                          (let ((look (car look-pair))
-                                                (id (cdr look-pair)))
-                                            (list :id id
-                                                  :timestamp (ily::timestamp look)
-                                                  :target (ily::target look)
-                                                  :photo (ily::photo look)
-                                                  )))
+  (tpl:lookslist (list :looks (mapcar #'(lambda (look)
+                                          (list :id (ily::id look)
+                                                :timestamp (ily::timestamp look)
+                                                :target (ily::reason look)
+                                                :photo (ily::photo look)
+                                                ))
                                       looks))))
 
 
@@ -169,3 +170,4 @@
 ;; Попытка голосовать за лук не в том состоянии
 
 ;; Комментирование look-а
+

@@ -35,7 +35,7 @@
   (awhen (hunchentoot:post-parameter "file")
     (destructuring-bind (path-name file-name file-type)
         it
-      (let ((pic (pht:upload path-name file-name (pathname-type (merge-pathnames path-name file-name)))))
+      (let ((pic (pht:upload path-name (pathname-type (merge-pathnames path-name file-name)))))
         (json:encode-json-to-string (list
                                      (cons "photo" (concatenate 'string "/pic/" (pht::namefile pic)))
                                      (cons "id" (pht::id pic))))))))
@@ -53,13 +53,10 @@
 
 (restas:define-route looks ("/looks")
   (tpl:root (list :left  (tpl:left)
-                  :right (ily:show-look-list (ily:find-look #'(lambda (x)
-                                                                (or (equal (ily::state (car x)) :public)
-                                                                    (equal (ily::state (car x)) :archived)))))
+                  :right (ily:show-look-list (ily:find-look :status 1))
                   :enterform (if (null usr:*current-user*)
                                  (tpl:enterform)
                                  nil)
-                  :form (ily::show-look-form)
                   :auth (if (null usr:*current-user*)
                             (tpl:authnotlogged)
                             (tpl:authlogged (list :username (usr:email usr:*current-user*)))))))
@@ -74,39 +71,41 @@
                                           0)))
                             (if (null look)
                                 "No such data"
-                                (tpl:lookview (list
-                                               :id id
-                                               :pic (pht::get-pic-path (ily::photo look))
-					       :voting (append (list
-                                            :id id
-                                            :entity "look"
-                                            :pack "ily"
-                                            :vote 1
-                                            :voted (vot::check-if-voted
-                                                    :author user
-                                                    :entity 'ily::look
-                                                    :entity-id (parse-integer id)))
-                                           (vot::vote-summary 'ily::look (parse-integer id)))
-                           ;; TODO :vote may differ for simple users and stylist, etc.
+                                (progn
+                                  (multiple-value-bind (form goods) (ily::show-fld-text (ily::goods look))
+                                    (tpl:lookview (list
+                                                   :id id
+                                                   :pic (pht::get-pic-path (ily::photo look))
+                                                   :voting (append (list
+                                                                    :id id
+                                                                    :entity "look"
+                                                                    :pack "ily"
+                                                                    :vote 1
+                                                                    :voted (vot::check-if-voted
+                                                                            :author user
+                                                                            :entity 'ily::look
+                                                                            :entity-id (parse-integer id)))
+                                                                   (vot::vote-summary 'ily::look (parse-integer id)))
                            ;; :title (ily::title look)
-					       :commenting (list
-							    :entity "look"
-							    :entid id
-							    :pack "ily"
-							    :comments (cmt::entity-comments 'ily::look (parse-integer id))
-							    :currentuser user)
-                           :timestamp (ily::timestamp look)
-                           :goods (ily::goods look)))))
-                  :enterform (if (null usr:*current-user*)
-                                 (tpl:enterform)
-                                 nil)
-                  :auth (if (null usr:*current-user*)
-                            (tpl:authnotlogged)
-                            (tpl:authlogged (list :username (usr:email usr:*current-user*)))))))
+                                                   :commenting (list
+                                                                :entity "look"
+                                                                :entid id
+                                                                :pack "ily"
+                                                                :comments (cmt::entity-comments 'ily::look (parse-integer id))
+                                                                :currentuser user)
+                                                   :timestamp (ily::timestamp look)
+                                                  :goods goods
+                                                  :editform form))))))
+                            :enterform (if (null usr:*current-user*)
+                                           (tpl:enterform)
+                                           nil)
+                            :auth (if (null usr:*current-user*)
+                                      (tpl:authnotlogged)
+                                      (tpl:authlogged (list :username (usr:email usr:*current-user*))))))))
 
-(restas:define-route vote ("/vote" :method :post)
-  (let ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal)))
-    (let ((entity-id  (parse-integer (gethash "entity-id" data)))
+  (restas:define-route vote ("/vote" :method :post)
+    (let ((data (alist-hash-table (hunchentoot:post-parameters*) :test #'equal)))
+      (let ((entity-id  (parse-integer (gethash "entity-id" data)))
           (entity (gethash "entity" data))
           (pack (gethash "pack" data))
           (vote (parse-integer (gethash "vote" data))))
@@ -184,16 +183,18 @@
          (reason (gethash "reason" data))
          (goods "")
          (photo (gethash "photo" data))
-         (clo-count (parse-integer (gethash "clo-count" data))))
+         (clo-count (parse-integer (gethash "clo-count" data)))
+         (result 0)
+         (look))
     (loop for i from 1 to clo-count
        do
-         (concatenate 'string goods "category="
-                      (gethash (concatenate 'string "category-" (write-to-string i)) data) "&")
-         (concatenate 'string goods "brand="
-                        (gethash (concatenate 'string "brand-" (write-to-string i)) data) "&")
-         (concatenate 'string goods "shop="
+         (setf goods (concatenate 'string goods "category="
+                      (gethash (concatenate 'string "category-" (write-to-string i)) data) "&"))
+         (setf goods (concatenate 'string goods "brand="
+                        (gethash (concatenate 'string "brand-" (write-to-string i)) data) "&"))
+         (setf goods (concatenate 'string goods "shop="
                       (gethash (concatenate 'string "shop-" (write-to-string i)) data)
-                      (unless (= i clo-count) "|")))
+                      (unless (= i clo-count) "|"))))
     (if (not (equal custom-reason ""))
         (with-connection ylg::*db-spec*
           (setf reason
@@ -201,21 +202,31 @@
                     (progn
                       (query (:insert-into 'reasons :set 'name custom-reason))
                       (query (:select :id :from 'reasons :where (:= 'name custom-reason)) :single))))))
+
     (if (equal id "")
         (progn
-          (ily::make-look
-           :timestamp (get-universal-time)
-           :status (gethash "status" data)
-           :user_id (usr::id usr::*current-user*)
-           :reason reason
-           :photo photo
-           :goods goods))
-        (with-connection ylg::*db-spec*
-          (ily::upd-look (get-dao 'look id)
-                         (list
-                          :reason reason
-                          :photo photo
-                          :goods goods))))))
+          (setf look
+                (ily::make-look
+                 :timestamp (get-universal-time)
+                 :status (gethash "status" data)
+                 :user_id (usr::id usr::*current-user*)
+                 :reason reason
+                 :photo photo
+                 :goods goods))
+          (unless (null look)
+            (setf result 1)))
+        (progn
+          (setf look (ily::find-look :id id))
+          (unless (null look)
+            (setf look (ily::upd-look look
+                                      (list
+                                       :reason reason
+                                       :photo photo
+                                       :goods goods)))
+            (setf result 1))))
+    (json:encode-json-alist-to-string (list
+                                       (cons "success" result)
+                                       (cons "id" (ily::id look))))))
 
 
 (restas:define-route save-comment ("/save-comment" :method :post)

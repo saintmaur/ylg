@@ -14,10 +14,10 @@
 
 (define-automat choice "Автомат choice-а"
   ((id          serial)
-   (timestamp   timestamp)
+   (timestamp   bigint)
    (user_id     integer)
    (target      integer)
-   (goods       varchar)
+   (goods       text)
    (photo       integer))
   (:draft :public :archived)
   ((:draft   :public    :publish-choice)

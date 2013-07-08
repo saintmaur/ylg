@@ -49,27 +49,22 @@ function getLook(id){
 }
 
 function saveLook(data){
-    var goods="";
-    var targetArr = ["category","brand","shop"];
-    console.log(data);
-    for(var i in data){
-        if(targetArr.indexOf(i)>-1){
-            console.log(i);
-            goods += i + "=" + data[i] + "&";
-        }
-    }
-return;
     $.ajax({
 	    url:"/save-look",
 	    dataType:"json",
 	    type:"post",
-        data:data+"&goods"+goods,
+        data:data,
 	    error:function(obj){
 	        getAlert(obj.responseText,'error');
 	    },
 	    success:function(data){
-	        $.fancybox.close();
-	        document.location.href = "/look/"+data.id;
+            if(data.success){
+                $.fancybox.close();
+	            document.location.href = "/look/"+data.id;
+            } else {
+                getAlert(data.msg,'error');
+            }
+
 	    }
     });
 }
@@ -167,9 +162,9 @@ function updVotes(pack,entity,id,sel){
 }
 
 $(function(){
-    $.fancybox({
+    /*$.fancybox({
 		href:"#edit-look-form-cont"
-	});
+	});*/
 	$('a.call-upload-form').click(function(){
 	    if(!$("#__ajaxUploadIFRAME").size()){
 		    ajaxUploadIframe = $('<iframe src="/js/form.html" id="__ajaxUploadIFRAME" name="__ajaxUploadIFRAME"></iframe>').attr('style','style="width:0px;height:0px;border:1px solid #fff;display:none"').hide();
@@ -194,7 +189,7 @@ $(function(){
 			            href:"#edit-look-form-cont"
 			        });
                     $("#edit-look-form-photo").find('img').attr('src',data['photo']);
-                    $("#edit-look-form-photo").find('img').attr('src',data['photo']);
+                    $("#photo").val(data['id']);
 		        });
 		    });
 		    input.click();

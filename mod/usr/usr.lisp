@@ -27,18 +27,20 @@
    (:link-sended  :logged       :enter))
   )
 
-(print
- (macroexpand-1
-  '(DEFINE-ENTITY USR "Автомат пользователя"
-    ((ID SERIAL)
-     (EMAIL VARCHAR)
-     (PASSWORD VARCHAR)
-     (NAME (OR DB-NULL VARCHAR))
-     (SURNAME (OR DB-NULL VARCHAR))))))
 
-(with-connection ylg::*db-spec*
-  (upd-usr (get-dao 'usr 1)
-           (list :name "name" :surname "surname")))
+
+;; (print
+;;  (macroexpand-1
+;;   '(DEFINE-ENTITY USR "Автомат пользователя"
+;;     ((ID SERIAL)
+;;      (EMAIL VARCHAR)
+;;      (PASSWORD VARCHAR)
+;;      (NAME (OR DB-NULL VARCHAR))
+;;      (SURNAME (OR DB-NULL VARCHAR))))))
+
+;; (with-connection ylg::*db-spec*
+;;   (upd-usr (get-dao 'usr 1)
+;;            (list :name "name" :surname "surname")))
 
 (defun SHOW-FLD-VARCHAR (x)
   (format nil "~%varchar: ~A" x))
@@ -50,8 +52,11 @@
   (format nil "~%serial: A" x))
 
 ;; Test
-;(to-html (car (all-usr)))
+
+                                        ;(to-html (car (all-usr)))
 ;; (make-usr 'email "test" 'password "111")
+
+;; (upd-usr (get-dao 'usr 1) (list :name "name" :surname "surname"))
 
 (defun none ())
 

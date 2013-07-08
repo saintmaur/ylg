@@ -21,17 +21,17 @@
   <body>{\n}
     <div id="wrap">{\n}
       <div id="content-wrap">{\n}
-          <div id="content">
-            <div id="head-wrap">{\n}
-	          <div id="head">{\n}
-	            <div id="enter-link-cont">{$auth | noAutoescape}</div>{\n}
-	          </div>{\n}
-            </div>{\n}
-            {$right | noAutoescape} {\n}
-          </div>
-          {$left | noAutoescape} {\n}
+        <div id="content">
+          <div id="head-wrap">{\n}
+	        <div id="head">{\n}
+	          <div id="enter-link-cont">{$auth | noAutoescape}</div>{\n}
+	        </div>{\n}
+          </div>{\n}
+          {$right | noAutoescape} {\n}
+        </div>
+        {$left | noAutoescape} {\n}
       </div>
-
+      {call lookeditform /}
       <div style="clear:both"></div> {\n}
     </div>{\n}
   </div>{\n}
@@ -53,20 +53,13 @@
 <span class="auth-links-sep">|</span><a href="#" id="btn-logoff">выйти</a>
 {/template}
 
-
-
 {template left}
 <div id="left-sidebar"> {\n}
-  <div id="logo"></div>{\n}
+  <a href="/" style="display:block"><div id="logo"></div></a>{\n}
   <div class="dash-line"></div>
   <div id="left-sidebar-menu"> {\n}
     <ul> {\n}
       <li><a href="/looks">Как я вам?!</a></li> {\n}
-      /*<ul> {\n}
-        <li> {\n}
-          <a href="#edit-look-form-cont" class="call-upload-form">загрузить фотографию</a>{\n}
-        </li> {\n
-      </ul> {\n}*/
       <li><a href="/choices">Надо брать?!</a></li> {\n}
     </ul> {\n}
   </div> {\n}
@@ -76,108 +69,136 @@
 {call enterform /}
 {/template}
 
-
-  {template lookslist}
-  <div>
-    <div class="floated-items"> {\n}
-      {foreach $look in $looks}
-      {call look data="$look" /}
-      {ifempty}
-      {/foreach}
-    </div>
-    {call lookeditform /}
-  </div>
-  {/template}
-
-  {template look}
-  <div class="floated-item"> {\n}
-	<div class="item-img"> {\n}
-	  <a href="/look/{$id}">
-	    <img src="/pic/{$preview}" width="200" height="250"/>{\n}
-	  </a> {\n}
-	</div> {\n}
-	<div class="item-data"> {\n}
-	  {$timestamp} <br />
-	</div> {\n}
-  </div>
-  {/template}
-
-  {template comment}
-  <div class="comment-item" id="{$id}-comment">
-    <div class="comment-body" {if $level > 0} id="child-of-{$entityId}" {/if} style="padding-left:{$level*20}px;">
-      <img src="{$userpic}" width="40" height="40" />
-      <div class="comment-data-wrap">
-	    <div class="comment-data-header">
-	      <div class="author">
-	        {$author} - {$timestamp}
-	      </div>
-	      <div class="reply">
-	        <a href="#" class="reply-on-comment-link" id="reply-on-{$id}">ответить</a>
-	      </div>
-	    </div>
-
-	    <div class="comment-data-text">
-	      {$text}
-	    </div>
-	    <div class="comment-data-footer">
-	      <div>
-	        <div style="color: red">голосовать</div>
-            <div class="ctrl-wrap">
-              <div class="edit-cmt">
-                <a href="#" id="edit-cmt-{$id}" >ред.</a>
-              </div>
-              <div class="del-cmt">
-                <a href="#"  id="del-cmt-{$id}" >удал.</a>
-              </div>
-            </div>
-            <div class="cmt-wrap">
-              {call voteblock data="$voting" /}
-            </div>
-            <div style="clear:both"></div>
-	      </div>
-	    </div>
-      </div>
+{template lookview}
+<div class="look-wrap">
+  <div class="look-data">
+    <div class="data">
+      {$id} <br />
+      {$timestamp} <br />
+	  <div class="look-photo">
+	    <div class="look-photo-cont">
+          <img src="{$pic}" />
+        </div>
+	    <div class="photo-desc">{$title}</div>
+	    {call voteblock data="$voting" /}
+	  </div>
+	  <div class="look-clothes">
+	    <ul>
+	      {foreach $good in $goods}
+          {call goodsitem data="$good" /}
+	      {/foreach}
+	    </ul>
+	  </div>
     </div>
   </div>
-  {/template}
+  <div style="display:none">
+    {$editform}
+  </div>
+  <div style="clear:both;"></div>
+  {call commentslist data="$commenting" /}
+</div>
+{/template}
 
-  {template commenttmpl}
-  <div class="comment-item" id="=&gt;id&lt;=-comment">
-    <div class="comment-body" id="" style="padding-left:=&gt;padding&lt;=">
-	  <img src="" width="40" height="40" />
-	  <div class="comment-data-wrap">
-	    <div class="comment-data-header">
-		  <div class="author">
-		    =&gt;author&lt;= - =&gt;timestamp&lt;=
-		  </div>
-		  <div class="reply">
-		    <a href="#" class="reply-on-comment-link" id="reply-on-=&gt;id&lt;=">ответить</a>
-		  </div>
-	    </div>
+{template lookslist}
+<div>
+  <div class="floated-items"> {\n}
+    {foreach $look in $looks}
+    {call look data="$look" /}
+    {ifempty}
+    {/foreach}
+  </div>
+</div>
+{/template}
 
-        <div class="comment-data-text">
-		  =&gt;text&lt;=
+{template look}
+<div class="floated-item"> {\n}
+  <div class="item-img"> {\n}
+	<a href="/look/{$id}">
+	  <img src="/pic/{$preview}" width="200" height="250"/>{\n}
+	</a> {\n}
+  </div> {\n}
+  <div class="item-data"> {\n}
+	{$timestamp} <br />
+  </div> {\n}
+</div>
+{/template}
+
+{template comment}
+<div class="comment-item" id="{$id}-comment">
+  <div class="comment-body" {if $level > 0} id="child-of-{$entityId}" {/if} style="padding-left:{$level*20}px;">
+    <img src="{$userpic}" width="40" height="40" />
+    <div class="comment-data-wrap">
+	  <div class="comment-data-header">
+	    <div class="author">
+	      {$author} - {$timestamp}
 	    </div>
-	    <div class="comment-data-footer">
-		  <div>
-		    <div style="color: red">голосовать</div>
-            <div class="ctrl-wrap">
-              <div class="edit-cmt">
-                <a href="#" id="edit-cmt-=&gt;id&lt;=" >ред.</a>
-              </div>
-              <div class="del-cmt">
-                <a href="#"  id="del-cmt-=&gt;id&lt;=" >удал.</a>
-              </div>
+	    <div class="reply">
+	      <a href="#" class="reply-on-comment-link" id="reply-on-{$id}">ответить</a>
+	    </div>
+	  </div>
+
+	  <div class="comment-data-text">
+	    {$text}
+	  </div>
+	  <div class="comment-data-footer">
+	    <div>
+	      <div style="color: red">голосовать</div>
+          <div class="ctrl-wrap">
+            <div class="edit-cmt">
+              <a href="#" id="edit-cmt-{$id}" >ред.</a>
             </div>
-		    <div class="cmt-wrap">
-              {call voteblocktmpl /}
+            <div class="del-cmt">
+              <a href="#"  id="del-cmt-{$id}" >удал.</a>
             </div>
-            <div style="clear:both"></div>
-		  </div>
+          </div>
+          <div class="cmt-wrap">
+            {call voteblock data="$voting" /}
+          </div>
+          <div style="clear:both"></div>
 	    </div>
 	  </div>
     </div>
   </div>
+</div>
+{/template}
+
+{template commenttmpl}
+<div class="comment-item" id="=&gt;id&lt;=-comment">
+  <div class="comment-body" id="" style="padding-left:=&gt;padding&lt;=">
+	<img src="" width="40" height="40" />
+	<div class="comment-data-wrap">
+	  <div class="comment-data-header">
+		<div class="author">
+		  =&gt;author&lt;= - =&gt;timestamp&lt;=
+		</div>
+		<div class="reply">
+		  <a href="#" class="reply-on-comment-link" id="reply-on-=&gt;id&lt;=">ответить</a>
+		</div>
+	  </div>
+
+      <div class="comment-data-text">
+		=&gt;text&lt;=
+	  </div>
+	  <div class="comment-data-footer">
+		<div>
+		  <div style="color: red">голосовать</div>
+          <div class="ctrl-wrap">
+            <div class="edit-cmt">
+              <a href="#" id="edit-cmt-=&gt;id&lt;=" >ред.</a>
+            </div>
+            <div class="del-cmt">
+              <a href="#"  id="del-cmt-=&gt;id&lt;=" >удал.</a>
+            </div>
+          </div>
+		  <div class="cmt-wrap">
+            {call voteblocktmpl /}
+          </div>
+          <div style="clear:both"></div>
+		</div>
+	  </div>
+	</div>
+  </div>
+</div>
 {/template}
 
 {template commentslist}
@@ -268,43 +289,12 @@
 <div style="clear:both;"></div>
 {/template}
 
-{template lookview}
-<div class="look-wrap">
-  <div class="look-data">
-    <div class="data">
-      {$id} <br />
-      {$timestamp} <br />
-	  <div class="look-photo">
-	    <div class="look-photo-cont">
-          <img src="/pic/{$pic}" />
-        </div>
-	    <div class="photo-desc">{$title}</div>
-	    {call voteblock data="$voting" /}
-	  </div>
-	  <div class="look-clothes">
-	    <ul>
-	      {foreach $good in $goods}
-	      <li><span class="cl-category">Брюки</span> <a href="#">ZARA</a></li>
-	      <li><span class="cl-category">TODO: Добавление данных</span></li>
-	      {ifempty}
-	      no data
-	      {/foreach}
-	    </ul>
-	  </div>
-    </div>
-  </div>
-  <div style="clear:both;"></div>
-  {call commentslist data="$commenting" /}
-</div>
-{/template}
-
 {template lookeditform}
 <div style="display:none">
   <div id="edit-look-form-cont">
 	<form action="#" id="entity-edit-form">
 	  <input type="hidden" name="photo" id="photo" value="" />
 	  <input type="hidden" name="id" id="id" ="" />
-      <input type="hidden" name="goods" id="goods" ="" />
 	  <div id="edit-look-form-wrap">
 	    <div id="edit-look-form-photo-wrap">
 	      <div id="edit-look-form-photo">
@@ -329,10 +319,10 @@
 	      </select>
           <div>
             <input id="custom-reason-switch" type="checkbox" name="custom-reason-switch" /> <label style="padding-bottom:3px" for="custom-reason-switch">свой
-            повод</label>
-           <div id="custom-reason-wrap" style="display:none">
-             <input type="text" name="custom-reason" id="custom-reason" />
-           </div>
+              повод</label>
+            <div id="custom-reason-wrap" style="display:none">
+              <input type="text" name="custom-reason" id="custom-reason" />
+            </div>
           </div>
 	      <div id="clo-select">
 		    <a href="#"><span class="greyed">+</span>&nbsp;добавить предмет гардероба</a>
@@ -368,6 +358,7 @@
               <div style="clear:both"></div>
             </div>
 	      </div>
+          <input name="clo-count" id="clo-count" value="0" type="hidden" />
 	      <ul id="clo-items-list"></ul>
 	    </div>
 	    <div style="clear:both"></div>
@@ -466,4 +457,8 @@
 	</form> {\n}
   </div> {\n}
 </div> {\n}
+{/template}
+
+{template goodsitem}
+<li><span class="cl-category">{$category}</span> {$brand} {$shop}</li>
 {/template}

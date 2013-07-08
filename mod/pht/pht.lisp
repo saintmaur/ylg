@@ -23,9 +23,10 @@
 
 (defun get-pic-path (&rest args)
   (let ((pic (first (apply #'find-pic args))))
-    (concatenate 'string (pathnamefile pic) (pictype pic))))
+    (unless (null pic)
+      (concatenate 'string (pathnamefile pic) (pictype pic)))))
 
-(defun upload (input-pathname input-filename input-format)
+(defun upload (input-pathname input-format)
   (awhen (probe-file input-pathname)
     (let* ((output-filename (generate-filename))
            (outfilepath (namestring (ylg:path (concatenate 'string "pic/" output-filename)))))
@@ -35,6 +36,6 @@
             (loop for pos = (read-sequence buf input-stream)
                while (plusp pos)
                do (write-sequence buf output-stream :end pos)))))
-      (make-pic 'pictype input-format
-                'pathnamefile outfilepath
-                'namefile output-filename))))
+      (make-pic :pictype input-format
+                :pathnamefile outfilepath
+                :namefile output-filename))))
